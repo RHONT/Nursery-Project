@@ -1,0 +1,16 @@
+databaseChangeLog:
+  - include:
+      file: liquibase/scripts/Nersery_postgres_create.sql
+#  - include:
+#      file: liquibase/scripts/script_data_report.sql
+#  - include:
+#      file: liquibase/scripts/script_nursary.sql
+#  - include:
+#      file: liquibase/scripts/script_person.sql
+#  - include:
+#      file: liquibase/scripts/script_pet.sql
+#  - include:
+#      file: liquibase/scripts/script_report.sql
+#  - include:
+#      file: liquibase/scripts/script_visitors.sql
+
