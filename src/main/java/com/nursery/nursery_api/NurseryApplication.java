@@ -8,6 +8,7 @@ public class NurseryApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(NurseryApplication.class, args);
+
     }
 
 }
