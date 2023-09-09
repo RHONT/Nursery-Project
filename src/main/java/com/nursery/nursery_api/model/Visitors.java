@@ -18,8 +18,8 @@ public class Visitors {
     @Column(name = "chat_id")
     private Long chatId;
 
-    @Column(name = "number_nursary")
-    private Long numberNursary;
+    @Column(name = "name_nursery")
+    private String nameNursery;
 
     @Override
     public boolean equals(Object o) {
