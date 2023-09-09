@@ -15,14 +15,14 @@ import java.util.Objects;
 @Setter
 @ToString
 @Entity
-@Table(name = "nursary")
-public class Nursary {
+@Table(name = "nursery")
+public class Nursery {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_nursary")
+    @Column(name = "id_nursery")
     private Long idNursary;
 
-    @Column(name = "name_nursary")
+    @Column(name = "name_nursery")
     private String nameNursary;
 
     @Column(name = "about")
@@ -43,7 +43,7 @@ public class Nursary {
     @Column(name = "transport_rule")
     private String transportRule;
 
-    @Column(name = "house_recomend")
+    @Column(name = "house_recommend")
     private String houseRecomend;
 
     @Column(name = "cynologist_advice")
@@ -59,7 +59,7 @@ public class Nursary {
     private String listDocument;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "nursary")
+    @OneToMany(mappedBy = "nursery")
     private List<Pet> pets = new ArrayList<>();
 
     public void AddPet(Pet pet) {
@@ -67,15 +67,15 @@ public class Nursary {
             pets=new ArrayList<>();
         }
         pets.add(pet);
-        pet.setNursary(this);
+        pet.setNursery(this);
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        Nursary nursary = (Nursary) o;
-        return idNursary != null && Objects.equals(idNursary, nursary.idNursary);
+        Nursery nursery = (Nursery) o;
+        return idNursary != null && Objects.equals(idNursary, nursery.idNursary);
     }
 
     @Override

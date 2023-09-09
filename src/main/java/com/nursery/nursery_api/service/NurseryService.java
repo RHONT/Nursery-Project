@@ -1,6 +1,6 @@
 package com.nursery.nursery_api.service;
 
-import com.nursery.nursery_api.model.Nursary;
+import com.nursery.nursery_api.model.Nursery;
 import com.nursery.nursery_api.model.Visitors;
 import com.nursery.nursery_api.repositiry.*;
 import org.springframework.stereotype.Service;
@@ -23,7 +23,7 @@ public class NurseryService {
      * key - name nursery
      * * value - nursery
      */
-    private final Map<String, Nursary> nurseryMap=new HashMap<>();
+    private final Map<String, Nursery> nurseryMap=new HashMap<>();
 
     private final DataReportRepository dataReportRepository;
     private final NursaryRepository nurseryRepository;
@@ -38,7 +38,7 @@ public class NurseryService {
         List<Visitors> listFromDBVisitors= visitorsRepository.findAll();
         if (!listFromDBVisitors.isEmpty()) {
             for (var element:listFromDBVisitors) {
-                visitors.put(element.getChatId(),element.getNameNursary());
+                visitors.put(element.getChatId(),element.getNameNursery());
             }
         }
     }
@@ -74,9 +74,9 @@ public class NurseryService {
      */
     public void setNurseryIntoVisitors(Long chatId, String nameNursery){
         if (!nurseryMap.containsKey(nameNursery)) {
-            Nursary nursary=nurseryRepository.findByNameNursary(nameNursery);
-            if (nursary!=null) {
-                nurseryMap.put(nameNursery,nursary);
+            Nursery nursery =nurseryRepository.findByNameNursary(nameNursery);
+            if (nursery !=null) {
+                nurseryMap.put(nameNursery, nursery);
             }
         }
         visitors.put(chatId,nurseryMap.get(nameNursery).getNameNursary());

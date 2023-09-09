@@ -18,8 +18,8 @@ import java.util.Objects;
 public class Pet {
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_nursary", nullable = true)
-    private Nursary nursary;
+    @JoinColumn(name = "id_nursery", nullable = true)
+    private Nursery nursery;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

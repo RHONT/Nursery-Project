@@ -6,7 +6,7 @@ CREATE TABLE "visitors"
 -- чат пользователя
     "chat_id"        bigint NOT NULL,
 -- 	заносим номер питомника, переменная нужна для быстрого определения с каким питомником мы будем работать.
-    "name_nursary" varchar,
+    "name_nursery" varchar,
     CONSTRAINT "visitors_pk" PRIMARY KEY ("chat_id")
 );
 
@@ -29,10 +29,10 @@ CREATE TABLE "report"
     CONSTRAINT "report_pk" PRIMARY KEY ("id_report")
 );
 
-CREATE TABLE "nursary"
+CREATE TABLE "nursery"
 (
-    "id_nursary"          serial NOT NULL,
-    "name_nursary"        varchar,
+    "id_nursery"          serial NOT NULL,
+    "name_nursery"        varchar,
     "about"               varchar,
     "infrastructure"      varchar, -- Все что касается заезда, проезда, охраны и т.д.
     "accident_prevention" varchar, -- правила поведения на территории
@@ -40,18 +40,18 @@ CREATE TABLE "nursary"
     "list_document"       varchar,
     "dating_rule"          varchar,
     "transport_rule"       varchar,
-    "house_recomend"       varchar,
+    "house_recommend"       varchar,
     "cynologist_advice"    varchar,
     "cynologist_advice_up" varchar,
     "reasons_refusal"      varchar, -- почему нельзя взять
 
 
-    CONSTRAINT "nursary_pk" PRIMARY KEY ("id_nursary")
+    CONSTRAINT "nursary_pk" PRIMARY KEY ("id_nursery")
 );
 
 CREATE TABLE "pet"
 (
-    "id_nursary"           bigint NOT NULL,
+    "id_nursery"           bigint NOT NULL,
     "id_pet"               serial NOT NULL,
     "nickname"             varchar(50),
     "birthday"             date,
@@ -75,7 +75,7 @@ ALTER TABLE "report"
     ADD CONSTRAINT "report_fk0" FOREIGN KEY ("id_person") REFERENCES "person" ("id_person");
 
 ALTER TABLE "pet"
-    ADD CONSTRAINT "pet_fk0" FOREIGN KEY ("id_nursary") REFERENCES "nursary" ("id_nursary");
+    ADD CONSTRAINT "pet_fk0" FOREIGN KEY ("id_nursery") REFERENCES "nursery" ("id_nursery");
 ALTER TABLE "pet"
     ADD CONSTRAINT "pet_fk1" FOREIGN KEY ("person_id") REFERENCES "person" ("id_person");
 
@@ -83,7 +83,7 @@ ALTER TABLE "data_report"
     ADD CONSTRAINT "data_report_fk0" FOREIGN KEY ("id_report") REFERENCES "report" ("id_report");
 
 
-insert into nursary(name_nursary, about, infrastructure, accident_prevention, list_document)
+insert into nursery(name_nursery, about, infrastructure, accident_prevention, list_document)
 values ('Кошки', 'О приюте', 'Схема проезда', 'Правила поведения', 'Снилс, Паспорт'),
        ('Собаки', 'О приюте', 'Схема проезда', 'Правила поведения', 'Снилс, Паспорт');
 
