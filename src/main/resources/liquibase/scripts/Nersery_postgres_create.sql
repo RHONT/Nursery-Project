@@ -6,7 +6,7 @@ CREATE TABLE "visitors"
 -- чат пользователя
     "chat_id"        bigint NOT NULL,
 -- 	заносим номер питомника, переменная нужна для быстрого определения с каким питомником мы будем работать.
-    "number_nursary" int,
+    "name_nursary" varchar,
     CONSTRAINT "visitors_pk" PRIMARY KEY ("chat_id")
 );
 
