@@ -18,21 +18,15 @@ import java.util.Objects;
 public class DataReport {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "date_datas")
+    @Column(name = "date_report")
     private LocalDate dateDatas;
 
     @Column(name = "foto")
     @Lob
     private byte[] foto;
 
-    @Column(name = "diet")
-    private String diet;
-
-    @Column(name = "health")
-    private String health;
-
-    @Column(name = "demeanor")
-    private String demeanor;
+    @Column(name = "message_person")
+    private String messagePerson;
 
     @JsonIgnore
     @ToString.Exclude

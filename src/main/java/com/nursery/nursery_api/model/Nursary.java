@@ -37,6 +37,24 @@ public class Nursary {
     @Column(name = "how_get_pet")
     private String howGetPet;
 
+    @Column(name = "dating_rule")
+    private String datingRule;
+
+    @Column(name = "transport_rule")
+    private String transportRule;
+
+    @Column(name = "house_recomend")
+    private String houseRecomend;
+
+    @Column(name = "cynologist_advice")
+    private String cynologistAdvice;
+
+    @Column(name = "cynologist_advice_up")
+    private String cynologistAdviceUp;
+
+    @Column(name = "reasons_refusal")
+    private String reasonsRefusal;
+
     @Column(name = "list_document")
     private String listDocument;
 

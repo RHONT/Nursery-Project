@@ -5,6 +5,7 @@ import lombok.*;
 import org.hibernate.Hibernate;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.Objects;
 
 @AllArgsConstructor
@@ -28,33 +29,14 @@ public class Pet {
     @Column(name = "nickname")
     private String nickname;
 
-    @Column(name = "age")
-    private Long age;
+    @Column(name = "birthday")
+    private LocalDate age;
 
     @Column(name = "foto")
     @Lob
     private byte[] foto;
 
-    @Column(name = "diet")
-    private String diet;
 
-    @Column(name = "dating_rule")
-    private String datingRule;
-
-    @Column(name = "transport_rule")
-    private String transportRule;
-
-    @Column(name = "house_recomend")
-    private String houseRecomend;
-
-    @Column(name = "cynologist_advice")
-    private String cynologistAdvice;
-
-    @Column(name = "cynologist_advice_up")
-    private String cynologistAdviceUp;
-
-    @Column(name = "reasons_refusal")
-    private String reasonsRefusal;
 
     @Column(name = "invalid")
     private Boolean invalid;
