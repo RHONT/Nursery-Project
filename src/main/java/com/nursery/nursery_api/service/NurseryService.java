@@ -1,4 +1,4 @@
-package com.nursery.nursery_api.model.services;
+package com.nursery.nursery_api.service;
 
 import com.nursery.nursery_api.model.Nursary;
 import com.nursery.nursery_api.model.Visitors;
@@ -10,7 +10,7 @@ import javax.annotation.PreDestroy;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
+
 
 @Service
 public class NurseryService {
