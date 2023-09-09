@@ -4,7 +4,7 @@
 CREATE TABLE "visitors"
 (
 -- чат пользователя
-    "chat_id"        bigint NOT NULL,
+    "chat_id"      bigint NOT NULL,
 -- 	заносим номер питомника, переменная нужна для быстрого определения с каким питомником мы будем работать.
     "name_nursery" varchar,
     CONSTRAINT "visitors_pk" PRIMARY KEY ("chat_id")
@@ -24,23 +24,23 @@ CREATE TABLE "report"
 (
     "id_report"  serial NOT NULL,
     "id_person"  bigint,
-    "forteit"    bigint default '0',   -- 	Штраф за плохое заполнения отчета.
-    "day_report" int    DEFAULT '30',  -- 	Штраф за плохое заполнения отчета.
+    "forteit"    bigint default '0',  -- 	Штраф за плохое заполнения отчета.
+    "day_report" int    DEFAULT '30', -- 	Штраф за плохое заполнения отчета.
     CONSTRAINT "report_pk" PRIMARY KEY ("id_report")
 );
 
 CREATE TABLE "nursery"
 (
-    "id_nursery"          serial NOT NULL,
-    "name_nursery"        varchar,
-    "about"               varchar,
-    "infrastructure"      varchar, -- Все что касается заезда, проезда, охраны и т.д.
-    "accident_prevention" varchar, -- правила поведения на территории
-    "how_get_pet"         varchar, -- Процедура, как взять животное из этого приюта
-    "list_document"       varchar,
+    "id_nursery"           serial NOT NULL,
+    "name_nursery"         varchar,
+    "about"                varchar,
+    "infrastructure"       varchar, -- Все что касается заезда, проезда, охраны и т.д.
+    "accident_prevention"  varchar, -- правила поведения на территории
+    "how_get_pet"          varchar, -- Процедура, как взять животное из этого приюта
+    "list_document"        varchar,
     "dating_rule"          varchar,
     "transport_rule"       varchar,
-    "house_recommend"       varchar,
+    "house_recommend"      varchar,
     "cynologist_advice"    varchar,
     "cynologist_advice_up" varchar,
     "reasons_refusal"      varchar, -- почему нельзя взять
@@ -51,22 +51,22 @@ CREATE TABLE "nursery"
 
 CREATE TABLE "pet"
 (
-    "id_nursery"           bigint NOT NULL,
-    "id_pet"               serial NOT NULL,
-    "nickname"             varchar(50),
-    "birthday"             date,
-    "foto"                 bytea,
-    "invalid"              bool default 'false',
-    "person_id"            bigint,
+    "id_nursery" bigint NOT NULL,
+    "id_pet"     serial NOT NULL,
+    "nickname"   varchar(50),
+    "birthday"   date,
+    "foto"       bytea,
+    "invalid"    bool default 'false',
+    "person_id"  bigint,
     CONSTRAINT "pet_pk" PRIMARY KEY ("id_pet")
 );
 
 CREATE TABLE "data_report"
 (
-    "id_report"  bigint NOT NULL,
-    "date_report" DATE   NOT NULL,
-    "foto"       bytea,
-    "message_person"       varchar,
+    "id_report"      bigint NOT NULL,
+    "date_report"    DATE   NOT NULL,
+    "foto"           bytea,
+    "message_person" varchar,
     CONSTRAINT "data_report_pk" PRIMARY KEY ("date_report")
 );
 
