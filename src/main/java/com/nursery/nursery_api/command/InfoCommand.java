@@ -14,7 +14,8 @@ public class InfoCommand implements Command {
             "driving directions", "Get a pass to your car", "General safety recommendations",
             "Leave your contact information", "Send a message to a volunteer"};
 
-    String[] callData = {"general", " address", "pass", "safety", "contact", "volunteer"};
+    // Заменили general на About ради теста.
+    String[] callData = {"About", " address", "pass", "safety", "contact", "volunteer"};
 
     public InfoCommand(SendBotMessageService sendBotMessageService) {
         this.sendBotMessageService = sendBotMessageService;

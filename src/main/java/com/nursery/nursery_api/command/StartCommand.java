@@ -11,7 +11,7 @@ public class StartCommand implements Command {
             "the shelter}.Please choose a shelter you are interested in.";
 
     String[] buttonsName = {"Cat shelter", "Dog Shelter"};
-    String[] callData = {"cat", "dog"};
+    String[] callData = {"-cats", "dog"};
 
 
     public StartCommand(SendBotMessageService sendBotMessageService) {

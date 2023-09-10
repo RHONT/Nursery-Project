@@ -15,7 +15,8 @@ public class CatAndDogCommand implements Command {
     String[] callDataForDog = {"info", "dogAdopt", "report",
             "volunteer"};
 
-    String[] callDataForCat = {"info", "catAdopt", "report",
+    // Заменили info - > About for test
+    String[] callDataForCat = {"About", "catAdopt", "report",
             "volunteer"};
 
     public CatAndDogCommand(SendBotMessageService sendBotMessageService) {
@@ -25,6 +26,7 @@ public class CatAndDogCommand implements Command {
     @Override
     public void execute(Update update) {
         if (update.getCallbackQuery().getData().equals("cat")) {
+
             sendBotMessageService.sendMessage(update.getCallbackQuery().getMessage().getChatId().toString(),
                     CAT_MESSAGE, buttonsName, callDataForCat);
         } else if (update.getCallbackQuery().getData().equals("dog")) {
