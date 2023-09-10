@@ -21,7 +21,7 @@ public class NurseryService {
     private final Map<Long,String> visitors=new HashMap<>();
     /**
      * key - name nursery
-     * * value - nursery
+     * value - nursery
      */
     private final Map<String, Nursery> nurseryMap=new HashMap<>();
 
@@ -69,8 +69,8 @@ public class NurseryService {
 
     /**
      * Когда получили ответ о питомнике, помещаем в мапу значение
-     * @param chatId
-     * @param nameNursery
+     * @param chatId - чат пользователя
+     * @param nameNursery - название приюта из колонки БД name_nursery
      */
     public void setNurseryIntoVisitors(Long chatId, String nameNursery){
         if (!nurseryMap.containsKey(nameNursery)) {
@@ -85,7 +85,7 @@ public class NurseryService {
     /**
      *
      * @param idChat - чат id
-     * @return we find the nursery by chat_id from the visitors map and get information about the nursery from there
+     * @return значение "О приюте"
      */
     public String getMeAboutNursery(Long idChat){
         return nurseryMap.get(visitors.get(idChat)).getAbout();
@@ -94,55 +94,72 @@ public class NurseryService {
     /**
      * выдать расписание работы приюта и адрес, схему проезда.
      */
-//    public String getInfrastructure(Long chat_id){
-//
-////        return nurseryRepository.
-////                findById(visitors.get(chat_id)).
-////                orElseThrow(()->new NoSuchElementException("Приют не найден")).
-////                getInfrastructure();
-//    }
+    public String getInfrastructure(Long idChat){
+        return nurseryMap.get(visitors.get(idChat)).getInfrastructure();
+    }
 
-//    /**
-//     * общие рекомендации о технике безопасности на территории приюта.
-//     */
-//    public String getAccident_prevention(Long chat_id){
-//        return nurseryRepository.
-//                findById(visitors.get(chat_id)).
-//                orElseThrow(()->new NoSuchElementException("Приют не найден")).
-//                getAccidentPrevention();
-//    }
-//
-//    /**
-//     * список документов, необходимых для того, чтобы взять животное из приюта.
-//     */
-//    public String getDocument(Long chat_id){
-//        return nurseryRepository.
-//                findById(visitors.get(chat_id)).
-//                orElseThrow(()->new NoSuchElementException("Приют не найден")).
-//                getListDocument();
-//    }
-//
-//    /**
-//     * список документов, необходимых для того, чтобы взять животное из приюта.
-//     */
-//    public String getHowGetPetFromNursery(Long chat_id){
-//        return nurseryRepository.
-//                findById(visitors.get(chat_id)).
-//                orElseThrow(()->new NoSuchElementException("Приют не найден")).
-//                getHowGetPet();
-//    }
+    /**
+     * общие рекомендации о технике безопасности на территории приюта.
+     */
+    public String getAccident_prevention(Long idChat){
+        return nurseryMap.get(visitors.get(idChat)).getAccidentPrevention();
+    }
 
-//    /**
-//     * правила транспортировки животного
-//     */
-//    public String getTransportRule(Long idNursery){
-//        return nurseryRepository.
-//                findById(idNursery).
-//                orElseThrow(()->new NoSuchElementException("Приют не найден")).
-//                getTransportRule();
-//    }
+    /**
+     * список документов, необходимых для того, чтобы взять животное из приюта.
+     */
+    public String getDocument(Long idChat){
+        return nurseryMap.get(visitors.get(idChat)).getAccidentPrevention();
+    }
 
+    /**
+     * список документов, необходимых для того, чтобы взять животное из приюта.
+     */
+    public String getHowGetPetFromNursery(Long idChat){
+        return nurseryMap.get(visitors.get(idChat)).getHowGetPet();
+    }
 
+    /**
+     * правила транспортировки животного
+     */
+    public String getTransportRule(Long idChat){
+        return nurseryMap.get(visitors.get(idChat)).getTransportRule();
+    }
+
+    /**
+     * правила обустройства дома
+     */
+    public String getHouseRecommend(Long idChat){
+        return nurseryMap.get(visitors.get(idChat)).getHouseRecomend();
+    }
+
+    /**
+     * правила обустройства дома для животных с ограничениями
+     */
+    public String getHouseRecommendInvalid(Long idChat){
+        return nurseryMap.get(visitors.get(idChat)).getHouseRecommendInvalid();
+    }
+
+    /**
+     * перваначальные советы кинолога
+     */
+    public String getСynologistAdvice(Long idChat){
+        return nurseryMap.get(visitors.get(idChat)).getCynologistAdvice();
+    }
+
+    /**
+     * продвинутые советы кинолога
+     */
+    public String getСynologistAdviceUp(Long idChat){
+        return nurseryMap.get(visitors.get(idChat)).getCynologistAdviceUp();
+    }
+
+    /**
+     * причины отказа
+     */
+    public String getReasonsRefusal(Long idChat){
+        return nurseryMap.get(visitors.get(idChat)).getReasonsRefusal();
+    }
 
 
     // TODO: 006, 06.09.2023 занести в базу изменения, если они произошли.

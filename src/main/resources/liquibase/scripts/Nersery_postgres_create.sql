@@ -31,19 +31,20 @@ CREATE TABLE "report"
 
 CREATE TABLE "nursery"
 (
-    "id_nursery"           serial NOT NULL,
-    "name_nursery"         varchar,
-    "about"                varchar,
-    "infrastructure"       varchar, -- Все что касается заезда, проезда, охраны и т.д.
-    "accident_prevention"  varchar, -- правила поведения на территории
-    "how_get_pet"          varchar, -- Процедура, как взять животное из этого приюта
-    "list_document"        varchar,
-    "dating_rule"          varchar,
-    "transport_rule"       varchar,
-    "house_recommend"      varchar,
-    "cynologist_advice"    varchar,
-    "cynologist_advice_up" varchar,
-    "reasons_refusal"      varchar, -- почему нельзя взять
+    "id_nursery"              serial NOT NULL,
+    "name_nursery"            varchar,
+    "about"                   varchar,
+    "infrastructure"          varchar, -- Все что касается заезда, проезда, охраны и т.д.
+    "accident_prevention"     varchar, -- правила поведения на территории
+    "how_get_pet"             varchar, -- Процедура, как взять животное из этого приюта
+    "list_document"           varchar,
+    "dating_rule"             varchar,
+    "transport_rule"          varchar,
+    "house_recommend"         varchar,
+    "house_recommend_invalid" varchar,
+    "cynologist_advice"       varchar,
+    "cynologist_advice_up"    varchar,
+    "reasons_refusal"         varchar, -- почему нельзя взять
 
 
     CONSTRAINT "nursary_pk" PRIMARY KEY ("id_nursery")

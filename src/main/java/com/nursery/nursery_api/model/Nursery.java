@@ -46,6 +46,9 @@ public class Nursery {
     @Column(name = "house_recommend")
     private String houseRecomend;
 
+    @Column(name = "house_recommend_invalid")
+    private String houseRecommendInvalid;
+
     @Column(name = "cynologist_advice")
     private String cynologistAdvice;
 
