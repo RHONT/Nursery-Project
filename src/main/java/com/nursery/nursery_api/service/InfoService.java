@@ -73,12 +73,12 @@ public class InfoService {
      */
     public void setNurseryIntoVisitors(Long chatId, String nameNursery){
         if (!nurseryMap.containsKey(nameNursery)) {
-            Nursery nursery =nurseryRepository.findByNameNursary(nameNursery);
+            Nursery nursery =nurseryRepository.findNurseryByNameNursery(nameNursery);
             if (nursery !=null) {
                 nurseryMap.put(nameNursery, nursery);
             }
         }
-        visitors.put(chatId,nurseryMap.get(nameNursery).getNameNursary());
+        visitors.put(chatId,nurseryMap.get(nameNursery).getNameNursery());
     }
 
     /**

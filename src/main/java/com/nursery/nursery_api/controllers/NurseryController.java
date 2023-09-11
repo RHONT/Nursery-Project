@@ -83,7 +83,7 @@ public class NurseryController {
                     )
             },
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "Изменяемы объект класс Nursary.",
+                    description = "Изменяемый объект класс Nursery.",
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = Nursery.class)
