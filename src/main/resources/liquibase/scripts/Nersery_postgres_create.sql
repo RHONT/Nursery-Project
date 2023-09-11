@@ -87,6 +87,16 @@ insert into nursery(name_nursery, about, infrastructure, accident_prevention, li
 values ('Кошки', 'О приюте', 'Схема проезда', 'Правила поведения', 'Снилс, Паспорт'),
        ('Собаки', 'О приюте', 'Схема проезда', 'Правила поведения', 'Снилс, Паспорт');
 
+-- changeset Alexander:1
+CREATE TABLE "volunteers"
+(
+    "volunteer_id" serial primary key ,
+    "volunteer_name" text,
+    "phone" text,
+    "telegram_name" varchar,
+    "free" boolean
+)
+
 
 
 

@@ -3,6 +3,9 @@ package com.nursery.nursery_api.service;
 import com.nursery.nursery_api.model.Nursery;
 import com.nursery.nursery_api.model.Visitors;
 import com.nursery.nursery_api.repositiry.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -14,141 +17,70 @@ import java.util.Map;
 
 @Service
 public class NurseryService {
-    /**
-     * Key - chat_id
-     * value - name nursery
-     */
-    private final Map<Long,String> visitors=new HashMap<>();
-    /**
-     * key - name nursery
-     * * value - nursery
-     */
-    private final Map<String, Nursery> nurseryMap=new HashMap<>();
+    private NurseryRepository nurseryRepository;
 
-    private final DataReportRepository dataReportRepository;
-    private final NursaryRepository nurseryRepository;
-    private final PersonRepository personRepository;
-    private final PetRepository petRepository;
-    private final ReportRepository reportRepository;
-    private final VisitorsRepository visitorsRepository;
-
-    // Заводим для кэша мапу с посетителями. Она скудная, лишний раз не будем дергать БД,
-    @PostConstruct
-    private void init(){
-        List<Visitors> listFromDBVisitors= visitorsRepository.findAll();
-        if (!listFromDBVisitors.isEmpty()) {
-            for (var element:listFromDBVisitors) {
-                visitors.put(element.getChatId(),element.getNameNursery());
-            }
-        }
-    }
-
-
-    public NurseryService(DataReportRepository dataReportRepository, NursaryRepository nurseryRepository, PersonRepository personRepository, PetRepository petRepository, ReportRepository reportRepository, VisitorsRepository visitorsRepository) {
-        this.dataReportRepository = dataReportRepository;
+    public NurseryService(NurseryRepository nurseryRepository) {
         this.nurseryRepository = nurseryRepository;
-        this.personRepository = personRepository;
-        this.petRepository = petRepository;
-        this.reportRepository = reportRepository;
-        this.visitorsRepository = visitorsRepository;
+    }
+    Logger logger = LoggerFactory.getLogger(NurseryService.class);
+
+    /** Method that realise adding new object Nursery
+     * Use repository method {@link org.springframework.data.jpa.repository.JpaRepository#save(Object)}
+     * @param nursery
+     * @return added Nursary
+     */
+    public Nursery createNursery(Nursery nursery){
+        logger.info("Вызван метод createNursery");
+        return nurseryRepository.save(nursery);
     }
 
-    /**
+    /** Method that find all Nurseries and return them as List
+     * Use repository method {@link JpaRepository#findAll()}
+     * @return List<Nursery>
+     */
+    public List<Nursery> getAllNursery (){
+        logger.info("Вызван метод getAllNursery");
+        return nurseryRepository.findAll();
+    }
+
+    /** Method that find Object Nursery by name of nursery
      *
-     * @param chat_id - проверяем пользователя, был ли он раньше.
-     *                Если не был, заносим его в базу, значения питомника будут занесены
-     *                после того, как он выберет питомник, а  пока вставляем null
+     * @param nurseryName
+     * @return Nursery object
      */
-    public boolean contain(Long chat_id){
-        if (!visitors.containsKey(chat_id)) {
-            visitors.put(chat_id,null);
-            return false;
-        }
-        return true;
+    public Nursery findNurseryByName(String nurseryName){
+        logger.info("Вызван метод findNurseryByName");
+        return nurseryRepository.findNurseryByNameNursery(nurseryName);
     }
 
-    /**
-     * Когда получили ответ о питомнике, помещаем в мапу значение
-     * @param chatId
-     * @param nameNursery
-     */
-    public void setNurseryIntoVisitors(Long chatId, String nameNursery){
-        if (!nurseryMap.containsKey(nameNursery)) {
-            Nursery nursery =nurseryRepository.findByNameNursary(nameNursery);
-            if (nursery !=null) {
-                nurseryMap.put(nameNursery, nursery);
-            }
-        }
-        visitors.put(chatId,nurseryMap.get(nameNursery).getNameNursary());
-    }
-
-    /**
+    /** Method that find nursery's id by there name
      *
-     * @param idChat - чат id
-     * @return we find the nursery by chat_id from the visitors map and get information about the nursery from there
+     * @param nurseryName
+     * @return nurseries Id
      */
-    public String getMeAboutNursery(Long idChat){
-        return nurseryMap.get(visitors.get(idChat)).getAbout();
+    public Long getNurseryIdByName (String nurseryName){
+        logger.info("Вызван метод getNurseryIdByName");
+        return nurseryRepository.nurseryIdByName(nurseryName);
     }
 
-    /**
-     * выдать расписание работы приюта и адрес, схему проезда.
+    /** Method that realise deleting of Nursery object by his name
+     *
+     * @param nurseryName
+     * @return deleted object Nursary
      */
-//    public String getInfrastructure(Long chat_id){
-//
-////        return nurseryRepository.
-////                findById(visitors.get(chat_id)).
-////                orElseThrow(()->new NoSuchElementException("Приют не найден")).
-////                getInfrastructure();
-//    }
+    public Nursery deleteNurseryByName(String nurseryName){
+        logger.info("Вызван метод deleteNurseryByName");
+        return nurseryRepository.deleteNurseryByNameNursery(nurseryName);
+    }
 
-//    /**
-//     * общие рекомендации о технике безопасности на территории приюта.
-//     */
-//    public String getAccident_prevention(Long chat_id){
-//        return nurseryRepository.
-//                findById(visitors.get(chat_id)).
-//                orElseThrow(()->new NoSuchElementException("Приют не найден")).
-//                getAccidentPrevention();
-//    }
-//
-//    /**
-//     * список документов, необходимых для того, чтобы взять животное из приюта.
-//     */
-//    public String getDocument(Long chat_id){
-//        return nurseryRepository.
-//                findById(visitors.get(chat_id)).
-//                orElseThrow(()->new NoSuchElementException("Приют не найден")).
-//                getListDocument();
-//    }
-//
-//    /**
-//     * список документов, необходимых для того, чтобы взять животное из приюта.
-//     */
-//    public String getHowGetPetFromNursery(Long chat_id){
-//        return nurseryRepository.
-//                findById(visitors.get(chat_id)).
-//                orElseThrow(()->new NoSuchElementException("Приют не найден")).
-//                getHowGetPet();
-//    }
-
-//    /**
-//     * правила транспортировки животного
-//     */
-//    public String getTransportRule(Long idNursery){
-//        return nurseryRepository.
-//                findById(idNursery).
-//                orElseThrow(()->new NoSuchElementException("Приют не найден")).
-//                getTransportRule();
-//    }
-
-
-
-
-    // TODO: 006, 06.09.2023 занести в базу изменения, если они произошли.
-    @PreDestroy
-    private void closeApp(){
-
+    /** Method that realise editing of Nursary object.
+     *
+     * @param nursery
+     * @return new Nursary object
+     */
+    public Nursery editNursery (Nursery nursery){
+        logger.info("Вызван метод editNursery");
+        return nurseryRepository.save(nursery);
     }
 
 
