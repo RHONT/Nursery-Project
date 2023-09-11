@@ -32,18 +32,18 @@ CREATE TABLE "report"
 CREATE TABLE "nursery"
 (
     "id_nursery"              serial NOT NULL,
-    "name_nursery"            varchar,
-    "about"                   varchar,
+    "name_nursery"            varchar, -- имя приюта
+    "about"                   varchar, -- о приюте
     "infrastructure"          varchar, -- Все что касается заезда, проезда, охраны и т.д.
     "accident_prevention"     varchar, -- правила поведения на территории
     "how_get_pet"             varchar, -- Процедура, как взять животное из этого приюта
-    "list_document"           varchar,
-    "dating_rule"             varchar,
-    "transport_rule"          varchar,
-    "house_recommend"         varchar,
-    "house_recommend_invalid" varchar,
-    "cynologist_advice"       varchar,
-    "cynologist_advice_up"    varchar,
+    "list_document"           varchar, -- нужные документы для опекунства
+    "dating_rule"             varchar, -- правило как нужно себя вести при первом знакомстве с животным
+    "transport_rule"          varchar, -- правила перевозки животного
+    "house_recommend"         varchar, -- рекомендации по обустройству дома
+    "house_recommend_invalid" varchar, -- рекомендации по обустройству дома для животного с ограничениями
+    "cynologist_advice"       varchar, -- первоначальные советы кинологи (для кошек не надо)
+    "cynologist_advice_up"    varchar, -- продвинутые советы кинологи (для кошек не надо)
     "reasons_refusal"         varchar, -- почему нельзя взять
 
 
@@ -83,10 +83,6 @@ ALTER TABLE "pet"
 ALTER TABLE "data_report"
     ADD CONSTRAINT "data_report_fk0" FOREIGN KEY ("id_report") REFERENCES "report" ("id_report");
 
-
-insert into nursery(name_nursery, about, infrastructure, accident_prevention, list_document)
-values ('Кошки', 'О приюте', 'Схема проезда', 'Правила поведения', 'Снилс, Паспорт'),
-       ('Собаки', 'О приюте', 'Схема проезда', 'Правила поведения', 'Снилс, Паспорт');
 
 
 
