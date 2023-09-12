@@ -87,20 +87,20 @@ public class Nursery {
         return getClass().hashCode();
     }
 
-    public Long getIdNursary() {
-        return idNursary;
+    public Long getIdNursery() {
+        return idNursery;
     }
 
-    public void setIdNursary(Long idNursary) {
-        this.idNursary = idNursary;
+    public void setIdNursery(Long idNursery) {
+        this.idNursery = idNursery;
     }
 
-    public String getNameNursary() {
-        return nameNursary;
+    public String getNameNursery() {
+        return nameNursery;
     }
 
-    public void setNameNursary(String nameNursary) {
-        this.nameNursary = nameNursary;
+    public void setNameNursery(String nameNursery) {
+        this.nameNursery = nameNursery;
     }
 
     public String getAbout() {
