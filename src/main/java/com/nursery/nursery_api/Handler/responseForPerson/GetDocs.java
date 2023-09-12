@@ -2,7 +2,7 @@ package com.nursery.nursery_api.Handler.responseForPerson;
 
 import com.nursery.nursery_api.Handler.NurseryHandler;
 import com.nursery.nursery_api.bot.TelegramBot;
-import com.nursery.nursery_api.service.NurseryService;
+import com.nursery.nursery_api.service.NurseryDBService;
 import com.nursery.nursery_api.service.SendBotMessageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -17,17 +17,17 @@ public class GetDocs implements NurseryHandler {
      * вывод текста при нажатии кнопки "Список документов, необходимых для того, чтобы взять животное"
      * @param idChat
      * @param bot
-     * @param nurseryService
+     * @param nurseryDBService
      * @param sendBotMessageService
      */
     @Override
-    public void handle(Long idChat, TelegramBot bot, NurseryService nurseryService, SendBotMessageService sendBotMessageService) {
+    public void handle(Long idChat, TelegramBot bot, NurseryDBService nurseryDBService, SendBotMessageService sendBotMessageService) {
         try {
             bot.execute(
                     SendMessage.
                             builder().
                             chatId(idChat).
-                            text(nurseryService.getDocument(idChat)).
+                            text(nurseryDBService.getDocument(idChat)).
                             build()
             );
         } catch (TelegramApiException e) {

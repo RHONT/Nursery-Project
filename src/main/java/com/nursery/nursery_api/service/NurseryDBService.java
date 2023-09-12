@@ -13,7 +13,7 @@ import java.util.Map;
 
 
 @Service
-public class NurseryService {
+public class NurseryDBService {
     /**
      * Key - chat_id
      * value - name nursery
@@ -44,7 +44,7 @@ public class NurseryService {
     }
 
 
-    public NurseryService(DataReportRepository dataReportRepository, NursaryRepository nurseryRepository, PersonRepository personRepository, PetRepository petRepository, ReportRepository reportRepository, VisitorsRepository visitorsRepository) {
+    public NurseryDBService(DataReportRepository dataReportRepository, NursaryRepository nurseryRepository, PersonRepository personRepository, PetRepository petRepository, ReportRepository reportRepository, VisitorsRepository visitorsRepository) {
         this.dataReportRepository = dataReportRepository;
         this.nurseryRepository = nurseryRepository;
         this.personRepository = personRepository;

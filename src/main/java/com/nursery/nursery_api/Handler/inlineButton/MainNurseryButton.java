@@ -2,7 +2,7 @@ package com.nursery.nursery_api.Handler.inlineButton;
 
 import com.nursery.nursery_api.Handler.NurseryHandler;
 import com.nursery.nursery_api.bot.TelegramBot;
-import com.nursery.nursery_api.service.NurseryService;
+import com.nursery.nursery_api.service.NurseryDBService;
 import com.nursery.nursery_api.service.SendBotMessageService;
 import org.springframework.stereotype.Component;
 
@@ -15,11 +15,11 @@ public class MainNurseryButton implements NurseryHandler {
      * Создаются кнопки при вводе любого текста
      * @param idChat
      * @param bot
-     * @param nurseryService
+     * @param nurseryDBService
      * @param sendBotMessageService
      */
     @Override
-    public void handle(Long idChat, TelegramBot bot, NurseryService nurseryService, SendBotMessageService sendBotMessageService) {
+    public void handle(Long idChat, TelegramBot bot, NurseryDBService nurseryDBService, SendBotMessageService sendBotMessageService) {
         // тут код, который кидает в телеграм кнопки выбора Собак или Кошек
         sendBotMessageService.sendMessage(idChat.toString(), START_MESSAGE, buttonsName, callDataMain);
     }

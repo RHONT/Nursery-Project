@@ -1,7 +1,7 @@
 package com.nursery.nursery_api.bot;
 
 import com.nursery.nursery_api.Handler.NurseryHandler;
-import com.nursery.nursery_api.service.NurseryService;
+import com.nursery.nursery_api.service.NurseryDBService;
 import com.nursery.nursery_api.service.SendBotMessageService;
 import com.nursery.nursery_api.service.SendBotMessageServiceImpl;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,7 +17,7 @@ import java.util.List;
 
 public class TelegramBot extends TelegramLongPollingBot {
 
-    private final NurseryService nurseryService;
+    private final NurseryDBService nurseryDBService;
     private final List<NurseryHandler> nurseryHandlerList;
     private final SendBotMessageService sendBotMessageService=new SendBotMessageServiceImpl(this);
 
@@ -26,8 +26,8 @@ public class TelegramBot extends TelegramLongPollingBot {
 
 //    private final CommandContainer commandContainer;
 
-    public TelegramBot(NurseryService nurseryService, List<NurseryHandler> nurseryHandlerList) {
-        this.nurseryService = nurseryService;
+    public TelegramBot(NurseryDBService nurseryDBService, List<NurseryHandler> nurseryHandlerList) {
+        this.nurseryDBService = nurseryDBService;
         this.nurseryHandlerList = nurseryHandlerList;
 
 //        this.commandContainer = new CommandContainer(new SendBotMessageServiceImpl(this));
@@ -43,7 +43,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                 String message = "-main";
                 Long chatIdUser=update.getMessage().getChatId();
                 // если пользователь впервые
-                if (!nurseryService.contain(chatIdUser)) {
+                if (!nurseryDBService.contain(chatIdUser)) {
                     try {
                         this.execute(SendMessage.
                                 builder().
@@ -79,7 +79,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     private void checkMessage(String message, Long chatId){
         for (var element:nurseryHandlerList) {
             if (element.supply(message)) {
-                element.handle(chatId,this,nurseryService,sendBotMessageService);
+                element.handle(chatId,this, nurseryDBService,sendBotMessageService);
                 break;
             }
         }
