@@ -18,10 +18,10 @@ public class Nursery {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_nursery")
-    private Long idNursary;
+    private Long idNursery;
 
     @Column(name = "name_nursery")
-    private String nameNursary;
+    private String nameNursery;
 
     @Column(name = "about")
     private String about;
@@ -79,7 +79,7 @@ public class Nursery {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
         Nursery nursery = (Nursery) o;
-        return idNursary != null && Objects.equals(idNursary, nursery.idNursary);
+        return idNursery != null && Objects.equals(idNursery, nursery.idNursery);
     }
 
     @Override
