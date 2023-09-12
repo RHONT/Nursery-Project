@@ -31,19 +31,21 @@ CREATE TABLE "report"
 
 CREATE TABLE "nursery"
 (
-    "id_nursery"           serial NOT NULL,
-    "name_nursery"         varchar,
-    "about"                varchar,
-    "infrastructure"       varchar, -- Все что касается заезда, проезда, охраны и т.д.
-    "accident_prevention"  varchar, -- правила поведения на территории
-    "how_get_pet"          varchar, -- Процедура, как взять животное из этого приюта
-    "list_document"        varchar,
-    "dating_rule"          varchar,
-    "transport_rule"       varchar,
-    "house_recommend"      varchar,
-    "cynologist_advice"    varchar,
-    "cynologist_advice_up" varchar,
-    "reasons_refusal"      varchar, -- почему нельзя взять
+    "id_nursery"              serial NOT NULL,
+    "name_nursery"            varchar, -- имя приюта
+    "about"                   varchar, -- о приюте
+    "infrastructure"          varchar, -- Все что касается заезда, проезда, охраны и т.д.
+    "accident_prevention"     varchar, -- правила поведения на территории
+    "how_get_pet"             varchar, -- Процедура, как взять животное из этого приюта
+    "list_document"           varchar, -- нужные документы для опекунства
+    "dating_rule"             varchar, -- правило как нужно себя вести при первом знакомстве с животным
+    "transport_rule"          varchar, -- правила перевозки животного
+    "house_recommend_baby"    varchar, -- рекомендации по обустройству мелких
+    "house_recommend_adult"   varchar,-- рекомендации по обустройству взрослых
+    "house_recommend_invalid" varchar, -- рекомендации по обустройству дома для животного с ограничениями
+    "cynologist_advice"       varchar, -- первоначальные советы кинологи (для кошек не надо)
+    "cynologist_advice_up"    varchar, -- продвинутые советы кинологи (для кошек не надо)
+    "reasons_refusal"         varchar, -- почему нельзя взять
 
 
     CONSTRAINT "nursary_pk" PRIMARY KEY ("id_nursery")
@@ -55,7 +57,7 @@ CREATE TABLE "pet"
     "id_pet"     serial NOT NULL,
     "nickname"   varchar(50),
     "birthday"   date,
-    "foto"       bytea,
+    "foto" bytea,
     "invalid"    bool default 'false',
     "person_id"  bigint,
     CONSTRAINT "pet_pk" PRIMARY KEY ("id_pet")
@@ -65,7 +67,7 @@ CREATE TABLE "data_report"
 (
     "id_report"      bigint NOT NULL,
     "date_report"    DATE   NOT NULL,
-    "foto"           bytea,
+    "foto" bytea,
     "message_person" varchar,
     CONSTRAINT "data_report_pk" PRIMARY KEY ("date_report")
 );
@@ -86,6 +88,17 @@ ALTER TABLE "data_report"
 insert into nursery(name_nursery, about, infrastructure, accident_prevention, list_document)
 values ('Кошки', 'О приюте', 'Схема проезда', 'Правила поведения', 'Снилс, Паспорт'),
        ('Собаки', 'О приюте', 'Схема проезда', 'Правила поведения', 'Снилс, Паспорт');
+
+-- changeset Alexander:1
+CREATE TABLE "volunteers"
+(
+    "volunteer_id" serial primary key ,
+    "volunteer_name" text,
+    "phone" text,
+    "telegram_name" varchar,
+    "free" boolean
+)
+
 
 
 

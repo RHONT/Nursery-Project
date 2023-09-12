@@ -8,8 +8,6 @@ import java.util.Objects;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
 @ToString
 @Entity
 @Table(name = "person")
@@ -39,5 +37,37 @@ public class Person {
     @Override
     public int hashCode() {
         return getClass().hashCode();
+    }
+
+    public Long getIdPerson() {
+        return idPerson;
+    }
+
+    public void setIdPerson(Long idPerson) {
+        this.idPerson = idPerson;
+    }
+
+    public Long getIdChat() {
+        return idChat;
+    }
+
+    public void setIdChat(Long idChat) {
+        this.idChat = idChat;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 }

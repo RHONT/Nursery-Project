@@ -11,8 +11,6 @@ import java.util.Objects;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
 @ToString
 @Entity
 @Table(name = "report")
@@ -65,5 +63,41 @@ public class Report {
     @Override
     public int hashCode() {
         return getClass().hashCode();
+    }
+
+    public Long getIdReport() {
+        return idReport;
+    }
+
+    public void setIdReport(Long idReport) {
+        this.idReport = idReport;
+    }
+
+    public Person getPerson() {
+        return person;
+    }
+
+    public void setPerson(Person person) {
+        this.person = person;
+    }
+
+    public Long getForteit() {
+        return forteit;
+    }
+
+    public void setForteit(Long forteit) {
+        this.forteit = forteit;
+    }
+
+    public Long getDayReport() {
+        return dayReport;
+    }
+
+    public void setDayReport(Long dayReport) {
+        this.dayReport = dayReport;
+    }
+
+    public void setDataReports(List<DataReport> dataReports) {
+        this.dataReports = dataReports;
     }
 }

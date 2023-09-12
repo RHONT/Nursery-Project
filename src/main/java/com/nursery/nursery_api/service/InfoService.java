@@ -12,8 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 
-@Service
-public class NurseryService {
+public class InfoService {
     /**
      * Key - chat_id
      * value - name nursery
@@ -26,7 +25,7 @@ public class NurseryService {
     private final Map<String, Nursery> nurseryMap=new HashMap<>();
 
     private final DataReportRepository dataReportRepository;
-    private final NursaryRepository nurseryRepository;
+    private final NurseryRepository nurseryRepository;
     private final PersonRepository personRepository;
     private final PetRepository petRepository;
     private final ReportRepository reportRepository;
@@ -44,7 +43,7 @@ public class NurseryService {
     }
 
 
-    public NurseryService(DataReportRepository dataReportRepository, NursaryRepository nurseryRepository, PersonRepository personRepository, PetRepository petRepository, ReportRepository reportRepository, VisitorsRepository visitorsRepository) {
+    public InfoService(DataReportRepository dataReportRepository, NurseryRepository nurseryRepository, PersonRepository personRepository, PetRepository petRepository, ReportRepository reportRepository, VisitorsRepository visitorsRepository) {
         this.dataReportRepository = dataReportRepository;
         this.nurseryRepository = nurseryRepository;
         this.personRepository = personRepository;
@@ -74,12 +73,12 @@ public class NurseryService {
      */
     public void setNurseryIntoVisitors(Long chatId, String nameNursery){
         if (!nurseryMap.containsKey(nameNursery)) {
-            Nursery nursery =nurseryRepository.findByNameNursary(nameNursery);
+            Nursery nursery =nurseryRepository.findNurseryByNameNursery(nameNursery);
             if (nursery !=null) {
                 nurseryMap.put(nameNursery, nursery);
             }
         }
-        visitors.put(chatId,nurseryMap.get(nameNursery).getNameNursary());
+        visitors.put(chatId,nurseryMap.get(nameNursery).getNameNursery());
     }
 
     /**
@@ -150,6 +149,4 @@ public class NurseryService {
     private void closeApp(){
 
     }
-
-
 }
