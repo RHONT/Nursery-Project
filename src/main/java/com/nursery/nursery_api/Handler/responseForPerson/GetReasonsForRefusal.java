@@ -11,9 +11,9 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 @Component
 @RequiredArgsConstructor
-public class About implements NurseryHandler {
+public class GetReasonsForRefusal implements NurseryHandler {
     /**
-     * вывод текста при нажатии кнопки "Общая информация"
+     * вывод текста при нажатии кнопки "Список причин, почему могут отказать и не дать забрать кошку\собаку из приюта."
      * @param idChat
      * @param bot
      * @param nurseryService
@@ -26,7 +26,7 @@ public class About implements NurseryHandler {
                     SendMessage.
                             builder().
                             chatId(idChat).
-                            text(nurseryService.getMeAboutNursery(idChat)).
+                            text(nurseryService.getReasonsRefusal(idChat)).
                             build()
             );
         } catch (TelegramApiException e) {
@@ -39,7 +39,5 @@ public class About implements NurseryHandler {
      * @return
      */
     @Override
-    public boolean supply(String inputMessage) {
-       return inputMessage.equals("-about");
-    }
+    public boolean supply(String inputMessage) {return inputMessage.equals("-refusal");}
 }

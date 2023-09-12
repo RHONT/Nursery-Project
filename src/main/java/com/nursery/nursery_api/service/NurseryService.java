@@ -109,7 +109,7 @@ public class NurseryService {
      * список документов, необходимых для того, чтобы взять животное из приюта.
      */
     public String getDocument(Long idChat){
-        return nurseryMap.get(visitors.get(idChat)).getAccidentPrevention();
+        return nurseryMap.get(visitors.get(idChat)).getListDocument();
     }
 
     /**
@@ -127,10 +127,17 @@ public class NurseryService {
     }
 
     /**
-     * правила обустройства дома
+     * правила обустройства дома для котят|щенят
      */
-    public String getHouseRecommend(Long idChat){
-        return nurseryMap.get(visitors.get(idChat)).getHouseRecomend();
+    public String getHouseRecommendForBabyPet(Long idChat){
+        return nurseryMap.get(visitors.get(idChat)).getHouseRecomendBaby();
+    }
+
+    /**
+     * правила обустройства дома для взрослых кошек/собак
+     */
+    public String getHouseRecommendForAdultPet(Long idChat){
+        return nurseryMap.get(visitors.get(idChat)).getHouseRecomendAdult();
     }
 
     /**

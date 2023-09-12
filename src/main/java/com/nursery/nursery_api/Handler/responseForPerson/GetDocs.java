@@ -11,9 +11,10 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 @Component
 @RequiredArgsConstructor
-public class About implements NurseryHandler {
+public class GetDocs implements NurseryHandler {
+
     /**
-     * вывод текста при нажатии кнопки "Общая информация"
+     * вывод текста при нажатии кнопки "Список документов, необходимых для того, чтобы взять животное"
      * @param idChat
      * @param bot
      * @param nurseryService
@@ -26,7 +27,7 @@ public class About implements NurseryHandler {
                     SendMessage.
                             builder().
                             chatId(idChat).
-                            text(nurseryService.getMeAboutNursery(idChat)).
+                            text(nurseryService.getDocument(idChat)).
                             build()
             );
         } catch (TelegramApiException e) {
@@ -40,6 +41,7 @@ public class About implements NurseryHandler {
      */
     @Override
     public boolean supply(String inputMessage) {
-       return inputMessage.equals("-about");
+        return inputMessage.equals("-docs");
     }
+
 }

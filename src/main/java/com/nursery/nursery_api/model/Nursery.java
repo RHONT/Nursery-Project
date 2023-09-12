@@ -11,8 +11,6 @@ import java.util.Objects;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
 @ToString
 @Entity
 @Table(name = "nursery")
@@ -43,8 +41,11 @@ public class Nursery {
     @Column(name = "transport_rule")
     private String transportRule;
 
-    @Column(name = "house_recommend")
-    private String houseRecomend;
+    @Column(name = "house_recommend_baby")
+    private String houseRecomendBaby;
+
+    @Column(name = "house_recommend_adult")
+    private String houseRecomendAdult;
 
     @Column(name = "house_recommend_invalid")
     private String houseRecommendInvalid;
@@ -86,4 +87,131 @@ public class Nursery {
         return getClass().hashCode();
     }
 
+    public Long getIdNursary() {
+        return idNursary;
+    }
+
+    public void setIdNursary(Long idNursary) {
+        this.idNursary = idNursary;
+    }
+
+    public String getNameNursary() {
+        return nameNursary;
+    }
+
+    public void setNameNursary(String nameNursary) {
+        this.nameNursary = nameNursary;
+    }
+
+    public String getAbout() {
+        return about;
+    }
+
+    public void setAbout(String about) {
+        this.about = about;
+    }
+
+    public String getInfrastructure() {
+        return infrastructure;
+    }
+
+    public void setInfrastructure(String infrastructure) {
+        this.infrastructure = infrastructure;
+    }
+
+    public String getAccidentPrevention() {
+        return accidentPrevention;
+    }
+
+    public void setAccidentPrevention(String accidentPrevention) {
+        this.accidentPrevention = accidentPrevention;
+    }
+
+    public String getHowGetPet() {
+        return howGetPet;
+    }
+
+    public void setHowGetPet(String howGetPet) {
+        this.howGetPet = howGetPet;
+    }
+
+    public String getDatingRule() {
+        return datingRule;
+    }
+
+    public void setDatingRule(String datingRule) {
+        this.datingRule = datingRule;
+    }
+
+    public String getTransportRule() {
+        return transportRule;
+    }
+
+    public void setTransportRule(String transportRule) {
+        this.transportRule = transportRule;
+    }
+
+    public String getHouseRecomendBaby() {
+        return houseRecomendBaby;
+    }
+
+    public void setHouseRecomendBaby(String houseRecomendBaby) {
+        this.houseRecomendBaby = houseRecomendBaby;
+    }
+
+    public String getHouseRecomendAdult() {
+        return houseRecomendAdult;
+    }
+
+    public void setHouseRecomendAdult(String houseRecomendAdult) {
+        this.houseRecomendAdult = houseRecomendAdult;
+    }
+
+    public String getHouseRecommendInvalid() {
+        return houseRecommendInvalid;
+    }
+
+    public void setHouseRecommendInvalid(String houseRecommendInvalid) {
+        this.houseRecommendInvalid = houseRecommendInvalid;
+    }
+
+    public String getCynologistAdvice() {
+        return cynologistAdvice;
+    }
+
+    public void setCynologistAdvice(String cynologistAdvice) {
+        this.cynologistAdvice = cynologistAdvice;
+    }
+
+    public String getCynologistAdviceUp() {
+        return cynologistAdviceUp;
+    }
+
+    public void setCynologistAdviceUp(String cynologistAdviceUp) {
+        this.cynologistAdviceUp = cynologistAdviceUp;
+    }
+
+    public String getReasonsRefusal() {
+        return reasonsRefusal;
+    }
+
+    public void setReasonsRefusal(String reasonsRefusal) {
+        this.reasonsRefusal = reasonsRefusal;
+    }
+
+    public String getListDocument() {
+        return listDocument;
+    }
+
+    public void setListDocument(String listDocument) {
+        this.listDocument = listDocument;
+    }
+
+    public List<Pet> getPets() {
+        return pets;
+    }
+
+    public void setPets(List<Pet> pets) {
+        this.pets = pets;
+    }
 }

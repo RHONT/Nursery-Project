@@ -10,8 +10,6 @@ import java.util.Objects;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
 @ToString
 @Entity
 @Table(name = "data_report")
@@ -45,5 +43,37 @@ public class DataReport {
     @Override
     public int hashCode() {
         return getClass().hashCode();
+    }
+
+    public LocalDate getDateDatas() {
+        return dateDatas;
+    }
+
+    public void setDateDatas(LocalDate dateDatas) {
+        this.dateDatas = dateDatas;
+    }
+
+    public byte[] getFoto() {
+        return foto;
+    }
+
+    public void setFoto(byte[] foto) {
+        this.foto = foto;
+    }
+
+    public String getMessagePerson() {
+        return messagePerson;
+    }
+
+    public void setMessagePerson(String messagePerson) {
+        this.messagePerson = messagePerson;
+    }
+
+    public Report getReport() {
+        return report;
+    }
+
+    public void setReport(Report report) {
+        this.report = report;
     }
 }

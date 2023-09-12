@@ -7,17 +7,17 @@ import com.nursery.nursery_api.service.SendBotMessageService;
 import org.springframework.stereotype.Component;
 
 @Component
-public class CatMainButton implements NurseryHandler {
+public class DogMainButton implements NurseryHandler {
 
-    public final static String CAT_MESSAGE = "Cat shelter";
+    public final static String DOG_MESSAGE = "Dog shelter";
 
     String[] buttonsName = {"Информация о приюте", "Как забрать животное", "Отослать отчет о животном",
             "Связаться с волонтером", "К главному меню"};
-    String[] callDataForCat = {"-info", "-catAdopt", "-report", "-volunteer", "-main"};
+    String[] callDataForDog = {"-info", "-dogAdopt", "-report", "-volunteer", "-main"};
 
     /**
-     * пользователь делает выбор Кошачьего приюта и его выбор прописывается в мапе Visitors "Кошки" value
-     * создаются кнопки при выборе кнопки "Кошачий приют"
+     * пользователь делает выбор Собачьего приюта и его выбор прописывается в мапе Visitors "Собаки" value
+     * создаются кнопки при выборе кнопки "Собачий приют"
      * @param idChat
      * @param bot
      * @param nurseryService
@@ -25,10 +25,10 @@ public class CatMainButton implements NurseryHandler {
      */
     @Override
     public void handle(Long idChat, TelegramBot bot, NurseryService nurseryService, SendBotMessageService sendBotMessageService) {
-        nurseryService.setNurseryIntoVisitors(idChat, "Кошки");
-        sendBotMessageService.sendMessage(idChat.toString(), CAT_MESSAGE, buttonsName, callDataForCat);
-    }
+        nurseryService.setNurseryIntoVisitors(idChat, "Собаки");
+        sendBotMessageService.sendMessage(idChat.toString(), DOG_MESSAGE, buttonsName, callDataForDog);
 
+    }
     /**
      * сравнивается входящее сообщение от нажатой кнопки с нужным значением кнопки
      * @param inputMessage
@@ -36,6 +36,6 @@ public class CatMainButton implements NurseryHandler {
      */
     @Override
     public boolean supply(String inputMessage) {
-        return inputMessage.equals("-cats");
+        return inputMessage.equals("-dogs");
     }
 }
