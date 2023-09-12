@@ -1,6 +1,6 @@
-package com.nursery.nursery_api.Handler.responseForPerson;
+package com.nursery.nursery_api.handler.responseForPerson;
 
-import com.nursery.nursery_api.Handler.NurseryHandler;
+import com.nursery.nursery_api.handler.NurseryHandler;
 import com.nursery.nursery_api.bot.TelegramBot;
 import com.nursery.nursery_api.service.NurseryDBService;
 import com.nursery.nursery_api.service.SendBotMessageService;
@@ -8,12 +8,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-
 @Component
 @RequiredArgsConstructor
-public class GetAccomodationForBabyPet implements NurseryHandler {
+public class GetInfrastructure implements NurseryHandler {
     /**
-     * вывод текста при нажатии кнопки "Список рекомендаций по обустройству дома для взрослой котенка\щенка"
+     * вывод текста при нажатии кнопки "Режим работы, адрес, Схема проезда"
      * @param idChat
      * @param bot
      * @param nurseryDBService
@@ -26,7 +25,7 @@ public class GetAccomodationForBabyPet implements NurseryHandler {
                     SendMessage.
                             builder().
                             chatId(idChat).
-                            text(nurseryDBService.getHouseRecommendForBabyPet(idChat)).
+                            text(nurseryDBService.getInfrastructure(idChat)).
                             build()
             );
         } catch (TelegramApiException e) {
@@ -39,5 +38,7 @@ public class GetAccomodationForBabyPet implements NurseryHandler {
      * @return
      */
     @Override
-    public boolean supply(String inputMessage) {return inputMessage.equals("-baby");}
+    public boolean supply(String inputMessage) {
+        return inputMessage.equals("-address");
+    }
 }

@@ -1,6 +1,6 @@
-package com.nursery.nursery_api.Handler.responseForPerson;
+package com.nursery.nursery_api.handler.responseForPerson;
 
-import com.nursery.nursery_api.Handler.NurseryHandler;
+import com.nursery.nursery_api.handler.NurseryHandler;
 import com.nursery.nursery_api.bot.TelegramBot;
 import com.nursery.nursery_api.service.NurseryDBService;
 import com.nursery.nursery_api.service.SendBotMessageService;
@@ -11,9 +11,10 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 @Component
 @RequiredArgsConstructor
-public class GetAccomodationForDisabled implements NurseryHandler {
+public class GetAPet implements NurseryHandler {
+
     /**
-     * вывод текста при нажатии кнопки "Список рекомендаций по обустройству дома для взрослой кошки\собаки-инвалида"
+     * вывод текста при нажатии кнопки "Правила знакомства с животным до того, как забрать его из приюта."
      * @param idChat
      * @param bot
      * @param nurseryDBService
@@ -26,7 +27,7 @@ public class GetAccomodationForDisabled implements NurseryHandler {
                     SendMessage.
                             builder().
                             chatId(idChat).
-                            text(nurseryDBService.getHouseRecommendInvalid(idChat)).
+                            text(nurseryDBService.getHowGetPetFromNursery(idChat)).
                             build()
             );
         } catch (TelegramApiException e) {
@@ -39,6 +40,7 @@ public class GetAccomodationForDisabled implements NurseryHandler {
      * @return
      */
     @Override
-    public boolean supply(String inputMessage) {return inputMessage.equals("-disabled");}
-
+    public boolean supply(String inputMessage) {
+        return inputMessage.equals("-knowPet");
+    }
 }

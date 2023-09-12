@@ -1,6 +1,6 @@
 package com.nursery.nursery_api.bot;
 
-import com.nursery.nursery_api.Handler.NurseryHandler;
+import com.nursery.nursery_api.handler.NurseryHandler;
 import com.nursery.nursery_api.service.NurseryDBService;
 import com.nursery.nursery_api.service.SendBotMessageService;
 import com.nursery.nursery_api.service.SendBotMessageServiceImpl;
@@ -36,8 +36,6 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
-
-
         if (update.hasMessage() && update.getMessage().hasText()) {
             if (!update.getMessage().getText().isEmpty()) {
                 String message = "-main";

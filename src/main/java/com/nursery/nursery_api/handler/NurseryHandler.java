@@ -1,4 +1,4 @@
-package com.nursery.nursery_api.Handler;
+package com.nursery.nursery_api.handler;
 
 import com.nursery.nursery_api.bot.TelegramBot;
 import com.nursery.nursery_api.service.NurseryDBService;

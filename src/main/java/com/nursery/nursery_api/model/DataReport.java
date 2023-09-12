@@ -26,6 +26,9 @@ public class DataReport {
     @Column(name = "message_person")
     private String messagePerson;
 
+    @Column(name = "check")
+    private boolean check;
+
     @JsonIgnore
     @ToString.Exclude
     @ManyToOne(fetch = FetchType.EAGER)

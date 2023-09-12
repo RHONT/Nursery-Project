@@ -69,6 +69,7 @@ CREATE TABLE "data_report"
     "date_report"    DATE   NOT NULL,
     "foto" bytea,
     "message_person" varchar,
+    "check" boolean default false,
     CONSTRAINT "data_report_pk" PRIMARY KEY ("date_report")
 );
 

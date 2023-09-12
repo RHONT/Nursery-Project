@@ -1,6 +1,6 @@
-package com.nursery.nursery_api.Handler.responseForPerson;
+package com.nursery.nursery_api.handler.responseForPerson;
 
-import com.nursery.nursery_api.Handler.NurseryHandler;
+import com.nursery.nursery_api.handler.NurseryHandler;
 import com.nursery.nursery_api.bot.TelegramBot;
 import com.nursery.nursery_api.service.NurseryDBService;
 import com.nursery.nursery_api.service.SendBotMessageService;
@@ -11,10 +11,9 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 @Component
 @RequiredArgsConstructor
-public class GetAPet implements NurseryHandler {
-
+public class GetCynologists implements NurseryHandler {
     /**
-     * вывод текста при нажатии кнопки "Правила знакомства с животным до того, как забрать его из приюта."
+     * вывод текста при нажатии кнопки "Рекомендации по проверенным кинологам для дальнейшего обращения к ним"
      * @param idChat
      * @param bot
      * @param nurseryDBService
@@ -27,7 +26,7 @@ public class GetAPet implements NurseryHandler {
                     SendMessage.
                             builder().
                             chatId(idChat).
-                            text(nurseryDBService.getHowGetPetFromNursery(idChat)).
+                            text(nurseryDBService.getСynologistAdviceUp(idChat)).
                             build()
             );
         } catch (TelegramApiException e) {
@@ -41,6 +40,6 @@ public class GetAPet implements NurseryHandler {
      */
     @Override
     public boolean supply(String inputMessage) {
-        return inputMessage.equals("-knowPet");
+        return inputMessage.equals("-cynologistsDog");
     }
 }
