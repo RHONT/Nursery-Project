@@ -40,7 +40,8 @@ CREATE TABLE "nursery"
     "list_document"           varchar, -- нужные документы для опекунства
     "dating_rule"             varchar, -- правило как нужно себя вести при первом знакомстве с животным
     "transport_rule"          varchar, -- правила перевозки животного
-    "house_recommend"         varchar, -- рекомендации по обустройству дома
+    "house_recommend_baby"    varchar, -- рекомендации по обустройству мелких
+    "house_recommend_adult"   varchar,-- рекомендации по обустройству взрослых
     "house_recommend_invalid" varchar, -- рекомендации по обустройству дома для животного с ограничениями
     "cynologist_advice"       varchar, -- первоначальные советы кинологи (для кошек не надо)
     "cynologist_advice_up"    varchar, -- продвинутые советы кинологи (для кошек не надо)
@@ -56,7 +57,7 @@ CREATE TABLE "pet"
     "id_pet"     serial NOT NULL,
     "nickname"   varchar(50),
     "birthday"   date,
-    "foto"       bytea,
+    "foto" bytea,
     "invalid"    bool default 'false',
     "person_id"  bigint,
     CONSTRAINT "pet_pk" PRIMARY KEY ("id_pet")
@@ -66,7 +67,7 @@ CREATE TABLE "data_report"
 (
     "id_report"      bigint NOT NULL,
     "date_report"    DATE   NOT NULL,
-    "foto"           bytea,
+    "foto" bytea,
     "message_person" varchar,
     CONSTRAINT "data_report_pk" PRIMARY KEY ("date_report")
 );
@@ -83,6 +84,10 @@ ALTER TABLE "pet"
 ALTER TABLE "data_report"
     ADD CONSTRAINT "data_report_fk0" FOREIGN KEY ("id_report") REFERENCES "report" ("id_report");
 
+
+insert into nursery(name_nursery, about, infrastructure, accident_prevention, list_document)
+values ('Кошки', 'О приюте', 'Схема проезда', 'Правила поведения', 'Снилс, Паспорт'),
+       ('Собаки', 'О приюте', 'Схема проезда', 'Правила поведения', 'Снилс, Паспорт');
 
 
 

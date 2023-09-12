@@ -1,8 +1,6 @@
 package com.nursery.nursery_api.bot;
 
 import com.nursery.nursery_api.Handler.NurseryHandler;
-import com.nursery.nursery_api.command.CommandContainer;
-import com.nursery.nursery_api.command.ParentCommand;
 import com.nursery.nursery_api.service.NurseryService;
 import com.nursery.nursery_api.service.SendBotMessageService;
 import com.nursery.nursery_api.service.SendBotMessageServiceImpl;
@@ -26,13 +24,13 @@ public class TelegramBot extends TelegramLongPollingBot {
     @Value("${telegram.bot.token}")
     private String token;
 
-    private final CommandContainer commandContainer;
+//    private final CommandContainer commandContainer;
 
     public TelegramBot(NurseryService nurseryService, List<NurseryHandler> nurseryHandlerList) {
         this.nurseryService = nurseryService;
         this.nurseryHandlerList = nurseryHandlerList;
 
-        this.commandContainer = new CommandContainer(new SendBotMessageServiceImpl(this));
+//        this.commandContainer = new CommandContainer(new SendBotMessageServiceImpl(this));
     }
 
 
@@ -42,7 +40,7 @@ public class TelegramBot extends TelegramLongPollingBot {
 
         if (update.hasMessage() && update.getMessage().hasText()) {
             if (!update.getMessage().getText().isEmpty()) {
-                String commandIdentifier = "start";
+                String message = "-main";
                 Long chatIdUser=update.getMessage().getChatId();
                 // если пользователь впервые
                 if (!nurseryService.contain(chatIdUser)) {
@@ -50,14 +48,13 @@ public class TelegramBot extends TelegramLongPollingBot {
                         this.execute(SendMessage.
                                 builder().
                                 chatId(update.getMessage().getChatId()).
-                                text("Привет путник!").
+                                text("Здравствуйте, это питомник домашних животных!").
                                 build());
                     } catch (TelegramApiException e) {
                         e.printStackTrace();
                     }
                 }
-
-                commandContainer.retrieveCommand(commandIdentifier).execute(update);
+                checkMessage(message,chatIdUser);
             }
         } else if (update.hasCallbackQuery()){
             String message = update.getCallbackQuery().getData();
