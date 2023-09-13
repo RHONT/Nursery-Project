@@ -1,6 +1,8 @@
 package com.nursery.nursery_api.bot;
 
 import com.nursery.nursery_api.handler.NurseryHandler;
+import com.nursery.nursery_api.handler.VolunteerHandler;
+import com.nursery.nursery_api.repositiry.VolunteerRepository;
 import com.nursery.nursery_api.service.ConnectService;
 import com.nursery.nursery_api.service.NurseryDBService;
 import com.nursery.nursery_api.service.SendBotMessageService;
@@ -18,20 +20,23 @@ import java.util.List;
 
 public class TelegramBot extends TelegramLongPollingBot {
 
+    private final VolunteerRepository volunteerRepository;
     private final NurseryDBService nurseryDBService;
     private final List<NurseryHandler> nurseryHandlerList;
+    private final List<VolunteerHandler> volunteerHandlers;
     private final SendBotMessageService sendBotMessageService=new SendBotMessageServiceImpl(this);
-    private final ConnectService connectService;
+    private final ConnectService connectService=new ConnectService(this);
 
     @Value("${telegram.bot.token}")
     private String token;
 
 //    private final CommandContainer commandContainer;
 
-    public TelegramBot(NurseryDBService nurseryDBService, List<NurseryHandler> nurseryHandlerList, ConnectService connectService) {
+    public TelegramBot(VolunteerRepository volunteerRepository, NurseryDBService nurseryDBService, List<NurseryHandler> nurseryHandlerList, List<VolunteerHandler> volunteerHandlers) {
+        this.volunteerRepository = volunteerRepository;
         this.nurseryDBService = nurseryDBService;
         this.nurseryHandlerList = nurseryHandlerList;
-        this.connectService = connectService;
+        this.volunteerHandlers = volunteerHandlers;
     }
 
 
@@ -108,6 +113,15 @@ public class TelegramBot extends TelegramLongPollingBot {
                 break;
             }
         }
+
+        for (var element:volunteerHandlers) {
+            if (element.supply(message)) {
+                element.handle(chatId,this, connectService);
+                break;
+            }
+        }
+
+
     }
 }
 
