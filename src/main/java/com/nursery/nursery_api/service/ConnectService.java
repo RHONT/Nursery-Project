@@ -164,6 +164,8 @@ public class ConnectService {
         if (volunteer!=null) {
             // заносим товарища в базу
             volunteerRepository.save(volunteer);
+            // И кидаем его сразу в оперативную память
+            volunteersList.put(volunteer,null);
             return volunteer;
 
         } else throw new NoSuchElementException("Волонтер = null!");
@@ -205,6 +207,12 @@ public class ConnectService {
         }
     }
 
+    /**
+     *
+     * @param chatIdVolunteer
+     * @return
+     * Найти волонтера по его чату из оперативной памяти
+     */
     private Optional<Volunteer> getVolunteerByChatId(Long chatIdVolunteer){
         return volunteersList.
                 keySet().
@@ -213,6 +221,11 @@ public class ConnectService {
                 findFirst();
     }
 
+    /**
+     * @param chatIdPerson чат вопрошающего
+     * @return chat id волонтера
+     * Суть: По чату вопрошающего найти id chat волонтера, который сейчас с ним общаеться
+     */
     public Long getVolunteerChatIdByPersonChatId(Long chatIdPerson){
         return volunteersList.
                 entrySet().
@@ -220,5 +233,19 @@ public class ConnectService {
                 filter(element-> Objects.equals(element.getValue(), chatIdPerson)).
                 mapToLong(element->element.getKey().getVolunteerChatId()).
                 findFirst().orElse(0L);
+    }
+
+    // Для тестов
+
+    public Map<Volunteer, Long> getVolunteersList() {
+        return volunteersList;
+    }
+
+    public Set<Long> getDialogs() {
+        return dialogs;
+    }
+
+    public Queue<PostMessagePerson> getQueueMessage() {
+        return queueMessage;
     }
 }
