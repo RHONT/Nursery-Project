@@ -20,6 +20,9 @@ public class Volunteer {
     @Column(name = "volunteer_id")
     private Long volunteerId;
 
+    @Column(name = "volunteer_chat_id")
+    private Long volunteerChatId;
+
     @Column(name = "volunteer_name")
     private String name;
 

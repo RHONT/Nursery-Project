@@ -94,6 +94,7 @@ values ('Кошки', 'О приюте', 'Схема проезда', 'Прав�
 CREATE TABLE "volunteers"
 (
     "volunteer_id" serial primary key ,
+    "volunteer_chat_id" bigint,
     "volunteer_name" text,
     "phone" text,
     "telegram_name" varchar,
