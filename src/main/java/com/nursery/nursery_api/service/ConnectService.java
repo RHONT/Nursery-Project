@@ -54,6 +54,16 @@ public class ConnectService {
     }
 
     /**
+     *
+     * @param chatId
+     * @return
+     * Проверка пользователя, присутствует ли он в активной беседе.
+     */
+    public boolean containInActiveDialog(Long chatId){
+        return  dialogs.contains(chatId);
+    }
+
+    /**
      * @param postMessagePerson - сообщение от пользователя помещается в очередь.
      *                          В этом объекте есть idChat человека и поле с вопросом.
      */
@@ -61,6 +71,10 @@ public class ConnectService {
         if (postMessagePerson!=null) {
             queueMessage.add(postMessagePerson);
         }
+    }
+
+    public boolean isPerson(Long chatId){
+        return volunteersList.containsValue(chatId);
     }
 
     /**
