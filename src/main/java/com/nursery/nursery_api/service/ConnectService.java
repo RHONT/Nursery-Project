@@ -1,8 +1,13 @@
 package com.nursery.nursery_api.service;
 
+import com.nursery.nursery_api.SomeClasses.PostMessagePerson;
+import com.nursery.nursery_api.bot.TelegramBot;
 import com.nursery.nursery_api.model.Volunteer;
 import com.nursery.nursery_api.repositiry.VolunteerRepository;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import javax.annotation.PostConstruct;
 import java.util.*;
@@ -11,10 +16,12 @@ import java.util.concurrent.ConcurrentSkipListSet;
 
 @Service
 public class ConnectService {
+    private final TelegramBot telegramBot;
 
     private final VolunteerRepository volunteerRepository;
 
-    public ConnectService(VolunteerRepository volunteerRepository) {
+    public ConnectService(TelegramBot telegramBot, VolunteerRepository volunteerRepository) {
+        this.telegramBot = telegramBot;
         this.volunteerRepository = volunteerRepository;
     }
 
@@ -29,17 +36,85 @@ public class ConnectService {
      */
     private final Set<Long> dialogs=new ConcurrentSkipListSet<>();
 
+    /**
+     * Object with id chat Person and message for Volunteer
+     */
+    private final Queue<PostMessagePerson> queueMessage=new ArrayDeque<>();
+
+    /**
+     * Записываем из базы всех волонтеров в оперативную память
+     * Так как у них нет пока собеседника ставим в значение null
+     */
     @PostConstruct
     private void init(){
-        // Записываем из базы всех волонтеров в оперативную память
-        // Так как у них нет пока собеседника ставим в значение null
         List<Volunteer> allVolunteers = volunteerRepository.findAll();
         for (var element:allVolunteers) {
             volunteersList.put(element,null);
         }
     }
 
-    // связываем свободного волонтера с страждущим человеком
+    /**
+     * @param postMessagePerson - сообщение от пользователя помещается в очередь.
+     *                          В этом объекте есть idChat человека и поле с вопросом.
+     */
+    public void addQueueMessage(PostMessagePerson postMessagePerson){
+        if (postMessagePerson!=null) {
+            queueMessage.add(postMessagePerson);
+        }
+    }
+
+    /**
+     * Каждый 5 секунд проверяем есть ли свободные волонтеры и есть ли очередь из вопросов
+     * Если есть то запускаем метод EveryoneWork, который занимает всех свободных волонтеров работой
+     */
+    @Scheduled(initialDelay = 2000, fixedRate = 5000)
+    public void manageVolunteerAndPerson(){
+        if (!queueMessage.isEmpty() && freeVolunteers(volunteersList)) {
+            EveryoneWork(volunteersList,queueMessage);
+        }
+    }
+
+    /**
+     *
+     * @param volunteersList - все волонтеры сидящие в оперативной памяти
+     * @param queueMessage - очередь от вопрошающих
+     * Суть метода - занять всех свободных волонтеров из очереди с вопросами от людей
+     */
+    private void EveryoneWork(Map<Volunteer, Long> volunteersList, Queue<PostMessagePerson> queueMessage) {
+
+        for (Map.Entry<Volunteer,Long> entry:volunteersList.entrySet()) {
+            // если текущий волонтер свободен и если очередь не пуста, запускаем коннект!
+            if (!entry.getKey().isBusy() && queueMessage.peek()!=null) {
+                    PostMessagePerson postMessagePerson=queueMessage.poll();
+                    addToDialogsUser(postMessagePerson.getChatIdPerson());
+
+                    try {
+                        telegramBot.execute(SendMessage.
+                                builder().
+                                chatId(entry.getKey().getVolunteerChatId()).
+                                text(postMessagePerson.getMessage()).
+                                build());
+                    } catch (TelegramApiException e) {
+                        e.printStackTrace();
+                    }
+                    // если условия эти не выполняются, прекращаем цикл
+            } else break;
+        }
+
+    }
+
+    /**
+     *
+     * @param volunteersList - список волонтеров в оперативной памяти
+     * @return - если хотя бы один свободен возвращаем true
+     * Проверяем есть ли свободные волонтеры в оперативной памяти
+     */
+
+    private boolean freeVolunteers(Map<Volunteer, Long> volunteersList) {
+        return volunteersList.keySet().stream().anyMatch(volunteer-> !volunteer.isBusy());
+    }
+
+    // связываем свободного волонтера со страждущим человеком
     public void addToDialogsUser(Long chatId){
         Optional<Volunteer> volunteer = volunteersList.keySet().stream().filter(e -> !e.isBusy()).findFirst();
         if (volunteer.isPresent()) {
@@ -51,6 +126,10 @@ public class ConnectService {
     }
 
     // волонтер пишет "-к", а значит беседу нужно закончить
+
+    /**
+     * @param chatIdVolunteer - чат волонтера, который инициирует завершение беседы
+     */
     public void disconnect(Long chatIdVolunteer){
         Optional<Volunteer> volunteer=getVolunteerByChatId(chatIdVolunteer);
         if (volunteer.isPresent()) {
@@ -132,5 +211,14 @@ public class ConnectService {
                 stream().
                 filter(e-> Objects.equals(e.getVolunteerChatId(), chatIdVolunteer)).
                 findFirst();
+    }
+
+    public Long getVolunteerChatIdByPersonChatId(Long chatIdPerson){
+        return volunteersList.
+                entrySet().
+                stream().
+                filter(element-> Objects.equals(element.getValue(), chatIdPerson)).
+                mapToLong(element->element.getKey().getVolunteerChatId()).
+                findFirst().orElse(0L);
     }
 }
