@@ -2,42 +2,47 @@ package com.nursery.nursery_api.bot;
 
 import com.nursery.nursery_api.handler.NurseryHandler;
 import com.nursery.nursery_api.handler.VolunteerHandler;
-import com.nursery.nursery_api.repositiry.VolunteerRepository;
 import com.nursery.nursery_api.service.ConnectService;
 import com.nursery.nursery_api.service.NurseryDBService;
 import com.nursery.nursery_api.service.SendBotMessageService;
 import com.nursery.nursery_api.service.SendBotMessageServiceImpl;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-
 import java.util.List;
 
 @Component
 
 public class TelegramBot extends TelegramLongPollingBot {
 
-    private final VolunteerRepository volunteerRepository;
+//    private final VolunteerRepository volunteerRepository;
     private final NurseryDBService nurseryDBService;
     private final List<NurseryHandler> nurseryHandlerList;
     private final List<VolunteerHandler> volunteerHandlers;
     private final SendBotMessageService sendBotMessageService=new SendBotMessageServiceImpl(this);
-    private final ConnectService connectService=new ConnectService(this);
+    private final ConnectService connectService;
 
     @Value("${telegram.bot.token}")
     private String token;
 
 //    private final CommandContainer commandContainer;
 
-    public TelegramBot(VolunteerRepository volunteerRepository, NurseryDBService nurseryDBService, List<NurseryHandler> nurseryHandlerList, List<VolunteerHandler> volunteerHandlers) {
-        this.volunteerRepository = volunteerRepository;
+    public TelegramBot(NurseryDBService nurseryDBService, List<NurseryHandler> nurseryHandlerList, List<VolunteerHandler> volunteerHandlers,@Lazy ConnectService connectService) {
+//        this.volunteerRepository = volunteerRepository;
         this.nurseryDBService = nurseryDBService;
         this.nurseryHandlerList = nurseryHandlerList;
         this.volunteerHandlers = volunteerHandlers;
+        this.connectService=connectService;
     }
+
+//    @PostConstruct
+//    private void init(){
+//        connectService.setVolunteerRepository(volunteerRepository);
+//    }
 
 
     @Override

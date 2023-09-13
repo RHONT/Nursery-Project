@@ -25,6 +25,10 @@ public class ConnectService {
         this.volunteerRepository = volunteerRepository;
     }
 
+//    public void setVolunteerRepository(VolunteerRepository volunteerRepository) {
+//        this.volunteerRepository = volunteerRepository;
+//    }
+
     /**
      * key - Volunteer
      * value - chat id human needy
