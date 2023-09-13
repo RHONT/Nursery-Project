@@ -49,7 +49,7 @@ public class ConnectService {
     private void init(){
         List<Volunteer> allVolunteers = volunteerRepository.findAll();
         for (var element:allVolunteers) {
-            volunteersList.put(element,null);
+            volunteersList.put(element,0L);
         }
     }
 
@@ -110,7 +110,8 @@ public class ConnectService {
      * Проверяем есть ли свободные волонтеры в оперативной памяти
      */
 
-    private boolean freeVolunteers(Map<Volunteer, Long> volunteersList) {
+    // поставить private!!!
+    public boolean freeVolunteers(Map<Volunteer, Long> volunteersList) {
         return volunteersList.keySet().stream().anyMatch(volunteer-> !volunteer.isBusy());
     }
 
@@ -165,7 +166,7 @@ public class ConnectService {
             // заносим товарища в базу
             volunteerRepository.save(volunteer);
             // И кидаем его сразу в оперативную память
-            volunteersList.put(volunteer,null);
+            volunteersList.put(volunteer,0L);
             return volunteer;
 
         } else throw new NoSuchElementException("Волонтер = null!");
@@ -247,5 +248,9 @@ public class ConnectService {
 
     public Queue<PostMessagePerson> getQueueMessage() {
         return queueMessage;
+    }
+
+    public void removeAllListVolunteers(){
+        volunteersList.clear();
     }
 }

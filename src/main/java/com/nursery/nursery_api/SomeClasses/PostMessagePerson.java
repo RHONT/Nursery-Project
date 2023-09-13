@@ -4,8 +4,9 @@ public class PostMessagePerson {
     private final Long chatIdPerson;
     private String message;
 
-    public PostMessagePerson(Long chatIdPerson) {
+    public PostMessagePerson(Long chatIdPerson, String messageUser) {
         this.chatIdPerson = chatIdPerson;
+        this.message=messageUser;
     }
 
     public Long getChatIdPerson() {
