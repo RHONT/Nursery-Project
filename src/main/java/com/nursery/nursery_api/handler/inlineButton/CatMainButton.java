@@ -13,7 +13,7 @@ public class CatMainButton implements NurseryHandler {
 
     String[] buttonsName = {"Информация о приюте", "Как забрать животное", "Отослать отчет о животном",
             "Связаться с волонтером", "К главному меню"};
-    String[] callDataForCat = {"rep345234", "-catAdopt", "-report", "-volunteer", "-main"};
+    String[] callDataForCat = {"-about", "-catAdopt", "-report", "-volunteer", "-main"};
 
     /**
      * пользователь делает выбор Кошачьего приюта и его выбор прописывается в мапе Visitors "Кошки" value

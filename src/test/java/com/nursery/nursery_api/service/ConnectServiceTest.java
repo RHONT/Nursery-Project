@@ -118,10 +118,10 @@ class ConnectServiceTest {
 
     @Test
     void hasLeftVolunteer() {
-        when(volunteerRepository.findByTelegramName(anyString())).thenReturn(Optional.of(volunteer1));
+        when(volunteerRepository.findByVolunteerChatId(anyLong())).thenReturn(Optional.of(volunteer1));
         connectService.addNewVolunteer(volunteer1);
         connectService.addNewVolunteer(volunteer2);
-        connectService.hasLeftVolunteer("@Master1");
+        connectService.hasLeftVolunteer(111L);
         assertEquals(1,connectService.getVolunteersList().size());
     }
 

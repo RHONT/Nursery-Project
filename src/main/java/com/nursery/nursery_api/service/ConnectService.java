@@ -160,8 +160,13 @@ public class ConnectService {
         } else throw new NoSuchElementException("В журнале такого волонтера нет!");
     }
 
-    // Если волонтер заканчивает свою смену
-    // он пишет в чат бот "Стоп работа"
+    /**
+     *
+     * @param chatIdVolunteer
+     * Волонтер заканчивает свою смену
+     * он пишет в чат бот "Стоп работа"
+     * Его занятость становиться на true
+     */
     public void disappearanceVolunteer(Long chatIdVolunteer){
         // делаем проверку нет ли волонтера в активной беседе
         // если есть, то чистим ее
@@ -194,10 +199,10 @@ public class ConnectService {
     // например пишет в чат "- Не хочу быть волонтером @GonzaMy"
     // Нужно прописать проверку в телеграмме на строку формата message.starWith("- Не хочу быть волонтером")
     // и вытащить от туда @GonzaMy
-    public Volunteer hasLeftVolunteer(String telegramName){
-        Optional<Volunteer> volunteer=volunteerRepository.findByTelegramName(telegramName);
+    public Volunteer hasLeftVolunteer(Long idChatVolunteer){
+        Optional<Volunteer> volunteer=volunteerRepository.findByVolunteerChatId(idChatVolunteer);
         if (volunteer.isPresent()) {
-            volunteerRepository.deleteByTelegramName(telegramName);
+            volunteerRepository.delete(volunteer.get());
             // чистим общий чат
             disconnect(volunteer.get().getVolunteerChatId());
             // удаляем из мапы
@@ -252,6 +257,12 @@ public class ConnectService {
                 filter(element-> Objects.equals(element.getValue(), chatIdPerson)).
                 mapToLong(element->element.getKey().getVolunteerChatId()).
                 findFirst().orElse(0L);
+    }
+
+    public Long getPersonChatIdByChatIdVolunteer(Long chatIdVolunteer){
+        Volunteer volunteer = volunteersList.keySet().stream().filter(e -> Objects.equals(e.getVolunteerChatId(), chatIdVolunteer)).findFirst().get();
+        return volunteersList.get(volunteer);
+
     }
 
     // Для тестов

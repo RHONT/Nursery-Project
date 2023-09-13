@@ -1,7 +1,9 @@
 package com.nursery.nursery_api.bot;
 
 import com.nursery.nursery_api.handler.NurseryHandler;
+import com.nursery.nursery_api.handler.VolunteerCommandHandler;
 import com.nursery.nursery_api.handler.VolunteerHandler;
+import com.nursery.nursery_api.model.Volunteer;
 import com.nursery.nursery_api.service.ConnectService;
 import com.nursery.nursery_api.service.NurseryDBService;
 import com.nursery.nursery_api.service.SendBotMessageService;
@@ -13,91 +15,80 @@ import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+
 import java.util.List;
 
 @Component
 
 public class TelegramBot extends TelegramLongPollingBot {
 
-//    private final VolunteerRepository volunteerRepository;
     private final NurseryDBService nurseryDBService;
     private final List<NurseryHandler> nurseryHandlerList;
     private final List<VolunteerHandler> volunteerHandlers;
-    private final SendBotMessageService sendBotMessageService=new SendBotMessageServiceImpl(this);
+    private final List<VolunteerCommandHandler> volunteerCommandHandlers;
+    private final SendBotMessageService sendBotMessageService = new SendBotMessageServiceImpl(this);
     private final ConnectService connectService;
 
     @Value("${telegram.bot.token}")
     private String token;
 
-//    private final CommandContainer commandContainer;
-
-    public TelegramBot(NurseryDBService nurseryDBService, List<NurseryHandler> nurseryHandlerList, List<VolunteerHandler> volunteerHandlers,@Lazy ConnectService connectService) {
-//        this.volunteerRepository = volunteerRepository;
+    public TelegramBot(NurseryDBService nurseryDBService,
+                       List<NurseryHandler> nurseryHandlerList,
+                       List<VolunteerHandler> volunteerHandlers,
+                       List<VolunteerCommandHandler> volunteerCommandHandlers,
+                       @Lazy ConnectService connectService) {
         this.nurseryDBService = nurseryDBService;
         this.nurseryHandlerList = nurseryHandlerList;
         this.volunteerHandlers = volunteerHandlers;
-        this.connectService=connectService;
+        this.volunteerCommandHandlers = volunteerCommandHandlers;
+        this.connectService = connectService;
     }
-
-//    @PostConstruct
-//    private void init(){
-//        connectService.setVolunteerRepository(volunteerRepository);
-//    }
-
 
     @Override
     public void onUpdateReceived(Update update) {
         if (update.hasMessage() && update.getMessage().hasText()) {
             if (!update.getMessage().getText().isEmpty()) {
                 String message = "-main";
-                Long chatIdUser=update.getMessage().getChatId();
+                Long chatIdUser = update.getMessage().getChatId();
 
-                if (connectService.containInActiveDialog(chatIdUser)) {
-                    if (connectService.isPerson(chatIdUser)) {
+                if (connectService.containInActiveDialog(chatIdUser)) {   // является ли chat id участником активной беседы?
+                    if (!connectService.isPerson(chatIdUser)) {           // chat id - это волонтер?
+                        String checkedMessage = update.getMessage().getText();
+                        checkVolunteerOperation(checkedMessage, chatIdUser);
+                        return;
+                    }
 
-                        try {
-                            this.execute(SendMessage.
-                                    builder().
-                                    chatId(connectService.getVolunteerChatIdByPersonChatId(chatIdUser)).
-                                    text(update.getMessage().getText()).
-                                    build());
-                        } catch (TelegramApiException e) {
-                            e.printStackTrace();
-                        }
+                    if (connectService.isPerson(chatIdUser)) {    // если chat id вопрошающий, то шлем сообщение волонтеру
+                        sendSimpleText(connectService.getVolunteerChatIdByPersonChatId(chatIdUser), update.getMessage().getText());
 
-                    } else {
-                        try {
-                            this.execute(SendMessage.
-                                    builder().
-                                    chatId(chatIdUser).
-                                    text(update.getMessage().getText()).
-                                    build());
-                        } catch (TelegramApiException e) {
-                            e.printStackTrace();
-                        }
+                    } else {                                        // если нет, то наоборот
+                        sendSimpleText(connectService.getPersonChatIdByChatIdVolunteer(chatIdUser), update.getMessage().getText());
                     }
 
                 } else {
 
                     // если пользователь впервые
                     if (!nurseryDBService.contain(chatIdUser)) {
-                        try {
-                            this.execute(SendMessage.
-                                    builder().
-                                    chatId(update.getMessage().getChatId()).
-                                    text("Здравствуйте, это питомник домашних животных!").
-                                    build());
-                        } catch (TelegramApiException e) {
-                            e.printStackTrace();
-                        }
+                        sendSimpleText(update.getMessage().getChatId(), "Здравствуйте, это питомник домашних животных!");
                     }
-                    checkMessage(message,chatIdUser);
+                    checkMessage(message, chatIdUser);       // При любой непонятной команде выводим главное меню чата
+                }
+                // Регистрация волонтера. Тут же id_chat попадает в базу
+                if (update.getMessage().getText().startsWith("Хочу стать волонтером")) {
+                    Volunteer volunteer = new Volunteer();
+                    volunteer.setBusy(false);
+                    volunteer.setVolunteerChatId(chatIdUser);
+                    connectService.addNewVolunteer(volunteer);
+                }
+                if (update.getMessage().getText().startsWith("Я ухожу")) {
+                    connectService.hasLeftVolunteer(chatIdUser);
                 }
             }
-        } else if (update.hasCallbackQuery()){
+            // проверяем ответы от кнопок
+        } else if (update.hasCallbackQuery()) {
             String message = update.getCallbackQuery().getData();
-            Long idChat=update.getCallbackQuery().getMessage().getChatId();
-            checkMessage(message,idChat);
+            Long idChat = update.getCallbackQuery().getMessage().getChatId();
+            checkMessage(message, idChat);
         }
     }
 
@@ -111,21 +102,53 @@ public class TelegramBot extends TelegramLongPollingBot {
         return token;
     }
 
-    private void checkMessage(String message, Long chatId){
-        for (var element:nurseryHandlerList) {
+    /**
+     * @param message - строка берется из CallbackQuery. Это значение, что лежит "под кнопкой"
+     * @param chatId
+     */
+    private void checkMessage(String message, Long chatId) {
+        for (var element : nurseryHandlerList) {
             if (element.supply(message)) {
-                element.handle(chatId,this, nurseryDBService,sendBotMessageService);
+                element.handle(chatId, this, nurseryDBService, sendBotMessageService);
                 break;
             }
         }
 
-        for (var element:volunteerHandlers) {
+        for (var element : volunteerHandlers) {
             if (element.supply(message)) {
-                element.handle(chatId,this, connectService);
+                element.handle(chatId, this, connectService);
                 break;
             }
         }
+    }
 
+    /**
+     * @param message         - строк приходит от волонтера
+     * @param chatIdVolunteer Проверяем является ли эта строка командой.
+     */
+    private void checkVolunteerOperation(String message, Long chatIdVolunteer) {
+        for (var element : volunteerCommandHandlers) {
+            if (element.supply(message)) {
+                element.handle(chatIdVolunteer, this, connectService);
+                break;
+            }
+        }
+    }
+
+    /**
+     * @param chatId
+     * @param message Отправляем стандартное сообщение через бот пользователю
+     */
+    private void sendSimpleText(Long chatId, String message) {
+        try {
+            this.execute(SendMessage.
+                    builder().
+                    chatId(chatId).
+                    text(message).
+                    build());
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
 
     }
 }
