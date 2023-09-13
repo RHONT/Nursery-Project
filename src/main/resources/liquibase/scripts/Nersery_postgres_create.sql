@@ -98,7 +98,7 @@ CREATE TABLE "volunteers"
     "volunteer_name" text,
     "phone" text,
     "telegram_name" varchar,
-    "free" boolean
+    "busy" boolean default true
 )
 
 

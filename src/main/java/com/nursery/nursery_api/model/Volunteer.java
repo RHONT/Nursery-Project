@@ -32,15 +32,15 @@ public class Volunteer {
     @Column(name = "telegram_name")
     private String telegramName;
 
-    @Column(name = "free")
-    private boolean free;
+    @Column(name = "busy")
+    private boolean busy;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Volunteer)) return false;
         Volunteer volunteer = (Volunteer) o;
-        return free == volunteer.free && Objects.equals(volunteerId, volunteer.volunteerId) && Objects.equals(name, volunteer.name) && Objects.equals(phone, volunteer.phone) && Objects.equals(telegramName, volunteer.telegramName);
+        return busy == volunteer.busy && Objects.equals(volunteerId, volunteer.volunteerId) && Objects.equals(name, volunteer.name) && Objects.equals(phone, volunteer.phone) && Objects.equals(telegramName, volunteer.telegramName);
     }
 
     @Override
