@@ -1,6 +1,6 @@
 package com.nursery.nursery_api.controllers;
 
-import com.nursery.nursery_api.model.Nursery;
+
 import com.nursery.nursery_api.model.Person;
 import com.nursery.nursery_api.service.PersonService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -12,7 +12,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
 @RequestMapping(path = "/nursery_app/admin_functions/persons")

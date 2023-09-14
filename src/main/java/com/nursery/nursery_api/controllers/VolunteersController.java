@@ -1,6 +1,5 @@
 package com.nursery.nursery_api.controllers;
 
-import com.nursery.nursery_api.model.Pet;
 import com.nursery.nursery_api.model.Volunteer;
 import com.nursery.nursery_api.service.VolunteerService;
 import io.swagger.v3.oas.annotations.Operation;

@@ -1,6 +1,6 @@
 package com.nursery.nursery_api.controllers;
 
-import com.nursery.nursery_api.model.Person;
+
 import com.nursery.nursery_api.model.Pet;
 import com.nursery.nursery_api.service.PetService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -8,7 +8,7 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import liquibase.pro.packaged.R;
+
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

@@ -1,28 +1,26 @@
 package com.nursery.nursery_api.service;
 
 import com.nursery.nursery_api.model.Nursery;
-import com.nursery.nursery_api.model.Visitors;
 import com.nursery.nursery_api.repositiry.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
 
 
 @Service
 public class NurseryService {
-    private NurseryRepository nurseryRepository;
+    private final NurseryRepository nurseryRepository;
+
+
+    Logger logger = LoggerFactory.getLogger(NurseryService.class);
 
     public NurseryService(NurseryRepository nurseryRepository) {
         this.nurseryRepository = nurseryRepository;
     }
-    Logger logger = LoggerFactory.getLogger(NurseryService.class);
 
     /** Method that realise adding new object Nursery
      * Use repository method {@link JpaRepository#save(Object)}

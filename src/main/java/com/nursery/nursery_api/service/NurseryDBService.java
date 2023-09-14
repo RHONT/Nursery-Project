@@ -2,15 +2,12 @@ package com.nursery.nursery_api.service;
 
 import com.nursery.nursery_api.model.Nursery;
 import com.nursery.nursery_api.model.Visitors;
-import com.nursery.nursery_api.model.Volunteer;
 import com.nursery.nursery_api.repositiry.*;
 import org.springframework.stereotype.Service;
-
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentSkipListSet;
+
 
 
 @Service
