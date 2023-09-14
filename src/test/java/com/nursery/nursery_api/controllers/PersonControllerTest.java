@@ -52,117 +52,101 @@ public class PersonControllerTest {
         MockitoAnnotations.initMocks(this);
     }
 
-//    @Test
-//    public void addPersonToRepository () throws Exception{
-//        final String name = "Gregorio";
-//        final String phone = "123456789";
-//        final Long id = 888L;
-//        final Long chatId = 987654L;
-//
-//        JSONObject personObject = new JSONObject();
-//        personObject.put("name", name);
-//        personObject.put("phone",phone);
-//
-//        Person person = new Person();
-//        person.setIdPerson(id);
-//        person.setName(name);
-//        person.setPhone(phone);
-//        person.setIdChat(chatId);
-//
-//        when(personRepository.save(any(Person.class))).thenReturn(person);
-//
-//        mockMvc.perform(MockMvcRequestBuilders
-//                .post("/nursery_app/admin_functions/persons/add_person")
-//                .content(personObject.toString())
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .accept(MediaType.APPLICATION_JSON))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$.id_person").value(id))
-//                .andExpect(jsonPath("$.name").value(name))
-//                .andExpect(jsonPath("$.phone").value(phone))
-//                .andExpect(jsonPath("$.id_chat").value(chatId));
-//
-//    }
-//
-//    @Test
-//    public void testFindPersonByName() throws JSONException {
-//        final String name = "Gregorio";
-//        final String phone = "123456789";
-//        final Long id = 888L;
-//        final Long chatId = 987654L;
-//
-//        Person person = new Person();
-//        person.setIdPerson(id);
-//        person.setName(name);
-//        person.setPhone(phone);
-//        person.setIdChat(chatId);
-//
-//        personRepository.save(person);
-//
-//        when(personService.findPersonByName(name)).thenReturn(person);
-//
-//        ResponseEntity<Object> response = personController.findPerson(name, phone);
-//
-//
-//        verify(personService, times(1)).findPersonByName(name);
-//        verify(personService, times(1)).findPersonByPhone(phone);
-//        verify(personService, never()).findPersonByPhone(anyString());
-//        verify(personService, never()).findPersonByName(anyString());
-//        verify(personService, never()).findAllPersons();
-//        assertSame(response.getStatusCode(), HttpStatus.OK);
-//        assertSame(response.getBody(), person);
-//    }
-//
-//    @Test
-//    public void testEditPerson() throws JSONException {
-//
-//        final String name = "Gregorio";
-//        final String phone = "123456789";
-//        final Long id = 888L;
-//        final Long chatId = 987654L;
-//
-//        JSONObject personObject = new JSONObject();
-//        personObject.put("name", name);
-//        personObject.put("phone",phone);
-//
-//        Person person = new Person();
-//        person.setIdPerson(id);
-//        person.setName(name);
-//        person.setPhone(phone);
-//        person.setIdChat(chatId);
-//
-//        when(personService.editPerson(person)).thenReturn(person);
-//
-//        ResponseEntity<Person> response = personController.editPerson(person);
-//
-//        verify(personService, times(1)).editPerson(person);
-//        assertSame(response.getStatusCode(), HttpStatus.OK);
-//        assertSame(response.getBody(), person);
-//    }
-//
-//    @Test
-//    public void testDeletePersonByName() throws JSONException {
-//        final String name = "Gregorio";
-//        final String phone = "123456789";
-//        final Long id = 888L;
-//        final Long chatId = 987654L;
-//
-//        JSONObject personObject = new JSONObject();
-//        personObject.put("name", name);
-//        personObject.put("phone",phone);
-//
-//        Person person = new Person();
-//        person.setIdPerson(id);
-//        person.setName(name);
-//        person.setPhone(phone);
-//        person.setIdChat(chatId);
-//
-//        when(personService.deletePersonByName(name)).thenReturn(null);
-//
-//        ResponseEntity<Person> response = personController.deletePerson(name);
-//
-//        verify(personService, times(1)).deletePersonByName(name);
-//        assertSame(response.getStatusCode(), HttpStatus.OK);
-//        assertNotNull(response.getBody());
-//    }
+    private final static Person personGreg = new Person(888L,987654L,"Gregorio","123456789");
+
+/*    @Test
+    public void addPersonToRepository () throws Exception{
+
+        JSONObject personObject = new JSONObject();
+        personObject.put("name", personGreg.getName());
+        personObject.put("phone",personGreg.getPhone());
+
+
+        when(personRepository.save(any(Person.class))).thenReturn(personGreg);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .post("/nursery_app/admin_functions/persons/add_person")
+                .content(personObject.toString())
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id_person").value(personGreg.getIdPerson()))
+                .andExpect(jsonPath("$.name").value(personGreg.getName()))
+                .andExpect(jsonPath("$.phone").value(personGreg.getPhone()))
+                .andExpect(jsonPath("$.id_chat").value(personGreg.getIdChat()));
+
+    }*/
+
+/*    @Test
+    public void testFindPersonByName() throws JSONException {
+       final String name = "Gregorio";
+        final String phone = "123456789";
+        final Long id = 888L;
+        final Long chatId = 987654L;
+
+        Person person = new Person();
+        person.setIdPerson(id);
+        person.setName(name);
+        person.setPhone(phone);
+        person.setIdChat(chatId);
+
+        personRepository.save(person);
+
+        when(personService.findPersonByName(name)).thenReturn(person);
+
+        ResponseEntity<Object> response = personController.findPerson(name, phone);
+
+
+        verify(personService, times(1)).findPersonByName(name);
+        verify(personService, times(1)).findPersonByPhone(phone);
+        verify(personService, never()).findPersonByPhone(anyString());
+        verify(personService, never()).findPersonByName(anyString());
+        verify(personService, never()).findAllPersons();
+        assertSame(response.getStatusCode(), HttpStatus.OK);
+        assertSame(response.getBody(), person);
+    }*/
+
+/*    @Test
+    public void testEditPerson() throws JSONException {
+
+
+        JSONObject personObject = new JSONObject();
+        personObject.put("name", personGreg.getName());
+        personObject.put("phone",personGreg.getPhone());
+
+
+        when(personService.editPerson(personGreg)).thenReturn(personGreg);
+
+        ResponseEntity<Person> response = personController.editPerson(personGreg);
+
+        verify(personService, times(1)).editPerson(personGreg);
+        assertSame(response.getStatusCode(), HttpStatus.OK);
+        assertSame(response.getBody(), personGreg);
+    }*/
+
+/*    @Test
+    public void testDeletePersonByName() throws JSONException {
+        final String name = "Gregorio";
+        final String phone = "123456789";
+        final Long id = 888L;
+        final Long chatId = 987654L;
+
+        JSONObject personObject = new JSONObject();
+        personObject.put("name", name);
+        personObject.put("phone",phone);
+
+        Person person = new Person();
+        person.setIdPerson(id);
+        person.setName(name);
+        person.setPhone(phone);
+        person.setIdChat(chatId);
+
+        when(personService.deletePersonByName(name)).thenReturn(null);
+
+        ResponseEntity<Person> response = personController.deletePerson(name);
+
+        verify(personService, times(1)).deletePersonByName(name);
+        assertSame(response.getStatusCode(), HttpStatus.OK);
+        assertSame(response.getBody(), personGreg);
+    }*/
 }

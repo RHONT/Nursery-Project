@@ -71,5 +71,15 @@ public class NurseryControllerTest {
 
     }*/
 
+    @Test
+    public void deleteNurseryByName () throws JSONException {
+
+        JSONObject nurseryObject = new JSONObject();
+        nurseryObject.put("name_nursery",bestNursery.getNameNursery());
+
+        when(nurseryRepository.deleteNurseryByNameNursery(bestNursery.getNameNursery())).thenReturn(bestNursery);
+
+    }
+
 
 }
