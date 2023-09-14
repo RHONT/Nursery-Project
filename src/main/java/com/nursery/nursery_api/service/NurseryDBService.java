@@ -25,23 +25,13 @@ public class NurseryDBService {
      * value - nursery
      */
     private final Map<String, Nursery> nurseryMap=new HashMap<>();
-
-    private final DataReportRepository dataReportRepository;
     private final NurseryRepository nurseryRepository;
-    private final PersonRepository personRepository;
-    private final PetRepository petRepository;
-    private final ReportRepository reportRepository;
     private final VisitorsRepository visitorsRepository;
 
 
-    public NurseryDBService(DataReportRepository dataReportRepository, NurseryRepository nurseryRepository, PersonRepository personRepository, PetRepository petRepository, ReportRepository reportRepository, VisitorsRepository visitorsRepository, VolunteerRepository volunteerRepository) {
-        this.dataReportRepository = dataReportRepository;
+    public NurseryDBService(NurseryRepository nurseryRepository, VisitorsRepository visitorsRepository) {
         this.nurseryRepository = nurseryRepository;
-        this.personRepository = personRepository;
-        this.petRepository = petRepository;
-        this.reportRepository = reportRepository;
         this.visitorsRepository = visitorsRepository;
-
     }
 
     // Заводим для кэша мапу с посетителями. Она скудная, лишний раз не будем дергать БД,
