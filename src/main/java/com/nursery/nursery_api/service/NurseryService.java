@@ -66,14 +66,14 @@ public class NurseryService {
     /** Method that realise deleting of Nursery object by his name
      *
      * @param nurseryName
-     * @return deleted object Nursary
+     * @return deleted object Nursery
      */
     public Nursery deleteNurseryByName(String nurseryName){
         logger.info("Вызван метод deleteNurseryByName");
         return nurseryRepository.deleteNurseryByNameNursery(nurseryName);
     }
 
-    /** Method that realise editing of Nursary object.
+    /** Method that realise editing of Nursery object.
      *
      * @param nursery
      * @return new Nursary object
