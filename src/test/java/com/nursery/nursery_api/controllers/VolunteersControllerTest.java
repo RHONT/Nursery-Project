@@ -70,5 +70,14 @@ class VolunteersControllerTest {
 
     @Test
     void deleteVolunteerByName() {
+
+
+        when(volunteerRepository.deleteVolunteerByName(volunteer2.getName())).thenReturn(volunteer2);
+
+        volunteerRepository.deleteVolunteerByName(volunteer2.getName());
+
+
+
+
     }
 }
