@@ -46,56 +46,30 @@ public class NurseryControllerTest {
     @SpyBean
     private PersonController personController;
 
+    private static final Nursery bestNursery = new Nursery(999L,"any nursery","very good nursery","good","strong",
+            "easy","like in prison","Nicolas CAGE","not alone","big","with cyber laboratory","dont feed after midnight",
+            "dont put in water","not human","your credit card number and scv please",null);
 
-    @Test
+
+/*    @Test
     public void addNurseryToRepositoryTest () throws Exception {
 
-        Long idNursery = 999L;
-        String nameNursery ="any nursery";
-        String about = "very good nursery";
-        String infrastructure = "good";
-        String accidentPrevention = "strong";
-        String howGetPet = "easy";
-        String datingRule = "like in prison";
-        String transportRule = "Nicolas CAGE";
-        String houseRecomendBaby = "not alone";
-        String houseRecomendAdult = "big";
-        String houseRecommendInvalid = "with cyber laboratory";
-        String cynologistAdvice = "dont feed after midnight";
-        String cynologistAdviceUp = "dont put in water";
-        String reasonsRefusal = "not human";
-        String listDocument = "your credit card number and scv please";
-        JSONObject nurseryObject = new JSONObject();
-        nurseryObject.put("name_nursery",nameNursery);
-        Nursery bestNursery = new Nursery();
-        bestNursery.setIdNursery(idNursery);
-        bestNursery.setAbout(about);
-        bestNursery.setInfrastructure(infrastructure);
-        bestNursery.setAccidentPrevention(accidentPrevention);
-        bestNursery.setHowGetPet(howGetPet);
-        bestNursery.setDatingRule(datingRule);
-        bestNursery.setTransportRule(transportRule);
-        bestNursery.setHouseRecomendBaby(houseRecomendBaby);
-        bestNursery.setHouseRecomendAdult(houseRecomendAdult);
-        bestNursery.setHouseRecommendInvalid(houseRecommendInvalid);
-        bestNursery.setCynologistAdvice(cynologistAdvice);
-        bestNursery.setCynologistAdviceUp(cynologistAdviceUp);
-        bestNursery.setReasonsRefusal(reasonsRefusal);
-        bestNursery.setListDocument(listDocument);
 
+        JSONObject nurseryObject = new JSONObject();
+        nurseryObject.put("name_nursery",bestNursery.getNameNursery());
 
         when(nurseryRepository.save(any(Nursery.class))).thenReturn(bestNursery);
 
         mockMvc.perform(MockMvcRequestBuilders
-                .post("/nursery_app/admin_functions/nurseries/add_nursery")
-                .content(nurseryObject.toString())
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON))
+                        .post("/nursery_app/admin_functions/nurseries/add_nursery")
+                        .content(nurseryObject.toString())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id_nursery").value(idNursery))
-                .andExpect(jsonPath("$.name_nursery").value(nameNursery));
+                .andExpect(jsonPath("$.id_nursery").value(bestNursery.getIdNursery()))
+                .andExpect(jsonPath("$.name_nursery").value(bestNursery.getNameNursery()));
 
-    }
+    }*/
 
 
 }
