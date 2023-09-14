@@ -1,18 +1,12 @@
 package com.nursery.nursery_api.service;
 
-import com.nursery.nursery_api.model.Visitors;
+import com.nursery.nursery_api.model.Nursery;
 import com.nursery.nursery_api.repositiry.*;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.junit.jupiter.api.Test;
-
-import java.util.ArrayList;
-import java.util.List;
-
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
@@ -23,38 +17,67 @@ public class NurseryDBServiceTest {
 
     @Mock
     private NurseryRepository nurseryRepository;
-    @Mock
-    private VisitorsRepository visitorsRepository;
+
     @InjectMocks
     private NurseryDBService nurseryDBService;
 
-    List<Visitors> listFromDBVisitors = new ArrayList<>();
+    private final Nursery nurseryTest = Nursery.builder().
+            idNursery(1L).
+            nameNursery("Кошки").
+            listDocument("Паспорт").about("О приюте").
+            infrastructure("Инфраструктура").
+            howGetPet("Забрать").
+            accidentPrevention("Правила нахождения").
+            reasonsRefusal("Причина отказа").
+            transportRule("Правила транспортировки")
+            .build();
 
-
-    @BeforeEach
-    public void setUp(){
-        Visitors visitor = new Visitors();
-        visitor.setNameNursery("test");
-        visitor.setChatId(1L);
-        listFromDBVisitors.add(visitor);
-    }
     @Test
-    void containTest1(){
-//        when(visitorsRepository.findAll()).thenReturn(listFromDBVisitors);
-
+    void containTestReturnTrue() {
         nurseryDBService.contain(1L);
         boolean expected = true;
         boolean actual = nurseryDBService.contain(1L);
-
         assertEquals(expected, actual);
     }
 
     @Test
-    void containTest2(){
-
+    void containTestReturnFalse() {
         boolean expected = false;
         boolean actual = nurseryDBService.contain(2L);
-
         assertEquals(expected, actual);
     }
+
+    @Test
+    void getMeAboutNursery() {
+        nurseryDBService.contain(111L);
+        when(nurseryRepository.findNurseryByNameNursery("Кошки")).thenReturn(nurseryTest);
+        nurseryDBService.setNurseryIntoVisitors(111L, "Кошки");
+
+        String actual = nurseryDBService.getMeAboutNursery(111L);
+        String expected = "О приюте";
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void getInfrastructure() {
+        nurseryDBService.contain(111L);
+        when(nurseryRepository.findNurseryByNameNursery("Кошки")).thenReturn(nurseryTest);
+        nurseryDBService.setNurseryIntoVisitors(111L, "Кошки");
+
+        String actual = nurseryDBService.getInfrastructure(111L);
+        String expected = "Инфраструктура";
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void getDocument() {
+        nurseryDBService.contain(111L);
+        when(nurseryRepository.findNurseryByNameNursery("Кошки")).thenReturn(nurseryTest);
+        nurseryDBService.setNurseryIntoVisitors(111L, "Кошки");
+
+        String actual = nurseryDBService.getDocument(111L);
+        String expected = "Паспорт";
+        assertEquals(expected, actual);
+    }
+
 }
