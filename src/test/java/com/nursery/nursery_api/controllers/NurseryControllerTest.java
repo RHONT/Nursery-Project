@@ -87,7 +87,7 @@ public class NurseryControllerTest {
         when(nurseryRepository.save(any(Nursery.class))).thenReturn(bestNursery);
 
         mockMvc.perform(MockMvcRequestBuilders
-                .post("/add_nursery")
+                .post("/nursery_app/admin_functions/nurseries/add_nursery")
                 .content(nurseryObject.toString())
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))

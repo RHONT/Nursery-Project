@@ -11,6 +11,11 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.time.LocalDate;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+
 @WebMvcTest
 public class PetControllerTest {
 
@@ -26,11 +31,18 @@ public class PetControllerTest {
     @SpyBean
     private PetController petController;
 
-    private static final Pet pet1 = new Pet(null ,123L , "Bob", 2,null,false,null);
+    private static final LocalDate age = LocalDate.of(2022,8,15);
+
+    private static final Pet pet1 = new Pet(null ,123L , "Bob", age ,null,false,null);
 
 
     @Test
     void addPet() {
+
+        when(petRepository.save(any(Pet.class))).thenReturn(pet1);
+
+
+
     }
 
     @Test
