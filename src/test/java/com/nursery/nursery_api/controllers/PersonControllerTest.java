@@ -72,7 +72,7 @@ public class PersonControllerTest {
         when(personRepository.save(any(Person.class))).thenReturn(person);
 
         mockMvc.perform(MockMvcRequestBuilders
-                .post("/add_person")
+                .post("/nursery_app/admin_functions/persons/add_person")
                 .content(personObject.toString())
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
