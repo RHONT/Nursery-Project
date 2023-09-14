@@ -10,9 +10,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.nursery.nursery_api.model.Nursery;
 import com.nursery.nursery_api.repositiry.NurseryRepository;
 import com.nursery.nursery_api.service.NurseryService;
+import lombok.SneakyThrows;
 import org.assertj.core.error.OptionalShouldBePresent;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -44,8 +46,10 @@ public class NurseryControllerTest {
     @SpyBean
     private PersonController personController;
 
+
     @Test
     public void addNurseryToRepositoryTest () throws Exception {
+
         Long idNursery = 999L;
         String nameNursery ="any nursery";
         String about = "very good nursery";
@@ -79,6 +83,7 @@ public class NurseryControllerTest {
         bestNursery.setReasonsRefusal(reasonsRefusal);
         bestNursery.setListDocument(listDocument);
 
+
         when(nurseryRepository.save(any(Nursery.class))).thenReturn(bestNursery);
 
         mockMvc.perform(MockMvcRequestBuilders
@@ -91,4 +96,6 @@ public class NurseryControllerTest {
                 .andExpect(jsonPath("$.name_nursery").value(nameNursery));
 
     }
+
+
 }

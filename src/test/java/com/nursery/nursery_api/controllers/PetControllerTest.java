@@ -1,5 +1,6 @@
 package com.nursery.nursery_api.controllers;
 
+import com.nursery.nursery_api.model.Pet;
 import com.nursery.nursery_api.repositiry.PersonRepository;
 import com.nursery.nursery_api.repositiry.PetRepository;
 import com.nursery.nursery_api.service.PetService;
@@ -25,10 +26,30 @@ public class PetControllerTest {
     @SpyBean
     private PetController petController;
 
+    private static final Pet pet1 = new Pet(null ,123L , "Bob", 2,null,false,null);
+
+
     @Test
-    public void addPetToRepository(){
-
-
+    void addPet() {
     }
 
+    @Test
+    void findInvalidPet() {
+    }
+
+    @Test
+    void findHealthyPets() {
+    }
+
+    @Test
+    void findPet() {
+    }
+
+    @Test
+    void editPet() {
+    }
+
+    @Test
+    void deletePetByName() {
+    }
 }
