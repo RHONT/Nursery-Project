@@ -4,12 +4,9 @@ package com.nursery.nursery_api.controllers;
 import com.nursery.nursery_api.model.Volunteer;
 import com.nursery.nursery_api.repositiry.VolunteerRepository;
 import com.nursery.nursery_api.service.VolunteerService;
-import lombok.SneakyThrows;
 import net.minidev.json.JSONObject;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,7 +15,6 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -58,24 +54,57 @@ class VolunteersControllerTest {
                 .andExpect(jsonPath("$.name").value(volunteer1.getName()));
     }
 
-//    @Test
-//    void findVolunteer() {
-//    }
-//
-//    @Test
-//    void editVolunteer() {
-//    }
+    @Test
+    void findVolunteer() throws Exception {
 
-//    @Test
-//    void deleteVolunteerByName() {
-//
-//
-//        when(volunteerRepository.deleteVolunteerByName(volunteer2.getName())).thenReturn(volunteer2);
-//
-//        volunteerRepository.deleteVolunteerByName(volunteer2.getName());
-//
-//
-//
-//
-//    }
+        JSONObject volunteerObject = new JSONObject();
+        volunteerObject.put("volunteer_name",volunteer1.getName());
+
+        when(volunteerRepository.findByName(any(String.class))).thenReturn(volunteer1);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/nursery_app/admin_functions/volunteers/find_volunteer?name=Иван")
+                        .content(volunteerObject.toString())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value(volunteer1.getName()));
+    }
+
+    @Test
+    void editVolunteer() throws Exception {
+
+        JSONObject volunteerObject = new JSONObject();
+        volunteerObject.put("volunteer_name",volunteer1.getName());
+
+        when(volunteerRepository.save(any(Volunteer.class))).thenReturn(volunteer1);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .put("/nursery_app/admin_functions/volunteers/edit_volunteer")
+                        .content(volunteerObject.toString())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value(volunteer1.getName()));
+    }
+
+    @Test
+    void deleteVolunteerByName() throws Exception {
+
+        JSONObject volunteerObject = new JSONObject();
+        volunteerObject.put("volunteer_name",volunteer2.getName());
+
+        when(volunteerRepository.deleteVolunteerByName(volunteer2.getName())).thenReturn(volunteer2);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .delete("/nursery_app/admin_functions/volunteers/delete_volunteer_by_name?name=Марья")
+                        .content(volunteerObject.toString())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value(volunteer2.getName()));
+
+
+
+    }
 }
