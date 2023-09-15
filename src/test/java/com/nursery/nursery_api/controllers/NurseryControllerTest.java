@@ -64,7 +64,7 @@ public class NurseryControllerTest {
 
 
     @Test
-    public void addNurseryToRepositoryTest () throws Exception {
+    public void createNursery () throws Exception {
 
 
         JSONObject nurseryObject = new JSONObject();
@@ -83,15 +83,17 @@ public class NurseryControllerTest {
 
     }
 
-//    @Test
-//    public void deleteNurseryByName () throws JSONException {
-//
-//        JSONObject nurseryObject = new JSONObject();
-//        nurseryObject.put("name_nursery",bestNursery.getNameNursery());
-//
-//        when(nurseryRepository.deleteNurseryByNameNursery(bestNursery.getNameNursery())).thenReturn(bestNursery);
-//
-//    }
+    @Test
+    void findNursery() {
+    }
+
+    @Test
+    void editNursery() {
+    }
+
+    @Test
+    void deleteNurseryByName() {
+    }
 
 
 }
