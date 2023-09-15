@@ -1,46 +1,50 @@
-//package com.nursery.nursery_api.controllers;
-//
-//import com.nursery.nursery_api.model.Pet;
-//import com.nursery.nursery_api.repositiry.PersonRepository;
-//import com.nursery.nursery_api.repositiry.PetRepository;
-//import com.nursery.nursery_api.service.PetService;
-//import lombok.SneakyThrows;
-//import net.minidev.json.JSONObject;
-//import org.junit.jupiter.api.Test;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-//import org.springframework.boot.test.mock.mockito.MockBean;
-//import org.springframework.boot.test.mock.mockito.SpyBean;
-//import org.springframework.http.MediaType;
-//import org.springframework.test.web.servlet.MockMvc;
-//import org.springframework.test.web.servlet.ResultMatcher;
-//import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-//
-//import java.time.LocalDate;
-//
-//import static org.mockito.ArgumentMatchers.any;
-//import static org.mockito.Mockito.when;
-//import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-//import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-//
-//@WebMvcTest
-//public class PetControllerTest {
-//
-//    @Autowired
-//    private MockMvc mockMvc;
-//
-//    @MockBean
-//    private PetRepository petRepository;
-//
-//    @MockBean
-//    private PetService petService;
-//
-//    @SpyBean
-//    private PetController petController;
-//
-//    private static final LocalDate age = LocalDate.of(2022,8,15);
-//
-//    private static final Pet pet1 = new Pet(null ,123L , "Bob", age ,null,false,null);
+package com.nursery.nursery_api.controllers;
+
+import com.nursery.nursery_api.model.Nursery;
+import com.nursery.nursery_api.model.Pet;
+import com.nursery.nursery_api.repositiry.PersonRepository;
+import com.nursery.nursery_api.repositiry.PetRepository;
+import com.nursery.nursery_api.service.PetService;
+import lombok.SneakyThrows;
+import org.json.JSONObject;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultMatcher;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+
+import java.time.LocalDate;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+@AutoConfigureMockMvc
+@SpringBootTest
+public class PetControllerTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @MockBean
+    private PetRepository petRepository;
+
+    @MockBean
+    private PetService petService;
+
+    @SpyBean
+    private PetController petController;
+
+    private static final LocalDate age = LocalDate.of(2022,8,15);
+
+    private static final Pet pet1 = new Pet(null ,123L , "Bob", age ,null,false,null);
 //
 //
 ///*    @SneakyThrows
@@ -74,11 +78,31 @@
 //    void findPet() {
 //    }
 //
-//    @Test
-//    void editPet() {
-//    }
-//
-//    @Test
-//    void deletePetByName() {
-//    }
-//}
+    @Test
+    void editPet() throws Exception {
+
+    org.json.JSONObject nurseryObject = new JSONObject();
+    nurseryObject.put("nickname", pet1.getNickname());
+
+    when(petRepository.save(any(Pet.class))).thenReturn(pet1);
+
+    mockMvc.perform(MockMvcRequestBuilders
+                    .put("/nursery_app/admin_functions/pets/edit_pet")
+                    .content(nurseryObject.toString())
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.nickname").value("Bob"));
+    }
+
+
+
+    @Test
+    void deletePetByName() throws Exception {
+            when(petRepository.deletePetByNickname(any(String.class))).thenReturn(pet1);
+        mockMvc.perform(MockMvcRequestBuilders
+        .delete("/nursery_app/admin_functions/pets/delete_pet?petName=Bob")
+        .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk());
+        }
+}
