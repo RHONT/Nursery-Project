@@ -29,19 +29,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @SpringBootTest
 class VolunteersControllerTest {
-
     @Autowired
     private MockMvc mockMvc;
-
     @MockBean
     private VolunteerRepository volunteerRepository;
-
     @SpyBean
     private VolunteerService volunteerService;
-
     @InjectMocks
     private VolunteersController volunteersController;
-
     private static final Volunteer volunteer1 = new Volunteer(1L, 111L, "Иван", "+7 911", "@Master1", false);
     private static final Volunteer volunteer2 = new Volunteer(2L, 222L, "Марья", "+7 911", "@Master2", true);
 
@@ -61,8 +56,6 @@ class VolunteersControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value(volunteer1.getName()));
-
-
     }
 
 //    @Test
