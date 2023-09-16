@@ -62,7 +62,6 @@ public class PersonControllerTest {
 
     @Test
     void findPersonByName() throws Exception {
-
         JSONObject personObject = new JSONObject();
         personObject.put("name", personGreg.getName());
 

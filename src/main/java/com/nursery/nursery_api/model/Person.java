@@ -1,9 +1,12 @@
 package com.nursery.nursery_api.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.Hibernate;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @AllArgsConstructor
@@ -18,6 +21,9 @@ public class Person {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_person")
     private Long idPerson;
+
+    @OneToOne
+    private Nursery nursery;
 
     @Column(name = "id_chat")
     private Long idChat;

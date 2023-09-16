@@ -5,19 +5,39 @@ import lombok.*;
 import org.hibernate.Hibernate;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
+@Setter
+@Getter
 @Entity
+@IdClass(ReportIdDatePrimaryKey.class)
 @Table(name = "data_report")
-public class DataReport {
+public class DataReport implements Serializable {
+
+//    @JsonIgnore
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "id_nursery", nullable = true)
+//    private Nursery nursery;
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "date_report")
-    private LocalDate dateDatas;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_report", nullable=false)
+    private Report report;
+
+    @Id
+    @Column(name = "date_report", nullable=false)
+    private LocalDate dateReport;
+
+//    @JsonIgnore
+//    @ToString.Exclude
+//    @ManyToOne(fetch = FetchType.EAGER)
+//    @JoinColumn(name = "id_report")
+//    private Report report;
 
     @Column(name = "foto")
     @Lob
@@ -26,65 +46,27 @@ public class DataReport {
     @Column(name = "message_person")
     private String messagePerson;
 
+    @Column(name = "file_size")
+    private Long fileSize;
+
+    @Column(name = "media_type")
+    private String mediaType;
+
     @Column(name = "check")
     private boolean check;
 
-    @JsonIgnore
-    @ToString.Exclude
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "id_report")
-    private Report report;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
         DataReport that = (DataReport) o;
-        return dateDatas != null && Objects.equals(dateDatas, that.dateDatas);
+        return report != null && Objects.equals(report, that.report)
+                && dateReport != null && Objects.equals(dateReport, that.dateReport);
     }
 
     @Override
     public int hashCode() {
-        return getClass().hashCode();
-    }
-
-    public LocalDate getDateDatas() {
-        return dateDatas;
-    }
-
-    public void setDateDatas(LocalDate dateDatas) {
-        this.dateDatas = dateDatas;
-    }
-
-    public byte[] getFoto() {
-        return foto;
-    }
-
-    public void setFoto(byte[] foto) {
-        this.foto = foto;
-    }
-
-    public String getMessagePerson() {
-        return messagePerson;
-    }
-
-    public void setMessagePerson(String messagePerson) {
-        this.messagePerson = messagePerson;
-    }
-
-    public Report getReport() {
-        return report;
-    }
-
-    public void setReport(Report report) {
-        this.report = report;
-    }
-
-    public boolean isCheck() {
-        return check;
-    }
-
-    public void setCheck(boolean check) {
-        this.check = check;
+        return Objects.hash(report, dateReport);
     }
 }
