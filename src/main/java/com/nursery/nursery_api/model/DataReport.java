@@ -5,19 +5,29 @@ import lombok.*;
 import org.hibernate.Hibernate;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
+@Setter
+@Getter
 @Entity
 @Table(name = "data_report")
-public class DataReport {
+public class DataReport{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "date_report")
-    private LocalDate dateDatas;
+    @Column(name = "id_data_report")
+    private Long idDataReport;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_report", nullable=false)
+    private Report report;
+
+    @Column(name = "date_report", nullable=false)
+    private LocalDate dateReport;
 
     @Column(name = "foto")
     @Lob
@@ -26,65 +36,26 @@ public class DataReport {
     @Column(name = "message_person")
     private String messagePerson;
 
-    @Column(name = "check")
-    private boolean check;
+    @Column(name = "file_size")
+    private Long fileSize;
 
-    @JsonIgnore
-    @ToString.Exclude
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "id_report")
-    private Report report;
+    @Column(name = "media_type")
+    private String mediaType;
+
+    @Column(name = "check_message")
+    private boolean checkMessage;
+
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
         DataReport that = (DataReport) o;
-        return dateDatas != null && Objects.equals(dateDatas, that.dateDatas);
+        return idDataReport != null && Objects.equals(idDataReport, that.idDataReport);
     }
 
     @Override
     public int hashCode() {
         return getClass().hashCode();
-    }
-
-    public LocalDate getDateDatas() {
-        return dateDatas;
-    }
-
-    public void setDateDatas(LocalDate dateDatas) {
-        this.dateDatas = dateDatas;
-    }
-
-    public byte[] getFoto() {
-        return foto;
-    }
-
-    public void setFoto(byte[] foto) {
-        this.foto = foto;
-    }
-
-    public String getMessagePerson() {
-        return messagePerson;
-    }
-
-    public void setMessagePerson(String messagePerson) {
-        this.messagePerson = messagePerson;
-    }
-
-    public Report getReport() {
-        return report;
-    }
-
-    public void setReport(Report report) {
-        this.report = report;
-    }
-
-    public boolean isCheck() {
-        return check;
-    }
-
-    public void setCheck(boolean check) {
-        this.check = check;
     }
 }

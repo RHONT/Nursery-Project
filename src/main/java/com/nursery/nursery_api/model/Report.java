@@ -13,8 +13,11 @@ import java.util.Objects;
 @NoArgsConstructor
 @ToString
 @Entity
+@Setter
+@Getter
 @Table(name = "report")
 public class Report {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_report")
@@ -44,13 +47,13 @@ public class Report {
         return dataReports;
     }
 
-    public void AddDataReports(DataReport dataReport) {
-        if (dataReports==null) {
-            dataReports=new ArrayList<>();
-        }
-        dataReports.add(dataReport);
-        dataReport.setReport(this);
-    }
+//    public void AddDataReports(DataReport dataReport) {
+//        if (dataReports==null) {
+//            dataReports=new ArrayList<>();
+//        }
+//        dataReports.add(dataReport);
+//        dataReport.setReport(this);
+//    }
 
     @Override
     public boolean equals(Object o) {
@@ -65,39 +68,5 @@ public class Report {
         return getClass().hashCode();
     }
 
-    public Long getIdReport() {
-        return idReport;
-    }
 
-    public void setIdReport(Long idReport) {
-        this.idReport = idReport;
-    }
-
-    public Person getPerson() {
-        return person;
-    }
-
-    public void setPerson(Person person) {
-        this.person = person;
-    }
-
-    public Long getForteit() {
-        return forteit;
-    }
-
-    public void setForteit(Long forteit) {
-        this.forteit = forteit;
-    }
-
-    public Long getDayReport() {
-        return dayReport;
-    }
-
-    public void setDayReport(Long dayReport) {
-        this.dayReport = dayReport;
-    }
-
-    public void setDataReports(List<DataReport> dataReports) {
-        this.dataReports = dataReports;
-    }
 }

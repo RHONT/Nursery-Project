@@ -12,10 +12,11 @@ CREATE TABLE "visitors"
 
 CREATE TABLE "person"
 (
-    "id_person" serial NOT NULL,
-    "id_chat"   bigint,
-    "name"      varchar(60),
-    "phone"     varchar,
+    "id_nursery" bigint not null,
+    "id_person"  serial NOT NULL,
+    "id_chat"    bigint,
+    "name"       varchar(60),
+    "phone"      varchar,
     CONSTRAINT "person_pk" PRIMARY KEY ("id_person")
 );
 
@@ -57,7 +58,6 @@ CREATE TABLE "pet"
     "id_pet"     serial NOT NULL,
     "nickname"   varchar(50),
     "birthday"   date,
-    "foto" bytea,
     "invalid"    bool default 'false',
     "person_id"  bigint,
     CONSTRAINT "pet_pk" PRIMARY KEY ("id_pet")
@@ -65,17 +65,23 @@ CREATE TABLE "pet"
 
 CREATE TABLE "data_report"
 (
+    "id_data_report" serial,
     "id_report"      bigint NOT NULL,
     "date_report"    DATE   NOT NULL,
-    "foto" bytea,
+    "foto"           oid,
+    "file_size"      bigint,
+    "media_type"     varchar,
     "message_person" varchar,
-    "check" boolean default false,
-    CONSTRAINT "data_report_pk" PRIMARY KEY ("date_report")
+    "check_message"          boolean default false,
+    unique (id_report, date_report)
 );
 
 
 ALTER TABLE "report"
     ADD CONSTRAINT "report_fk0" FOREIGN KEY ("id_person") REFERENCES "person" ("id_person");
+
+ALTER TABLE "person"
+    ADD CONSTRAINT "person.fk2" FOREIGN KEY ("id_nursery") REFERENCES "nursery" ("id_nursery");
 
 ALTER TABLE "pet"
     ADD CONSTRAINT "pet_fk0" FOREIGN KEY ("id_nursery") REFERENCES "nursery" ("id_nursery");
@@ -93,12 +99,12 @@ values ('Кошки', 'О приюте', 'Схема проезда', 'Прав�
 -- changeset Alexander:1
 CREATE TABLE "volunteers"
 (
-    "volunteer_id" serial primary key ,
+    "volunteer_id"      serial primary key,
     "volunteer_chat_id" bigint,
-    "volunteer_name" text,
-    "phone" text,
-    "telegram_name" varchar,
-    "busy" boolean default true
+    "volunteer_name"    text,
+    "phone"             text,
+    "telegram_name"     varchar,
+    "busy"              boolean default true
 )
 
 
