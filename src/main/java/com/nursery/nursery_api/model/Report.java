@@ -17,6 +17,7 @@ import java.util.Objects;
 @Getter
 @Table(name = "report")
 public class Report {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_report")

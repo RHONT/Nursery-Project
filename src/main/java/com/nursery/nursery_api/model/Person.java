@@ -13,6 +13,8 @@ import java.util.Objects;
 @NoArgsConstructor
 @ToString
 @Builder
+@Setter
+@Getter
 @Entity
 @Table(name = "person")
 public class Person {
@@ -22,8 +24,11 @@ public class Person {
     @Column(name = "id_person")
     private Long idPerson;
 
-    @OneToOne
-    private Nursery nursery;
+//    @OneToOne
+//    private Nursery nursery;
+    @OneToMany
+    @JoinColumn(name = "id_nursery")
+    private List<Nursery> nurseryList;
 
     @Column(name = "id_chat")
     private Long idChat;
@@ -47,35 +52,5 @@ public class Person {
         return getClass().hashCode();
     }
 
-    public Long getIdPerson() {
-        return idPerson;
-    }
 
-    public void setIdPerson(Long idPerson) {
-        this.idPerson = idPerson;
-    }
-
-    public Long getIdChat() {
-        return idChat;
-    }
-
-    public void setIdChat(Long idChat) {
-        this.idChat = idChat;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
 }

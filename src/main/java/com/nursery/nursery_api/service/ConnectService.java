@@ -2,7 +2,9 @@ package com.nursery.nursery_api.service;
 
 import com.nursery.nursery_api.SomeClasses.PostMessagePerson;
 import com.nursery.nursery_api.bot.TelegramBot;
+import com.nursery.nursery_api.model.DataReport;
 import com.nursery.nursery_api.model.Volunteer;
+import com.nursery.nursery_api.repositiry.DataReportRepository;
 import com.nursery.nursery_api.repositiry.VolunteerRepository;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -20,14 +22,19 @@ public class ConnectService {
 
     private final VolunteerRepository volunteerRepository;
 
-    public ConnectService(TelegramBot telegramBot, VolunteerRepository volunteerRepository) {
+    private final DataReportRepository dataReportRepository;
+
+    public ConnectService(TelegramBot telegramBot, VolunteerRepository volunteerRepository, DataReportRepository dataReportRepository) {
         this.telegramBot = telegramBot;
         this.volunteerRepository = volunteerRepository;
+        this.dataReportRepository = dataReportRepository;
     }
 
-//    public void setVolunteerRepository(VolunteerRepository volunteerRepository) {
-//        this.volunteerRepository = volunteerRepository;
-//    }
+    /**
+     * key - id chat Person
+     * value - report day
+     */
+ private final Map<Long, DataReport> reportList=new ConcurrentHashMap<>();
 
     /**
      * key - Volunteer
@@ -90,6 +97,17 @@ public class ConnectService {
         if (!queueMessage.isEmpty() && freeVolunteers(volunteersList)) {
             EveryoneWork(volunteersList,queueMessage);
         }
+    }
+
+    /**
+     * в 21:00 собирается мапа из непроверенных отчетов
+     * Если есть то запускаем метод EveryoneWork, который занимает всех свободных волонтеров работой
+     */
+    @Scheduled(cron = "0 0 21 * * *")
+    public void createReportList(){
+        // создаем маму с содержаением отчетов
+
+
     }
 
     /**

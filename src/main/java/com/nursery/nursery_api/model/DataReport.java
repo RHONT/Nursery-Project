@@ -15,29 +15,19 @@ import java.util.Objects;
 @Setter
 @Getter
 @Entity
-@IdClass(ReportIdDatePrimaryKey.class)
 @Table(name = "data_report")
-public class DataReport implements Serializable {
-
-//    @JsonIgnore
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "id_nursery", nullable = true)
-//    private Nursery nursery;
-
+public class DataReport{
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_data_report")
+    private Long idDataReport;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_report", nullable=false)
     private Report report;
 
-    @Id
     @Column(name = "date_report", nullable=false)
     private LocalDate dateReport;
-
-//    @JsonIgnore
-//    @ToString.Exclude
-//    @ManyToOne(fetch = FetchType.EAGER)
-//    @JoinColumn(name = "id_report")
-//    private Report report;
 
     @Column(name = "foto")
     @Lob
@@ -52,8 +42,8 @@ public class DataReport implements Serializable {
     @Column(name = "media_type")
     private String mediaType;
 
-    @Column(name = "check")
-    private boolean check;
+    @Column(name = "check_message")
+    private boolean checkMessage;
 
 
     @Override
@@ -61,12 +51,11 @@ public class DataReport implements Serializable {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
         DataReport that = (DataReport) o;
-        return report != null && Objects.equals(report, that.report)
-                && dateReport != null && Objects.equals(dateReport, that.dateReport);
+        return idDataReport != null && Objects.equals(idDataReport, that.idDataReport);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(report, dateReport);
+        return getClass().hashCode();
     }
 }
