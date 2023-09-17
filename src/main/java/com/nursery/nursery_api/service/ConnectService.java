@@ -6,6 +6,8 @@ import com.nursery.nursery_api.model.DataReport;
 import com.nursery.nursery_api.model.Volunteer;
 import com.nursery.nursery_api.repositiry.DataReportRepository;
 import com.nursery.nursery_api.repositiry.VolunteerRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -19,6 +21,8 @@ import java.util.concurrent.ConcurrentSkipListSet;
 
 @Service
 public class ConnectService {
+    private final Logger log = LoggerFactory.getLogger(ConnectService.class);
+
     private final TelegramBot telegramBot;
 
     private final VolunteerRepository volunteerRepository;
@@ -35,6 +39,17 @@ public class ConnectService {
      * Очередь из сущностей DataReport
      */
  private final ArrayBlockingQueue<DataReport> dataReportQueue=new ArrayBlockingQueue<DataReport>(200);
+
+    /**
+     * Успешно сданные отчеты.Это лишняя проверка, вдруг в промежутке из-за
+     * непродуманной многопоточности, что-то пойдет не так.
+     */
+ private final Set<DataReport> doneReport=new HashSet<>();
+    /**
+     * Успешно сданные отчеты. Хранилище нужно для обновления основной очереди.
+     * Так как если отчет не изменился и не поправился никак, то значит его не нужно добавлять.
+     */
+ private final Set<DataReport> badReport=new HashSet<>();
 
     /**
      * key - Volunteer
@@ -342,6 +357,33 @@ public class ConnectService {
                 break;
             }
         }
+    }
+
+    /**
+     *
+     * @param dataReport - отчет, который удовлетворил Волонтера
+     * @return
+     * Сохраняем в базу отчет
+     */
+    public synchronized DataReport reportIsDoneSaveToBd(DataReport dataReport){
+        if (!doneReport.contains(dataReport)) {
+            doneReport.add(dataReport);
+            dataReportRepository.save(dataReport);
+            log.info("Отчет: {} дата: {} успешно обработан",dataReport.getReport().getIdReport(),dataReport.getDateReport());
+            return dataReport;
+        }
+        log.debug("Отчет: {} дата: {} уже был обработан!",dataReport.getReport().getIdReport(),dataReport.getDateReport());
+        return dataReport;
+    }
+
+    public synchronized DataReport reportIsBadNotSaveToBd(DataReport dataReport){
+        if (!badReport.contains(dataReport)) {
+            doneReport.add(dataReport);
+            log.info("Плохой отчет: {} дата: {} занесен в черный список",dataReport.getReport().getIdReport(),dataReport.getDateReport());
+            return dataReport;
+        }
+        log.debug("Отвергнутый отчет: {} дата: {} уже был обработан!",dataReport.getReport().getIdReport(),dataReport.getDateReport());
+        return dataReport;
     }
 
 
