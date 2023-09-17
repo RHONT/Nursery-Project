@@ -37,6 +37,7 @@ public class ConnectService {
 
     /**
      * Очередь из сущностей DataReport
+     * todo если до 00:00 в очереди остались отчеты их нужно сохранить и перенести на следующий день как-то
      */
     private final ArrayBlockingQueue<DataReport> dataReportQueue = new ArrayBlockingQueue<DataReport>(200);
 
