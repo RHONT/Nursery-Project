@@ -86,10 +86,7 @@ public class TelegramBot extends TelegramLongPollingBot {
 // проверяем отчет, если есть фото, значит это отчет
             // нужно сгененировать это событие на нажатие кнопки прислать отчет
             if (message.hasPhoto()) {
-
-
                 Optional<DataReport> dataReport = dataReportRepository.findDataReportByIdChatAndDateNow(chat.getId(),LocalDate.now());
-
                 if (dataReport.isPresent()) {
                     // пишем логику
                     DataReport dataReport1=dataReport.get();

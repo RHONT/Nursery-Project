@@ -1,6 +1,6 @@
 package com.nursery.nursery_api.service;
 
-import com.nursery.nursery_api.SomeClasses.PostMessagePerson;
+import com.nursery.nursery_api.dto.PostMessagePerson;
 import com.nursery.nursery_api.bot.TelegramBot;
 import com.nursery.nursery_api.model.Volunteer;
 import com.nursery.nursery_api.repositiry.VolunteerRepository;
