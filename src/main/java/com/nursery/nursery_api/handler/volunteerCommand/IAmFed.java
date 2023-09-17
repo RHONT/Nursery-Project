@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 public class IAmFed implements VolunteerCommandHandler {
     @Override
     public void handle(Long idChat, TelegramBot bot, ConnectService connectService) {
-        connectService.hasLeftVolunteer(idChat);
+        connectService.iAmGonnaWayVolunteer(idChat);
     }
 
     @Override

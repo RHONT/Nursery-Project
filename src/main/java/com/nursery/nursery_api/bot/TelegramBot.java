@@ -4,7 +4,6 @@ import com.nursery.nursery_api.handler.NurseryHandler;
 import com.nursery.nursery_api.handler.VolunteerCommandHandler;
 import com.nursery.nursery_api.handler.VolunteerHandler;
 import com.nursery.nursery_api.model.DataReport;
-import com.nursery.nursery_api.model.Report;
 import com.nursery.nursery_api.model.Volunteer;
 import com.nursery.nursery_api.repositiry.DataReportRepository;
 import com.nursery.nursery_api.repositiry.PersonRepository;
@@ -13,32 +12,19 @@ import com.nursery.nursery_api.service.ConnectService;
 import com.nursery.nursery_api.service.NurseryDBService;
 import com.nursery.nursery_api.service.SendBotMessageService;
 import com.nursery.nursery_api.service.SendBotMessageServiceImpl;
-import lombok.SneakyThrows;
 
-import org.apache.tomcat.util.http.fileupload.IOUtils;
-import org.postgresql.core.Oid;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
-import org.springframework.web.multipart.MultipartFile;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.GetFile;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.*;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -181,7 +167,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                     connectService.addNewVolunteer(volunteer);
                 }
                 if (update.getMessage().getText().startsWith("Я ухожу")) {
-                    connectService.hasLeftVolunteer(chatIdUser);
+                    connectService.iAmGonnaWayVolunteer(chatIdUser);
                 }
             }
             // проверяем ответы от кнопок
