@@ -1,4 +1,4 @@
-package com.nursery.nursery_api.handler.responseForPerson;
+package com.nursery.nursery_api.handler.responseCommand;
 
 import com.nursery.nursery_api.handler.NurseryHandler;
 import com.nursery.nursery_api.bot.TelegramBot;
@@ -8,11 +8,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+
 @Component
 @RequiredArgsConstructor
-public class GetSafetyInstructions implements NurseryHandler {
+public class GetCynologistAdvice implements NurseryHandler {
     /**
-     * вывод текста при нажатии кнопки "Общие рекомендации по безопасности"
+     * вывод текста при нажатии кнопки "Cоветы кинолога по первичному общению с собакой."
      * @param idChat
      * @param bot
      * @param nurseryDBService
@@ -25,7 +26,7 @@ public class GetSafetyInstructions implements NurseryHandler {
                     SendMessage.
                             builder().
                             chatId(idChat).
-                            text(nurseryDBService.getAccident_prevention(idChat)).
+                            text(nurseryDBService.getСynologistAdvice(idChat)).
                             build()
             );
         } catch (TelegramApiException e) {
@@ -39,6 +40,6 @@ public class GetSafetyInstructions implements NurseryHandler {
      */
     @Override
     public boolean supply(String inputMessage) {
-        return inputMessage.equals("-safety");
+        return inputMessage.equals("-cynologistDog");
     }
 }

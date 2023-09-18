@@ -1,6 +1,7 @@
 package com.nursery.nursery_api.bot;
 
 import com.nursery.nursery_api.handler.NurseryHandler;
+import com.nursery.nursery_api.handler.ReportHandler;
 import com.nursery.nursery_api.handler.VolunteerCommandHandler;
 import com.nursery.nursery_api.handler.VolunteerHandler;
 import com.nursery.nursery_api.model.DataReport;
@@ -8,10 +9,7 @@ import com.nursery.nursery_api.model.Volunteer;
 import com.nursery.nursery_api.repositiry.DataReportRepository;
 import com.nursery.nursery_api.repositiry.PersonRepository;
 import com.nursery.nursery_api.repositiry.ReportRepository;
-import com.nursery.nursery_api.service.ConnectService;
-import com.nursery.nursery_api.service.NurseryDBService;
-import com.nursery.nursery_api.service.SendBotMessageService;
-import com.nursery.nursery_api.service.SendBotMessageServiceImpl;
+import com.nursery.nursery_api.service.*;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
@@ -40,17 +38,23 @@ public class TelegramBot extends TelegramLongPollingBot {
     private final List<NurseryHandler> nurseryHandlerList;
     private final List<VolunteerHandler> volunteerHandlers;
     private final List<VolunteerCommandHandler> volunteerCommandHandlers;
+    private final List<ReportHandler> reportHandlers;
     private final SendBotMessageService sendBotMessageService = new SendBotMessageServiceImpl(this);
     private final ConnectService connectService;
+    private final ReportService reportService;
 
     @Value("${telegram.bot.token}")
     private String token;
 
-    public TelegramBot(DataReportRepository dataReportRepository, ReportRepository reportRepository, PersonRepository personRepository, NurseryDBService nurseryDBService,
+    public TelegramBot(DataReportRepository dataReportRepository,
+                       ReportRepository reportRepository,
+                       PersonRepository personRepository,
+                       NurseryDBService nurseryDBService,
                        List<NurseryHandler> nurseryHandlerList,
                        List<VolunteerHandler> volunteerHandlers,
                        List<VolunteerCommandHandler> volunteerCommandHandlers,
-                       @Lazy ConnectService connectService) {
+                       List<ReportHandler> reportHandlers, @Lazy ConnectService connectService,
+                       @Lazy ReportService reportService) {
         this.dataReportRepository = dataReportRepository;
         this.reportRepository = reportRepository;
         this.personRepository = personRepository;
@@ -58,7 +62,9 @@ public class TelegramBot extends TelegramLongPollingBot {
         this.nurseryHandlerList = nurseryHandlerList;
         this.volunteerHandlers = volunteerHandlers;
         this.volunteerCommandHandlers = volunteerCommandHandlers;
+        this.reportHandlers = reportHandlers;
         this.connectService = connectService;
+        this.reportService = reportService;
     }
 
 

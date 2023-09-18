@@ -1,17 +1,19 @@
-package com.nursery.nursery_api.handler.responseForPerson;
+package com.nursery.nursery_api.handler.responseCommand;
 
-import com.nursery.nursery_api.bot.TelegramBot;
 import com.nursery.nursery_api.handler.NurseryHandler;
+import com.nursery.nursery_api.bot.TelegramBot;
 import com.nursery.nursery_api.service.NurseryDBService;
 import com.nursery.nursery_api.service.SendBotMessageService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-@Component
-public class AskReport implements NurseryHandler {
 
+@Component
+@RequiredArgsConstructor
+public class GetTransportationRules implements NurseryHandler {
     /**
-     * вывод текста при нажатии кнопки "Отослать отчет о животном"
+     * вывод текста при нажатии кнопки "Список рекомендаций по транспортировке животного"
      * @param idChat
      * @param bot
      * @param nurseryDBService
@@ -24,7 +26,7 @@ public class AskReport implements NurseryHandler {
                     SendMessage.
                             builder().
                             chatId(idChat).
-                            text("Отошлите фото").
+                            text(nurseryDBService.getTransportRule(idChat)).
                             build()
             );
         } catch (TelegramApiException e) {
@@ -38,6 +40,6 @@ public class AskReport implements NurseryHandler {
      */
     @Override
     public boolean supply(String inputMessage) {
-        return inputMessage.equals("-report");
+        return inputMessage.equals("-transportation");
     }
 }
