@@ -11,7 +11,7 @@ import org.springframework.boot.autoconfigure.task.TaskExecutionProperties;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.Message;
+
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -67,7 +67,7 @@ public class ScheduledMethod {
     /**
      * В 10:00 ежедневно создает список тех, кто имеет более одного начисленного штрафа и посылает всем работающим волонтерам.
      */
-    @Scheduled(cron = "10 0 * * *")
+    @Scheduled(cron = "0 10 * * *")
     public void shameList (){
         SendMessage message = new SendMessage();
         List<Report> checkReport = reportRepository.findAll();
@@ -86,6 +86,4 @@ public class ScheduledMethod {
             e.printStackTrace();
         }
     }
-
-
 }
