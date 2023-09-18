@@ -68,7 +68,7 @@ public class ScheduledMethod {
      * В 10:00 ежедневно создает список тех, кто имеет более одного начисленного штрафа и посылает всем работающим волонтерам.
      */
     @Scheduled(cron = "0 10 * * *")
-    public void shameList (){
+    public void shameListForVolunteers (){
         SendMessage message = new SendMessage();
         List<Report> checkReport = reportRepository.findAll();
         List<Person> shameList = new ArrayList<>();
