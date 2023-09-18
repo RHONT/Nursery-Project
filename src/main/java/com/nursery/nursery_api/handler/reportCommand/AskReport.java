@@ -1,32 +1,33 @@
-package com.nursery.nursery_api.handler.responseForPerson;
+package com.nursery.nursery_api.handler.reportCommand;
 
-import com.nursery.nursery_api.handler.NurseryHandler;
 import com.nursery.nursery_api.bot.TelegramBot;
+import com.nursery.nursery_api.handler.NurseryHandler;
+import com.nursery.nursery_api.handler.ReportHandler;
 import com.nursery.nursery_api.service.NurseryDBService;
+import com.nursery.nursery_api.service.ReportService;
 import com.nursery.nursery_api.service.SendBotMessageService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-
 @Component
-@RequiredArgsConstructor
-public class GetAccomodationForBabyPet implements NurseryHandler {
+public class AskReport implements ReportHandler {
+
     /**
-     * вывод текста при нажатии кнопки "Список рекомендаций по обустройству дома для взрослой котенка\щенка"
+     * вывод текста при нажатии кнопки "Отослать отчет о животном"
      * @param idChat
      * @param bot
      * @param nurseryDBService
      * @param sendBotMessageService
      */
     @Override
-    public void handle(Long idChat, TelegramBot bot, NurseryDBService nurseryDBService, SendBotMessageService sendBotMessageService) {
+    public void handle(Long idChat, TelegramBot bot, ReportService reportService, NurseryDBService nurseryDBService, SendBotMessageService sendBotMessageService) {
+        reportService.addNewPersonForReport(idChat);
         try {
             bot.execute(
                     SendMessage.
                             builder().
                             chatId(idChat).
-                            text(nurseryDBService.getHouseRecommendForBabyPet(idChat)).
+                            text("Отошлите фото с прикрепленным отчетом").
                             build()
             );
         } catch (TelegramApiException e) {
@@ -39,5 +40,7 @@ public class GetAccomodationForBabyPet implements NurseryHandler {
      * @return
      */
     @Override
-    public boolean supply(String inputMessage) {return inputMessage.equals("-baby");}
+    public boolean supply(String inputMessage) {
+        return inputMessage.equals("-report");
+    }
 }

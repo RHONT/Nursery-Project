@@ -72,7 +72,6 @@ public class ScheduledMethod {
      */
     @Scheduled(cron = "0 0 10 * * *")
     public void shameListForVolunteers (){
-        connectService.refreshDataReportQueue();
         SendMessage message = new SendMessage();
         List<Report> checkReport = reportRepository.findAll();
         List<Person> shameList = new ArrayList<>();

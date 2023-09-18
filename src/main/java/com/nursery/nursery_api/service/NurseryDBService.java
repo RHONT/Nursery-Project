@@ -157,16 +157,9 @@ public class NurseryDBService {
         return nurseryMap.get(visitors.get(idChat)).getReasonsRefusal();
     }
 
-
-
-
-
-
-
-
-
-
-
+    public Map<Long, String> getVisitors() {
+        return visitors;
+    }
 
     // TODO: 006, 06.09.2023 занести в базу изменения, если они произошли.
     @PreDestroy

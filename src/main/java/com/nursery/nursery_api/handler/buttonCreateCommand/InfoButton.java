@@ -1,4 +1,4 @@
-package com.nursery.nursery_api.handler.inlineButton;
+package com.nursery.nursery_api.handler.buttonCreateCommand;
 
 import com.nursery.nursery_api.handler.NurseryHandler;
 import com.nursery.nursery_api.bot.TelegramBot;
