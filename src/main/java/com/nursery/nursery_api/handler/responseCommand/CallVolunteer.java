@@ -1,4 +1,4 @@
-package com.nursery.nursery_api.handler.responseForPerson;
+package com.nursery.nursery_api.handler.responseCommand;
 
 import com.nursery.nursery_api.dto.PostMessagePerson;
 import com.nursery.nursery_api.bot.TelegramBot;

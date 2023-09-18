@@ -1,4 +1,4 @@
-package com.nursery.nursery_api.handler.inlineButton;
+package com.nursery.nursery_api.handler.buttonCreateCommand;
 
 import com.nursery.nursery_api.handler.NurseryHandler;
 import com.nursery.nursery_api.bot.TelegramBot;
@@ -13,7 +13,7 @@ public class CatMainButton implements NurseryHandler {
 
     String[] buttonsName = {"Информация о приюте", "Как забрать животное", "Отослать отчет о животном",
             "Связаться с волонтером", "К главному меню"};
-    String[] callDataForCat = {"-about", "-catAdopt", "-report", "-volunteer", "-main"};
+    String[] callDataForCat = {"-info", "-catAdopt", "-report", "-volunteer", "-main"};
 
     /**
      * пользователь делает выбор Кошачьего приюта и его выбор прописывается в мапе Visitors "Кошки" value

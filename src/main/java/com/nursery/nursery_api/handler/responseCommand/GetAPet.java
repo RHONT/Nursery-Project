@@ -1,4 +1,4 @@
-package com.nursery.nursery_api.handler.responseForPerson;
+package com.nursery.nursery_api.handler.responseCommand;
 
 import com.nursery.nursery_api.handler.NurseryHandler;
 import com.nursery.nursery_api.bot.TelegramBot;
@@ -8,11 +8,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+
 @Component
 @RequiredArgsConstructor
-public class GetInfrastructure implements NurseryHandler {
+public class GetAPet implements NurseryHandler {
+
     /**
-     * вывод текста при нажатии кнопки "Режим работы, адрес, Схема проезда"
+     * вывод текста при нажатии кнопки "Правила знакомства с животным до того, как забрать его из приюта."
      * @param idChat
      * @param bot
      * @param nurseryDBService
@@ -25,7 +27,7 @@ public class GetInfrastructure implements NurseryHandler {
                     SendMessage.
                             builder().
                             chatId(idChat).
-                            text(nurseryDBService.getInfrastructure(idChat)).
+                            text(nurseryDBService.getHowGetPetFromNursery(idChat)).
                             build()
             );
         } catch (TelegramApiException e) {
@@ -39,6 +41,6 @@ public class GetInfrastructure implements NurseryHandler {
      */
     @Override
     public boolean supply(String inputMessage) {
-        return inputMessage.equals("-address");
+        return inputMessage.equals("-knowPet");
     }
 }
