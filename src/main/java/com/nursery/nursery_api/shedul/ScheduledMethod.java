@@ -30,4 +30,14 @@ public class ScheduledMethod {
             dataReportRepository.save(dataReport);
         }
     }
+
+    @Scheduled
+    public void penaltyForBadReport(){
+
+    }
+
+    @Scheduled
+    public void shameList (){}
+
+
 }
