@@ -33,11 +33,14 @@ public interface DataReportRepository extends JpaRepository<DataReport,Long> {
     List<Report> findReportForInsertNewFields();
 
     @Query(value = "select data_report.*\n" +
-            "    from person\n" +
-            "    join report on person.id_person = report.id_person\n" +
-            "    join data_report on report.id_report = data_report.id_report\n" +
-            "    where person.id_chat=? and data_report.date_report=?",nativeQuery = true)
-    Optional<DataReport> findDataReportByIdChatAndDateNow(Long idChatPerson,LocalDate localDate);
+            "from person\n" +
+            "         join report on person.id_person = report.id_person\n" +
+            "         join data_report on report.id_report = data_report.id_report\n" +
+            "         join nursery on nursery.id_nursery = person.id_nursery\n" +
+            "where person.id_chat=?\n" +
+            "  and data_report.date_report=?\n" +
+            "  and nursery.name_nursery=?",nativeQuery = true)
+    Optional<DataReport> findDataReportByIdChatAndDateNow(Long idChatPerson,LocalDate localDate, String nameRepository);
 
 
 

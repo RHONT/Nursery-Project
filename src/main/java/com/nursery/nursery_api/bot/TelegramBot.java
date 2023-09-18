@@ -77,7 +77,8 @@ public class TelegramBot extends TelegramLongPollingBot {
             Chat chat = message.getChat();
             // проверяем отчет, если есть фото, значит это отчет
             if (message.hasPhoto()) {
-               saveToDB(chat, message,update);
+
+               saveToDB(chat, message,update,nurseryDBService.getVisitors().get(chat.getId()));
 
                 } else {
                     sendSimpleText(chat.getId(), "Возможно вы ошиблись");
@@ -129,6 +130,13 @@ public class TelegramBot extends TelegramLongPollingBot {
                 break;
             }
         }
+
+        for (var element : reportHandlers) {
+            if (element.supply(message)) {
+                element.handle(chatId, this,reportService, nurseryDBService, sendBotMessageService);
+                break;
+            }
+        }
     }
 
     /**
@@ -167,8 +175,8 @@ public class TelegramBot extends TelegramLongPollingBot {
      * @param message
      * @param update
      */
-    private void saveToDB(Chat chat, Message message, Update update) {
-        Optional<DataReport> dataReport = dataReportRepository.findDataReportByIdChatAndDateNow(chat.getId(), LocalDate.now());
+    private void saveToDB(Chat chat, Message message, Update update, String nameNursery) {
+        Optional<DataReport> dataReport = dataReportRepository.findDataReportByIdChatAndDateNow(chat.getId(), LocalDate.now(),nameNursery);
         if (dataReport.isPresent()) {
             DataReport dataReport1 = dataReport.get();
 
@@ -200,6 +208,8 @@ public class TelegramBot extends TelegramLongPollingBot {
             }
 
             dataReportRepository.save(dataReport1);
+        } else {
+            sendSimpleText(chat.getId(), "Вы на надены в базе " + nameNursery + "Выберите в меню другой питомник. Или свяжитесь с волонтером");
         }
     }
 
