@@ -24,7 +24,6 @@ public class ScheduledMethod {
     private final ReportRepository reportRepository;
 
     private final PersonRepository personRepository;
-    LocalDate currentDate = LocalDate.now();
     private final TelegramBot telegramBot;
 
     public ScheduledMethod(DataReportRepository dataReportRepository, ReportRepository reportRepository, PersonRepository personRepository, TaskExecutionProperties taskExecutionProperties, TelegramBot telegramBot) {
@@ -48,37 +47,45 @@ public class ScheduledMethod {
         }
     }
 
-//    @Scheduled(cron = "59 23 * * *")
-//    public void penaltyForBadReportForToday(){
-//        List<DataReport> reportCheck = dataReportRepository.findDataReportsByDateReportAndCheckMessageFalse(currentDate);
-//        for (var element : reportCheck){
-//            Report report = element.getReport();
-//            Long forfeit = report.getForteit();
-//            forfeit++;
-//            report.setForteit(forfeit);
-//            reportRepository.save(report);
-//        }
-//    }
-//
-//    @Scheduled(cron = "10 0 * * *")
-//    public void shameList (){
-//        SendMessage message = new SendMessage();
-//        List<Report> checkReport = reportRepository.findAll();
-//        List<Person> shameList = new ArrayList<>();
-//        for (var element : checkReport){
-//            if(element.getForteit() >= 2){
-//                shameList.add(element.getPerson());
-//            }
-//        }
-//        message.setChatId("не знаю точно, что там писать для подставления чат ид волонтеров - полагаю это уже есть где-то в коде");
-//        String messageText = shameList.toString();
-//        message.setText(messageText);
-//        try {
-//            telegramBot.execute(message);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
+    /**
+     * Каждую ночь в 23:59 достает из базы данных непроверенные отчеты за день и начисляет штраф тем,
+     * кто их отослал.
+     */
+    @Scheduled(cron = "59 23 * * *")
+    public void penaltyForBadReportForToday(){
+        LocalDate currentDate = LocalDate.now();
+        List<DataReport> reportCheck = dataReportRepository.findDataReportsByDateReportAndCheckMessageFalse(currentDate);
+        for (var element : reportCheck){
+            Report report = element.getReport();
+            Long forfeit = report.getForteit();
+            forfeit++;
+            report.setForteit(forfeit);
+            reportRepository.save(report);
+        }
+    }
+
+    /**
+     * В 10:00 ежедневно создает список тех, кто имеет более одного начисленного штрафа и посылает всем работающим волонтерам.
+     */
+    @Scheduled(cron = "10 0 * * *")
+    public void shameList (){
+        SendMessage message = new SendMessage();
+        List<Report> checkReport = reportRepository.findAll();
+        List<Person> shameList = new ArrayList<>();
+        for (var element : checkReport){
+            if(element.getForteit() >= 2){
+                shameList.add(element.getPerson());
+            }
+        }
+        message.setChatId("не знаю точно, что там писать для подставления чат ид волонтеров - полагаю это уже есть где-то в коде");
+        String messageText = shameList.toString();
+        message.setText(messageText);
+        try {
+            telegramBot.execute(message);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 
 }
