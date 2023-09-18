@@ -20,6 +20,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.*;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -53,8 +54,8 @@ public class TelegramBot extends TelegramLongPollingBot {
                        List<NurseryHandler> nurseryHandlerList,
                        List<VolunteerHandler> volunteerHandlers,
                        List<VolunteerCommandHandler> volunteerCommandHandlers,
-                       List<ReportHandler> reportHandlers, @Lazy ConnectService connectService,
-                       @Lazy ReportService reportService) {
+                       List<ReportHandler> reportHandlers, ConnectService connectService,
+                       ReportService reportService) {
         this.dataReportRepository = dataReportRepository;
         this.reportRepository = reportRepository;
         this.personRepository = personRepository;
@@ -68,6 +69,8 @@ public class TelegramBot extends TelegramLongPollingBot {
     }
 
 
+
+
     //    @SneakyThrows
     @Override
     public void onUpdateReceived(Update update) {
@@ -78,29 +81,30 @@ public class TelegramBot extends TelegramLongPollingBot {
             // проверяем отчет, если есть фото, значит это отчет
             if (message.hasPhoto()) {
 
-                // Спросить Сергея
-                if(reportService.containPersonForReport(chat.getId())){
-                    saveToDB(chat, message,update,nurseryDBService.getVisitors().get(chat.getId()));
-                }
+                if (reportService.containPersonForReport(chat.getId())) {
+                    saveToDB(chat, message, update, nurseryDBService.getVisitors().get(chat.getId()));
+                    reportService.deletePersonForReport(chat.getId());   // удаляем из списка
                 } else {
                     sendSimpleText(chat.getId(), "Фото можно присылать только если вы выбрали в меню - 'Отправить отчет'");
                 }
             }
-
-        if (update.hasMessage() && update.getMessage().hasText()) {
-            if (!update.getMessage().getText().isEmpty()) {
-                String message = "-main";
-                Long chatIdUser = update.getMessage().getChatId();
-
-                communicationWithVolunteer(chatIdUser, update, message);
-
-            }
-            // проверяем ответы от кнопок
-        } else if (update.hasCallbackQuery()) {
-            String message = update.getCallbackQuery().getData();
-            Long idChat = update.getCallbackQuery().getMessage().getChatId();
-            checkMessage(message, idChat);
         }
+
+            if (update.hasMessage() && update.getMessage().hasText()) {
+                if (!update.getMessage().getText().isEmpty()) {
+                    String message = "-main";
+                    Long chatIdUser = update.getMessage().getChatId();
+
+                    communicationWithVolunteer(chatIdUser, update, message);
+
+                }
+                // проверяем ответы от кнопок
+            } else if (update.hasCallbackQuery()) {
+                String message = update.getCallbackQuery().getData();
+                Long idChat = update.getCallbackQuery().getMessage().getChatId();
+                checkMessage(message, idChat);
+            }
+
     }
 
 
@@ -210,6 +214,7 @@ public class TelegramBot extends TelegramLongPollingBot {
             }
 
             dataReportRepository.save(dataReport1);
+            sendSimpleText(chat.getId(), "Ваш отчет отправлен!");
         } else {
             sendSimpleText(chat.getId(), "Вы на надены в базе " + nameNursery + "Выберите в меню другой питомник. Или свяжитесь с волонтером");
         }

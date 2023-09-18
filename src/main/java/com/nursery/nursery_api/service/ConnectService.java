@@ -2,12 +2,12 @@ package com.nursery.nursery_api.service;
 
 import com.nursery.nursery_api.dto.PostMessagePerson;
 import com.nursery.nursery_api.bot.TelegramBot;
-import com.nursery.nursery_api.model.DataReport;
 import com.nursery.nursery_api.model.Volunteer;
 import com.nursery.nursery_api.repositiry.DataReportRepository;
 import com.nursery.nursery_api.repositiry.VolunteerRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -15,9 +15,10 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import javax.annotation.PostConstruct;
 import java.util.*;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListSet;
+
+
+import static com.nursery.nursery_api.Global.GlobalVariable.volunteersList;
 
 @Service
 public class ConnectService {
@@ -27,18 +28,10 @@ public class ConnectService {
 
     private final VolunteerRepository volunteerRepository;
 
-    public ConnectService(TelegramBot telegramBot, VolunteerRepository volunteerRepository, DataReportRepository dataReportRepository) {
+    public ConnectService(@Lazy TelegramBot telegramBot, VolunteerRepository volunteerRepository, DataReportRepository dataReportRepository) {
         this.telegramBot = telegramBot;
         this.volunteerRepository = volunteerRepository;
     }
-
-
-
-    /**
-     * key - Volunteer
-     * value - chat id human needy
-     */
-    private final Map<Volunteer, Long> volunteersList = new ConcurrentHashMap<>();
 
     /**
      * contain all chat id (volunteer and human needy)

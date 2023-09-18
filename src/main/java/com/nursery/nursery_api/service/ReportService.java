@@ -5,7 +5,6 @@ import com.nursery.nursery_api.model.Volunteer;
 import com.nursery.nursery_api.repositiry.DataReportRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -13,24 +12,24 @@ import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ConcurrentSkipListSet;
 
+import static com.nursery.nursery_api.Global.GlobalVariable.volunteersList;
+
 
 @Service
 public class ReportService {
     private final Logger log = LoggerFactory.getLogger(ReportService.class);
 
     private final DataReportRepository dataReportRepository;
-    private final ConnectService connectService;
 
-    public ReportService(DataReportRepository dataReportRepository, ConnectService connectService) {
+    public ReportService(DataReportRepository dataReportRepository) {
         this.dataReportRepository = dataReportRepository;
-        this.connectService = connectService;
-        volunteersList=connectService.getVolunteersList();
     }
+
 
     /**
      * Журнал который содержит тех, кто вознамерился отправить отчет.
      */
-    private final Set<Long> reportJournal=new ConcurrentSkipListSet<>(Set.of(1L));
+    private Set<Long> reportJournal=new ConcurrentSkipListSet<>();
 
     /**
      * Добавляем человека в спискок желающих отправить отчет
@@ -53,11 +52,7 @@ public class ReportService {
     }
 
 
-    /**
-     * key - Volunteer
-     * value - chat id human needy
-     */
-    private Map<Volunteer, Long> volunteersList=null;
+
 
     /**
      * Очередь из сущностей DataReport
