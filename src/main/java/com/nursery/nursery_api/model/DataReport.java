@@ -58,4 +58,8 @@ public class DataReport{
     public int hashCode() {
         return getClass().hashCode();
     }
+
+    public Report getReport() {
+        return report;
+    }
 }

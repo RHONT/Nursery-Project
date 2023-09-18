@@ -9,4 +9,5 @@ public interface PersonRepository extends JpaRepository<Person,Long> {
     Person findPersonByName (String personName);
     Person findPersonByPhone (String phone);
     Person deletePersonByName (String personName);
+    Person findPersonByIdPerson (Long idPerson);
 }
