@@ -68,5 +68,9 @@ public class Report {
         return getClass().hashCode();
     }
 
+    public Long getIdReport() {
+        return idReport;
+    }
+
 
 }

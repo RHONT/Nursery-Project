@@ -4,6 +4,7 @@ import com.nursery.nursery_api.model.DataReport;
 import com.nursery.nursery_api.model.Report;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,7 +40,11 @@ public interface DataReportRepository extends JpaRepository<DataReport,Long> {
             "    where person.id_chat=? and data_report.date_report=?",nativeQuery = true)
     Optional<DataReport> findDataReportByIdChatAndDateNow(Long idChatPerson,LocalDate localDate);
 
-
+    @Query(value = "SELECT data_report.* " +
+            "FROM data_report " +
+            "JOIN report ON data_report.id_report = report.id_report " +
+            "WHERE data_report.date_report = :currentDate AND data_report.check_message = false", nativeQuery = true)
+    List<DataReport> findDataReportsByDateReportAndCheckMessageFalse(@Param("currentDate") LocalDate currentDate);
 
 
 
