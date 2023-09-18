@@ -1,6 +1,6 @@
 package com.nursery.nursery_api.service;
 
-import com.nursery.nursery_api.SomeClasses.PostMessagePerson;
+import com.nursery.nursery_api.dto.PostMessagePerson;
 import com.nursery.nursery_api.bot.TelegramBot;
 import com.nursery.nursery_api.model.Volunteer;
 import com.nursery.nursery_api.repositiry.VolunteerRepository;
@@ -67,7 +67,7 @@ class ConnectServiceTest {
         connectService.manageVolunteerAndPerson();
 
         assertEquals(1,connectService.getQueueMessage().size());
-        assertFalse(connectService.freeVolunteers(connectService.getVolunteersList()));
+        assertFalse(connectService.freeVolunteers());
     }
 
     @Test
@@ -114,14 +114,14 @@ class ConnectServiceTest {
         when(volunteerRepository.findByVolunteerChatId(anyLong())).thenReturn(Optional.of(volunteer1));
         connectService.addNewVolunteer(volunteer1);
         connectService.addNewVolunteer(volunteer2);
-        connectService.hasLeftVolunteer(111L);
+        connectService.iAmGonnaWayVolunteer(111L);
         assertEquals(1,connectService.getVolunteersList().size());
     }
 
     @Test
     void goOnShiftVolunteer() {
         connectService.addNewVolunteer(volunteer3);
-        connectService.goOnShiftVolunteer(volunteer3.getVolunteerChatId());
+        connectService.iWantWorkVolunteer(volunteer3.getVolunteerChatId());
         assertFalse(volunteer3.isBusy());
         volunteer3.setBusy(true);
     }
@@ -151,8 +151,8 @@ class ConnectServiceTest {
         connectService.addNewVolunteer(volunteer1);
         connectService.addNewVolunteer(volunteer3);
         connectService.addNewVolunteer(volunteer4);
-        assertTrue(connectService.freeVolunteers(connectService.getVolunteersList()));
-        connectService.disappearanceVolunteer(volunteer1.getVolunteerChatId());
-        assertFalse(connectService.freeVolunteers(connectService.getVolunteersList()));
+        assertTrue(connectService.freeVolunteers());
+        connectService.stopWorkVolunteer(volunteer1.getVolunteerChatId());
+        assertFalse(connectService.freeVolunteers());
     }
 }

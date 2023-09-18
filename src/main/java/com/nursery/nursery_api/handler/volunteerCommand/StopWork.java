@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 public class StopWork implements VolunteerCommandHandler {
     @Override
     public void handle(Long idChat, TelegramBot bot, ConnectService connectService) {
-        connectService.disappearanceVolunteer(idChat);
+        connectService.stopWorkVolunteer(idChat);
     }
 
     @Override

@@ -16,6 +16,10 @@ import java.util.Optional;
 public interface DataReportRepository extends JpaRepository<DataReport,Long> {
     Optional<DataReport> findByReportAndDateReport(Report report, LocalDate localDate);
 
+    /**
+     * Ищем запаси в dataReport где data_report.check_message=false, а значит нужно проверить волонтерам ее.
+     * @return
+     */
     @Query(value = "select person.id_chat, person.name, person.phone, data_report.foto, data_report.message_person\n" +
             "from person\n" +
             "join report on person.id_person = report.id_person\n" +

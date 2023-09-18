@@ -1,4 +1,4 @@
-package com.nursery.nursery_api.SomeClasses;
+package com.nursery.nursery_api.dto;
 
 public class PostMessagePerson {
     private final Long chatIdPerson;
