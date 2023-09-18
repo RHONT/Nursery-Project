@@ -343,7 +343,7 @@ public class ConnectService {
      * Если есть совпадения по ключам, то нужно проверить значения. Если они разнятся, старое удаляем, новое привносим
      * todo Тут либо каждому дать право по фразе "Обновить", либо какой-то хитрый cron написать.
      */
-    private synchronized void refreshDataReportQueue() {
+    public synchronized void refreshDataReportQueue() {
         List<DataReport> reportsForCheck = dataReportRepository.findReportForCheck();
         for (var newDataReport : reportsForCheck) {
             if (badReport.contains(newDataReport)) {

@@ -7,6 +7,7 @@ import com.nursery.nursery_api.model.Report;
 import com.nursery.nursery_api.repositiry.DataReportRepository;
 import com.nursery.nursery_api.repositiry.PersonRepository;
 import com.nursery.nursery_api.repositiry.ReportRepository;
+import com.nursery.nursery_api.service.ConnectService;
 import org.springframework.boot.autoconfigure.task.TaskExecutionProperties;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -25,12 +26,14 @@ public class ScheduledMethod {
 
     private final PersonRepository personRepository;
     private final TelegramBot telegramBot;
+    private final ConnectService connectService;
 
-    public ScheduledMethod(DataReportRepository dataReportRepository, ReportRepository reportRepository, PersonRepository personRepository, TaskExecutionProperties taskExecutionProperties, TelegramBot telegramBot) {
+    public ScheduledMethod(DataReportRepository dataReportRepository, ReportRepository reportRepository, PersonRepository personRepository, TaskExecutionProperties taskExecutionProperties, TelegramBot telegramBot, ConnectService connectService) {
         this.dataReportRepository = dataReportRepository;
         this.reportRepository = reportRepository;
         this.personRepository = personRepository;
         this.telegramBot = telegramBot;
+        this.connectService = connectService;
     }
 
     /**
@@ -69,6 +72,7 @@ public class ScheduledMethod {
      */
     @Scheduled(cron = "0 0 10 * * *")
     public void shameListForVolunteers (){
+        connectService.refreshDataReportQueue();
         SendMessage message = new SendMessage();
         List<Report> checkReport = reportRepository.findAll();
         List<Person> shameList = new ArrayList<>();
