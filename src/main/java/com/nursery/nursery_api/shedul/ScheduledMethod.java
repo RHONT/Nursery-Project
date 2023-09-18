@@ -51,7 +51,7 @@ public class ScheduledMethod {
      * Каждую ночь в 23:59 достает из базы данных непроверенные отчеты за день и начисляет штраф тем,
      * кто их отослал.
      */
-    @Scheduled(cron = "59 23 * * *")
+    @Scheduled(cron = "0 59 23 * * *")
     public void penaltyForBadReportForToday(){
         LocalDate currentDate = LocalDate.now();
         List<DataReport> reportCheck = dataReportRepository.findDataReportsByDateReportAndCheckMessageFalse(currentDate);
@@ -67,7 +67,7 @@ public class ScheduledMethod {
     /**
      * В 10:00 ежедневно создает список тех, кто имеет более одного начисленного штрафа и посылает всем работающим волонтерам.
      */
-    @Scheduled(cron = "0 10 * * *")
+    @Scheduled(cron = "0 0 10 * * *")
     public void shameListForVolunteers (){
         SendMessage message = new SendMessage();
         List<Report> checkReport = reportRepository.findAll();
