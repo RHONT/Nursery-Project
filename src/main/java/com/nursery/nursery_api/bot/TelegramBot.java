@@ -78,10 +78,12 @@ public class TelegramBot extends TelegramLongPollingBot {
             // проверяем отчет, если есть фото, значит это отчет
             if (message.hasPhoto()) {
 
-               saveToDB(chat, message,update,nurseryDBService.getVisitors().get(chat.getId()));
-
+                // Спросить Сергея
+                if(reportService.containPersonForReport(chat.getId())){
+                    saveToDB(chat, message,update,nurseryDBService.getVisitors().get(chat.getId()));
+                }
                 } else {
-                    sendSimpleText(chat.getId(), "Возможно вы ошиблись");
+                    sendSimpleText(chat.getId(), "Фото можно присылать только если вы выбрали в меню - 'Отправить отчет'");
                 }
             }
 

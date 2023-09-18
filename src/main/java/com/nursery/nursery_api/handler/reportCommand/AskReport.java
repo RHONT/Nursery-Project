@@ -2,13 +2,15 @@ package com.nursery.nursery_api.handler.reportCommand;
 
 import com.nursery.nursery_api.bot.TelegramBot;
 import com.nursery.nursery_api.handler.NurseryHandler;
+import com.nursery.nursery_api.handler.ReportHandler;
 import com.nursery.nursery_api.service.NurseryDBService;
+import com.nursery.nursery_api.service.ReportService;
 import com.nursery.nursery_api.service.SendBotMessageService;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 @Component
-public class AskReport implements NurseryHandler {
+public class AskReport implements ReportHandler {
 
     /**
      * вывод текста при нажатии кнопки "Отослать отчет о животном"
@@ -18,16 +20,14 @@ public class AskReport implements NurseryHandler {
      * @param sendBotMessageService
      */
     @Override
-    public void handle(Long idChat, TelegramBot bot, NurseryDBService nurseryDBService, SendBotMessageService sendBotMessageService) {
-
-
-
+    public void handle(Long idChat, TelegramBot bot, ReportService reportService, NurseryDBService nurseryDBService, SendBotMessageService sendBotMessageService) {
+        reportService.addNewPersonForReport(idChat);
         try {
             bot.execute(
                     SendMessage.
                             builder().
                             chatId(idChat).
-                            text("Отошлите фото").
+                            text("Отошлите фото с прикрепленным отчетом").
                             build()
             );
         } catch (TelegramApiException e) {

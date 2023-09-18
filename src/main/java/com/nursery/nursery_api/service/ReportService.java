@@ -5,6 +5,7 @@ import com.nursery.nursery_api.model.Volunteer;
 import com.nursery.nursery_api.repositiry.DataReportRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -29,7 +30,7 @@ public class ReportService {
     /**
      * Журнал который содержит тех, кто вознамерился отправить отчет.
      */
-    private final Set<Long> reportJournal=new ConcurrentSkipListSet<>();
+    private final Set<Long> reportJournal=new ConcurrentSkipListSet<>(Set.of(1L));
 
     /**
      * Добавляем человека в спискок желающих отправить отчет
@@ -45,6 +46,10 @@ public class ReportService {
      */
     public void deletePersonForReport(Long chatIdPersonReport){
         reportJournal.remove(chatIdPersonReport);
+    }
+
+    public boolean containPersonForReport(Long chatIdPerson){
+        return reportJournal.contains(chatIdPerson);
     }
 
 
