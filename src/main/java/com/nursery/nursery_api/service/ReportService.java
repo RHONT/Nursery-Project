@@ -246,8 +246,17 @@ public class ReportService {
         return dataReport;
     }
 
+
     /**
-     * Method search Report that adjust to Person.
+     * Method create new object Report attached to Person
+     * @param report
+     * @return Report
+     */
+    public Report addNewReportForPerson (Report report){
+        return reportRepository.save (report);
+    }
+    /**
+     * Method search Report that attach to Person.
      * @param person
      * @return Report
      */

@@ -36,8 +36,8 @@ public class ReportController {
             tags = "Report"
     )
     @PostMapping(path = "/start_nursing_for_pet")
-    public void addReport (@RequestParam Long chatId){
-        reportService.addNewPersonForReport(chatId);
+    public ResponseEntity<Report> addReport (@RequestBody Report report){
+        return ResponseEntity.ok(reportService.addNewReportForPerson(report));
     }
 
     @Operation(summary = "Поиск системы отчетов по посетителю или по одному из ежедневных расчетов. Или вывод всех " +
@@ -112,7 +112,7 @@ public class ReportController {
             tags = "Report"
     )
     @DeleteMapping(path = "/delete_report")
-    public ResponseEntity<?> deleteReportById (@RequestParam(required = false) Long reportId,
+    public ResponseEntity<?> deleteReportByIdOrReport (@RequestParam(required = false) Long reportId,
                                                     @RequestBody(required = false) Report report){
         if (reportId != null) {
             try {
