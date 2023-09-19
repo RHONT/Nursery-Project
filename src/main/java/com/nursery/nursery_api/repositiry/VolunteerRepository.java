@@ -17,6 +17,7 @@ public interface VolunteerRepository extends JpaRepository<Volunteer,Long> {
     Optional<Volunteer> findByTelegramName(String telegramName);
     void deleteByTelegramName(String telegramName);
     Optional<Volunteer> findByVolunteerChatId(Long chatIdVolunteer);
+    List<Volunteer> findVolunteersByBusyFalse ();
 
 
 }
