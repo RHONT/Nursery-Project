@@ -8,6 +8,7 @@ import com.nursery.nursery_api.repositiry.DataReportRepository;
 import com.nursery.nursery_api.repositiry.PersonRepository;
 import com.nursery.nursery_api.repositiry.ReportRepository;
 import com.nursery.nursery_api.service.ConnectService;
+import com.nursery.nursery_api.service.VolunteerService;
 import org.springframework.boot.autoconfigure.task.TaskExecutionProperties;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -27,13 +28,15 @@ public class ScheduledMethod {
     private final PersonRepository personRepository;
     private final TelegramBot telegramBot;
     private final ConnectService connectService;
+    private final VolunteerService volunteerService;
 
-    public ScheduledMethod(DataReportRepository dataReportRepository, ReportRepository reportRepository, PersonRepository personRepository, TaskExecutionProperties taskExecutionProperties, TelegramBot telegramBot, ConnectService connectService) {
+    public ScheduledMethod(DataReportRepository dataReportRepository, ReportRepository reportRepository, PersonRepository personRepository, TaskExecutionProperties taskExecutionProperties, TelegramBot telegramBot, ConnectService connectService, VolunteerService volunteerService) {
         this.dataReportRepository = dataReportRepository;
         this.reportRepository = reportRepository;
         this.personRepository = personRepository;
         this.telegramBot = telegramBot;
         this.connectService = connectService;
+        this.volunteerService = volunteerService;
     }
 
     /**
@@ -75,18 +78,21 @@ public class ScheduledMethod {
         SendMessage message = new SendMessage();
         List<Report> checkReport = reportRepository.findAll();
         List<Person> shameList = new ArrayList<>();
+        List<Long> freeVolunteersChats = volunteerService.freeVolunteersChatId();
         for (var element : checkReport){
             if(element.getForteit() >= 2){
                 shameList.add(element.getPerson());
             }
         }
-        message.setChatId("не знаю точно, что там писать для подставления чат ид волонтеров - полагаю это уже есть где-то в коде");
         String messageText = shameList.toString();
         message.setText(messageText);
-        try {
-            telegramBot.execute(message);
-        } catch (Exception e) {
-            e.printStackTrace();
+        for (var chat : freeVolunteersChats){
+            message.setChatId(chat);
+            try {
+                telegramBot.execute(message);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 }

@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -43,6 +44,27 @@ public class VolunteerService {
     public Volunteer deleteVolunteerByName (String volunteerName){
         logger.info("Вызван метод deleteVolunteerByName");
         return volunteerRepository.deleteVolunteerByName(volunteerName);
+    }
+
+    /**
+     * Method return all free volunteers
+     * @return List<Volunteer>
+     */
+    public List<Volunteer> freeVolunteersForWork (){
+        return volunteerRepository.findVolunteersByBusyFalse();
+    }
+
+    /**
+     * Method return free volunteers chat id.
+     * @return List<Long>
+     */
+    public List<Long> freeVolunteersChatId(){
+        List<Long> freeVolunteersChats = new ArrayList<>();
+        List<Volunteer> freeVolunteers = volunteerRepository.findVolunteersByBusyFalse();
+        for (var element : freeVolunteers){
+            freeVolunteersChats.add(element.getVolunteerChatId());
+        }
+        return freeVolunteersChats;
     }
 
 }
