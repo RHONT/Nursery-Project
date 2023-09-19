@@ -1,8 +1,11 @@
 package com.nursery.nursery_api.service;
 
 import com.nursery.nursery_api.model.DataReport;
+import com.nursery.nursery_api.model.Person;
+import com.nursery.nursery_api.model.Report;
 import com.nursery.nursery_api.model.Volunteer;
 import com.nursery.nursery_api.repositiry.DataReportRepository;
+import com.nursery.nursery_api.repositiry.ReportRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -20,9 +23,11 @@ public class ReportService {
     private final Logger log = LoggerFactory.getLogger(ReportService.class);
 
     private final DataReportRepository dataReportRepository;
+    private final ReportRepository reportRepository;
 
-    public ReportService(DataReportRepository dataReportRepository) {
+    public ReportService(DataReportRepository dataReportRepository, ReportRepository reportRepository) {
         this.dataReportRepository = dataReportRepository;
+        this.reportRepository = reportRepository;
     }
 
 
@@ -239,6 +244,53 @@ public class ReportService {
         }
         log.debug("Отвергнутый отчет: {} дата: {} уже был обработан!", dataReport.getReport().getIdReport(), dataReport.getDateReport());
         return dataReport;
+    }
+
+
+    /**
+     * Method create new object Report attached to Person
+     * @param report
+     * @return Report
+     */
+    public Report addNewReportForPerson (Report report){
+        return reportRepository.save (report);
+    }
+    /**
+     * Method search Report that attach to Person.
+     * @param person
+     * @return Report
+     */
+    public Report findReportInfoForPerson (Person person){
+        return reportRepository.findReportByPersonId(person.getIdPerson());
+    }
+
+    /**
+     * Method search Report (common entity for DataReport) by DataReport
+     * @param dataReport
+     * @return Report
+     */
+    public Report findReportByDataReport (DataReport dataReport){
+        return dataReport.getReport();
+    }
+
+    /**
+     * Method return List of all Report entity.
+     * @return List<Report>
+     */
+    public List<Report> findAll (){
+        return reportRepository.findAll();
+    }
+    /**
+     * Method edit object Report, save it and return new version of Report.
+     * @param report
+     * @return Report
+     */
+    public Report editReport (Report report){
+        return reportRepository.save(report);
+    }
+
+    public Report deleteReportByReportId(Long reportId){
+        return reportRepository.deleteReportByIdReport(reportId);
     }
 
 

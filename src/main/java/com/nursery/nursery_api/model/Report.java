@@ -15,6 +15,7 @@ import java.util.Objects;
 @Entity
 @Setter
 @Getter
+@Builder
 @Table(name = "report")
 public class Report {
 
