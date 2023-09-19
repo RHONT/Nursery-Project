@@ -111,7 +111,7 @@ public class ReportService {
      */
     private synchronized void refreshDataReportQueue() {
         List<DataReport> reportsForCheck = dataReportRepository.findReportForCheck();
-        reportsForCheck.removeIf(dataReport->dataReport.getMessagePerson()==null || dataReport.getFileSize()==0);
+        reportsForCheck.removeIf(dataReport->dataReport.getMessagePerson()==null || dataReport.getFileSize()==null);
         for (var newDataReport : reportsForCheck) {
             if (badReport.contains(newDataReport)) {
                 DataReport oldVersion = badReport.stream().filter(e -> e.equals(newDataReport)).findFirst().get();
