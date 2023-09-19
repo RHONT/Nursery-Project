@@ -63,4 +63,12 @@ public class DataReport{
     public Report getReport() {
         return report;
     }
+
+    public boolean isCheckMessage() {
+        return checkMessage;
+    }
+
+    public void setCheckMessage(boolean checkMessage) {
+        this.checkMessage = checkMessage;
+    }
 }

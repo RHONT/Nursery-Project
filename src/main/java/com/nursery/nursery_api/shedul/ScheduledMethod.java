@@ -8,6 +8,7 @@ import com.nursery.nursery_api.repositiry.DataReportRepository;
 import com.nursery.nursery_api.repositiry.PersonRepository;
 import com.nursery.nursery_api.repositiry.ReportRepository;
 import com.nursery.nursery_api.service.ConnectService;
+import com.nursery.nursery_api.service.ReportService;
 import com.nursery.nursery_api.service.VolunteerService;
 import org.springframework.boot.autoconfigure.task.TaskExecutionProperties;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -18,22 +19,25 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ArrayBlockingQueue;
 
 
 @Component
 public class ScheduledMethod {
     private final DataReportRepository dataReportRepository;
     private final ReportRepository reportRepository;
+    private final ReportService reportService;
 
     private final PersonRepository personRepository;
     private final TelegramBot telegramBot;
     private final ConnectService connectService;
     private final VolunteerService volunteerService;
 
-    public ScheduledMethod(DataReportRepository dataReportRepository, ReportRepository reportRepository, PersonRepository personRepository, TaskExecutionProperties taskExecutionProperties, TelegramBot telegramBot, ConnectService connectService, VolunteerService volunteerService) {
+    public ScheduledMethod(DataReportRepository dataReportRepository, ReportRepository reportRepository, PersonRepository personRepository, TaskExecutionProperties taskExecutionProperties, ReportService reportService, TelegramBot telegramBot, ConnectService connectService, VolunteerService volunteerService) {
         this.dataReportRepository = dataReportRepository;
         this.reportRepository = reportRepository;
         this.personRepository = personRepository;
+        this.reportService = reportService;
         this.telegramBot = telegramBot;
         this.connectService = connectService;
         this.volunteerService = volunteerService;
@@ -50,6 +54,22 @@ public class ScheduledMethod {
             dataReport.setReport(element);
             dataReport.setDateReport(LocalDate.now());
             dataReportRepository.save(dataReport);
+        }
+    }
+
+    /**
+     * В 23:55 метод очищает список непроверенных отчетов, отмечая их как проверенные, на случай перегруженности волонтеров.
+     */
+    @Scheduled(cron = "0 55 23 * * *")
+    public void skippedReportsForDay (){
+        ArrayBlockingQueue checkArray = reportService.getDataReportQueue();
+        List<DataReport> checkList = new ArrayList<>();
+        checkArray.drainTo(checkList);
+        if (!checkList.isEmpty()){
+            for (var element : checkList){
+                element.setCheckMessage(true);
+                dataReportRepository.save(element);
+            }
         }
     }
 
