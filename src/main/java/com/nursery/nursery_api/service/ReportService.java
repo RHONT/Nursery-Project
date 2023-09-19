@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -294,8 +295,16 @@ public class ReportService {
         return reportRepository.save(report);
     }
 
+
     public Report deleteReportByReportId(Long reportId){
-        return reportRepository.deleteReportByIdReport(reportId);
+        Optional<Report> report=reportRepository.findById(reportId);
+        if (report.isPresent()) {
+            List<DataReport> list=report.get().getDataReports();
+            dataReportRepository.deleteAll(list);
+            reportRepository.deleteById(reportId);
+            return report.get();
+        }
+        throw new NoSuchElementException("нет такого отчёта");
     }
 
     public ArrayBlockingQueue<DataReport> getDataReportQueue() {

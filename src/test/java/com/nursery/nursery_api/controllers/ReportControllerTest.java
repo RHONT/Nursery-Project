@@ -117,15 +117,12 @@ class ReportControllerTest {
                 .andExpect(jsonPath("$.idReport").value(report.getIdReport()));
     }
 
-//    @Test
-//    void deleteReportByReportId() throws Exception {
-//        when(reportRepository.deleteReportByIdReport(anyLong())).thenReturn(report);
-//        when(reportRepository.findById(anyLong())).thenReturn(Optional.ofNullable(report));
-//
-//
-//        mockMvc.perform(MockMvcRequestBuilders
-//                        .delete("/nursery_app/admin_functions/persons/delete_report?reportId="+report.getIdReport())
-//                        .accept(MediaType.APPLICATION_JSON))
-//                .andExpect(status().isOk());
-//    }
+    @Test
+    void deleteReportByReportId() throws Exception {
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .delete("/nursery_app/admin_functions/reports/delete_report?reportId="+report.getIdReport())
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
 }
