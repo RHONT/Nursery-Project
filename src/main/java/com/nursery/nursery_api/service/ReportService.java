@@ -98,7 +98,9 @@ public class ReportService {
      */
     @Scheduled(cron = "0 0 21 * * *")
     private void createDataReportList() {
-        dataReportQueue.addAll(dataReportRepository.findReportForCheck());
+        List<DataReport> reportForCheck = dataReportRepository.findReportForCheck();
+        reportForCheck.removeIf(dataReport->dataReport.getMessagePerson()==null || dataReport.getFileSize()==0);
+        dataReportQueue.addAll(reportForCheck);
     }
 
     /**
@@ -108,14 +110,14 @@ public class ReportService {
      */
     private synchronized void refreshDataReportQueue() {
         List<DataReport> reportsForCheck = dataReportRepository.findReportForCheck();
+        reportsForCheck.removeIf(dataReport->dataReport.getMessagePerson()==null || dataReport.getFileSize()==0);
         for (var newDataReport : reportsForCheck) {
             if (badReport.contains(newDataReport)) {
                 DataReport oldVersion = badReport.stream().filter(e -> e.equals(newDataReport)).findFirst().get();
                 if (!compareDataReport(newDataReport, oldVersion)) {
                     badReport.remove(oldVersion);
-//                    badReport.add(newDataReport);
-                }
-                continue;
+                } else continue;
+
             }
 
             if (dataReportQueue.contains(newDataReport)) {
@@ -153,7 +155,6 @@ public class ReportService {
      * @return
      */
     public synchronized DataReport getOneDataReport() {
-        // добпаить
         Optional<Volunteer> reportVolunteer = volunteersList.keySet().stream().filter(e -> volunteersList.get(e) == 1L).findFirst();
         if (!dataReportQueue.isEmpty() && reportVolunteer.isPresent()) {
             return dataReportQueue.poll();
@@ -200,7 +201,6 @@ public class ReportService {
     /**
      * Волонтер выходит из этого режима
      * 1 мы меняем на 0
-     *
      * @param idChatVolunteer
      */
     //todo рефактор, код повторяет reportModeActive
@@ -294,5 +294,11 @@ public class ReportService {
         return reportRepository.deleteReportByIdReport(reportId);
     }
 
+    public ArrayBlockingQueue<DataReport> getDataReportQueue() {
+        return dataReportQueue;
+    }
 
+    public Set<DataReport> getBadReport() {
+        return badReport;
+    }
 }
