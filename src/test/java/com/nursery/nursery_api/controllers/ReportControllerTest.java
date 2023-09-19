@@ -24,7 +24,7 @@ import org.telegram.telegrambots.meta.TelegramBotsApi;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -120,9 +120,13 @@ class ReportControllerTest {
     @Test
     void deleteReportByReportId() throws Exception {
 
+        when(reportRepository.findById(report.getIdReport())).thenReturn(Optional.of(report));
+
         mockMvc.perform(MockMvcRequestBuilders
                         .delete("/nursery_app/admin_functions/reports/delete_report?reportId="+report.getIdReport())
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
+
+        verify(reportRepository,times(1)).deleteById(report.getIdReport());
     }
 }
