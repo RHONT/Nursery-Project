@@ -223,6 +223,9 @@ public class ReportService {
         if (!doneReport.contains(dataReport)) {
             doneReport.add(dataReport);
             dataReportRepository.save(dataReport);
+            if (badReport.contains(dataReport)) {
+                badReport.remove(dataReport);
+            }
             log.info("Отчет: {} дата: {} успешно обработан", dataReport.getReport().getIdReport(), dataReport.getDateReport());
             return dataReport;
         }
