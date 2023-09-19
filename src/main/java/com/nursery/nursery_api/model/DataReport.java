@@ -14,6 +14,7 @@ import java.util.Objects;
 @ToString
 @Setter
 @Getter
+@Builder
 @Entity
 @Table(name = "data_report")
 public class DataReport{

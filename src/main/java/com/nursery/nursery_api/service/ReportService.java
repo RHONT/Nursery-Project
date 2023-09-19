@@ -96,10 +96,11 @@ public class ReportService {
      * Если есть то запускаем метод EveryoneWork, который занимает всех свободных волонтеров работой
      * Нужно понять какое выражение прописать, чтобы с 21:00 и потом каждые полчаса обновлять очередь
      */
+    //todo закрыть метод, открывал только ради тестов
     @Scheduled(cron = "0 0 21 * * *")
-    private void createDataReportList() {
+    public void createDataReportList() {
         List<DataReport> reportForCheck = dataReportRepository.findReportForCheck();
-        reportForCheck.removeIf(dataReport->dataReport.getMessagePerson()==null || dataReport.getFileSize()==0);
+        reportForCheck.removeIf(dataReport->dataReport.getFileSize()==null || dataReport.getMessagePerson()==null) ;
         dataReportQueue.addAll(reportForCheck);
     }
 
@@ -239,7 +240,7 @@ public class ReportService {
      */
     public synchronized DataReport reportIsBadNotSaveToBd(DataReport dataReport) {
         if (!badReport.contains(dataReport)) {
-            doneReport.add(dataReport);
+            badReport.add(dataReport);
             log.info("Плохой отчет: {} дата: {} занесен в черный список", dataReport.getReport().getIdReport(), dataReport.getDateReport());
             return dataReport;
         }
