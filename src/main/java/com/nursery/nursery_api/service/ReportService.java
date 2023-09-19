@@ -32,6 +32,24 @@ public class ReportService {
     private Set<Long> reportJournal=new ConcurrentSkipListSet<>();
 
     /**
+     * Очередь из сущностей DataReport
+     * todo если до 00:00 в очереди остались отчеты их нужно сохранить и перенести на следующий день как-то
+     */
+    private final ArrayBlockingQueue<DataReport> dataReportQueue = new ArrayBlockingQueue<DataReport>(200);
+
+    /**
+     * Успешно сданные отчеты.Это лишняя проверка, вдруг в промежутке из-за
+     * непродуманной многопоточности, что-то пойдет не так.
+     */
+    private final Set<DataReport> doneReport = new HashSet<>();
+    /**
+     * Успешно сданные отчеты. Хранилище нужно для обновления основной очереди.
+     * Так как если отчет не изменился и не поправился никак, то значит его не нужно добавлять.
+     */
+    private final Set<DataReport> badReport = new HashSet<>();
+
+
+    /**
      * Добавляем человека в спискок желающих отправить отчет
      * @param chatIdPersonReport
      */
@@ -53,29 +71,11 @@ public class ReportService {
 
 
 
-
-    /**
-     * Очередь из сущностей DataReport
-     * todo если до 00:00 в очереди остались отчеты их нужно сохранить и перенести на следующий день как-то
-     */
-    private final ArrayBlockingQueue<DataReport> dataReportQueue = new ArrayBlockingQueue<DataReport>(200);
-
-    /**
-     * Успешно сданные отчеты.Это лишняя проверка, вдруг в промежутке из-за
-     * непродуманной многопоточности, что-то пойдет не так.
-     */
-    private final Set<DataReport> doneReport = new HashSet<>();
-    /**
-     * Успешно сданные отчеты. Хранилище нужно для обновления основной очереди.
-     * Так как если отчет не изменился и не поправился никак, то значит его не нужно добавлять.
-     */
-    private final Set<DataReport> badReport = new HashSet<>();
-
-
     /**
      * Проверяем находится ли волонтер в режиме проверки отчетов.
      * Можно добавить команду для волонтера <b>"Отчеты?"</b>
      * И выдавать ему соответствующе сообщения
+     * Это нужно для сомого волонтера. Чтобы он понимал, находиться ли он в этом режиме.
      * @param chatId -
      * @return
      */
@@ -108,7 +108,7 @@ public class ReportService {
                 DataReport oldVersion = badReport.stream().filter(e -> e.equals(newDataReport)).findFirst().get();
                 if (!compareDataReport(newDataReport, oldVersion)) {
                     badReport.remove(oldVersion);
-                    badReport.add(newDataReport);
+//                    badReport.add(newDataReport);
                 }
                 continue;
             }
@@ -148,6 +148,7 @@ public class ReportService {
      * @return
      */
     public synchronized DataReport getOneDataReport() {
+        // добпаить
         Optional<Volunteer> reportVolunteer = volunteersList.keySet().stream().filter(e -> volunteersList.get(e) == 1L).findFirst();
         if (!dataReportQueue.isEmpty() && reportVolunteer.isPresent()) {
             return dataReportQueue.poll();

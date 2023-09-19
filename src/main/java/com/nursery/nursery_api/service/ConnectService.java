@@ -92,7 +92,7 @@ public class ConnectService {
     @Scheduled(initialDelay = 2000, fixedRate = 5000)
     public void manageVolunteerAndPerson() {
         if (!queueMessage.isEmpty() && freeVolunteers()) {
-            EveryoneWork(volunteersList, queueMessage);
+            everyoneWork(volunteersList, queueMessage);
         }
     }
 
@@ -101,7 +101,7 @@ public class ConnectService {
      * @param queueMessage   - очередь от вопрошающих
      *                       Суть метода - занять всех свободных волонтеров из очереди с вопросами от людей
      */
-    private void EveryoneWork(Map<Volunteer, Long> volunteersList, Queue<PostMessagePerson> queueMessage) {
+    private void everyoneWork(Map<Volunteer, Long> volunteersList, Queue<PostMessagePerson> queueMessage) {
 
         for (Map.Entry<Volunteer, Long> entry : volunteersList.entrySet()) {
             // если текущий волонтер свободен и если очередь не пуста, запускаем коннект!

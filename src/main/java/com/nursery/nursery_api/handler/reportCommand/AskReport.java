@@ -21,7 +21,9 @@ public class AskReport implements ReportHandler {
      */
     @Override
     public void handle(Long idChat, TelegramBot bot, ReportService reportService, NurseryDBService nurseryDBService, SendBotMessageService sendBotMessageService) {
+
         reportService.addNewPersonForReport(idChat);
+
         try {
             bot.execute(
                     SendMessage.

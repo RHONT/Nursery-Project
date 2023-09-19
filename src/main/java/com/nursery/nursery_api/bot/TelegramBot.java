@@ -34,7 +34,6 @@ public class TelegramBot extends TelegramLongPollingBot {
     private final DataReportRepository dataReportRepository;
     private final ReportRepository reportRepository;
     private final PersonRepository personRepository;
-
     private final NurseryDBService nurseryDBService;
     private final List<NurseryHandler> nurseryHandlerList;
     private final List<VolunteerHandler> volunteerHandlers;
@@ -67,9 +66,6 @@ public class TelegramBot extends TelegramLongPollingBot {
         this.connectService = connectService;
         this.reportService = reportService;
     }
-
-
-
 
     //    @SneakyThrows
     @Override
@@ -104,7 +100,6 @@ public class TelegramBot extends TelegramLongPollingBot {
                 Long idChat = update.getCallbackQuery().getMessage().getChatId();
                 checkMessage(message, idChat);
             }
-
     }
 
 

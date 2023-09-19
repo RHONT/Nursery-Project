@@ -42,6 +42,7 @@ public class CatAdoptButton implements NurseryHandler {
      */
     @Override
     public void handle(Long idChat, TelegramBot bot, NurseryDBService nurseryDBService, SendBotMessageService sendBotMessageService) {
+
         sendBotMessageService.sendMessage(idChat.toString(), ADOPT_MESSAGE, buttonsNameForCat, callDataCat);
     }
 

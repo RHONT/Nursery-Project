@@ -14,6 +14,7 @@ public class CallVolunteer implements VolunteerHandler {
     @Override
     public void handle(Long idChat, TelegramBot bot, ConnectService connectService) {
         PostMessagePerson postMessagePerson=new PostMessagePerson(idChat,"Доброго времени суток, у меня вопрос");
+
         connectService.addQueueMessage(postMessagePerson);
 
         try {
