@@ -12,7 +12,6 @@ import com.nursery.nursery_api.repositiry.ReportRepository;
 import com.nursery.nursery_api.service.*;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.GetFile;
@@ -20,7 +19,6 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.*;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -29,7 +27,6 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
-
 public class TelegramBot extends TelegramLongPollingBot {
     private final DataReportRepository dataReportRepository;
     private final ReportRepository reportRepository;
@@ -43,6 +40,8 @@ public class TelegramBot extends TelegramLongPollingBot {
     private final ConnectService connectService;
     private final ReportService reportService;
 
+    private final VolunteerService volunteerService;
+
     @Value("${telegram.bot.token}")
     private String token;
 
@@ -54,7 +53,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                        List<VolunteerHandler> volunteerHandlers,
                        List<VolunteerCommandHandler> volunteerCommandHandlers,
                        List<ReportHandler> reportHandlers, ConnectService connectService,
-                       ReportService reportService) {
+                       ReportService reportService, VolunteerService volunteerService) {
         this.dataReportRepository = dataReportRepository;
         this.reportRepository = reportRepository;
         this.personRepository = personRepository;
@@ -65,6 +64,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         this.reportHandlers = reportHandlers;
         this.connectService = connectService;
         this.reportService = reportService;
+        this.volunteerService = volunteerService;
     }
 
     //    @SneakyThrows
