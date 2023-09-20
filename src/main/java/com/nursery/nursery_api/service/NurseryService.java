@@ -47,7 +47,7 @@ public class NurseryService {
      * @return Nursery object
      */
     public Nursery findNurseryByName(String nurseryName){
-        logger.info("Вызван метод findNurseryByName");
+        logger.info("Вызван метод findNurseryByName с параметром {}", nurseryName);
         return nurseryRepository.findNurseryByNameNursery(nurseryName);
     }
 
@@ -57,7 +57,7 @@ public class NurseryService {
      * @return nurseries Id
      */
     public Long getNurseryIdByName (String nurseryName){
-        logger.info("Вызван метод getNurseryIdByName");
+        logger.info("Вызван метод getNurseryIdByName с параметром {}", nurseryName);
         return nurseryRepository.nurseryIdByName(nurseryName);
     }
 
@@ -67,7 +67,7 @@ public class NurseryService {
      * @return deleted object Nursery
      */
     public Nursery deleteNurseryByName(String nurseryName){
-        logger.info("Вызван метод deleteNurseryByName");
+        logger.info("Вызван метод deleteNurseryByName с параметром {}", nurseryName);
         return nurseryRepository.deleteNurseryByNameNursery(nurseryName);
     }
 

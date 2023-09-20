@@ -1,6 +1,8 @@
 package com.nursery.nursery_api.service;
 
 import com.nursery.nursery_api.bot.TelegramBot;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -13,12 +15,16 @@ import java.util.List;
 
 public class SendBotMessageServiceImpl implements SendBotMessageService {
 
+
     private final TelegramBot telegramBot;
 
     @Autowired
     public SendBotMessageServiceImpl(TelegramBot telegramBot) {
+
         this.telegramBot = telegramBot;
     }
+
+    private final Logger logger = LoggerFactory.getLogger(ReportService.class);
 
     @Override
     public void sendMessage(String chatId, String message, String[] buttonsName, String[] callData) {
