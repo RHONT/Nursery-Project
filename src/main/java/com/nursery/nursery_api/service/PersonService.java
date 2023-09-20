@@ -22,11 +22,11 @@ public class PersonService {
         return personRepository.save(person);
     }
     public Person findPersonByName (String personName){
-        logger.info("Вызван метод findPersonByName");
+        logger.info("Вызван метод findPersonByName с именем: {}", personName);
         return personRepository.findPersonByName(personName);
     }
     public Person findPersonByPhone (String phone){
-        logger.info("Вызван метод findPersonByPhone");
+        logger.info("Вызван метод findPersonByPhone с телефоном {}", phone);
         return personRepository.findPersonByPhone(phone);
     }
     public List<Person> findAllPersons (){
@@ -40,7 +40,7 @@ public class PersonService {
     }
 
     public Person deletePersonByName (String personName){
-        logger.info("Вызван метод deletePersonByName");
+        logger.info("Вызван метод deletePersonByName {}", personName);
         return personRepository.deletePersonByName(personName);
     }
 }

@@ -51,6 +51,7 @@ public class VolunteerService {
      * @return List<Volunteer>
      */
     public List<Volunteer> freeVolunteersForWork (){
+        logger.info("Вызван метод freeVolunteersForWork");
         return volunteerRepository.findVolunteersByBusyFalse();
     }
 

@@ -22,7 +22,7 @@ import static com.nursery.nursery_api.Global.GlobalVariable.volunteersList;
 
 @Service
 public class ConnectService {
-    private final Logger log = LoggerFactory.getLogger(ConnectService.class);
+    private final Logger logger = LoggerFactory.getLogger(ConnectService.class);
 
     private final TelegramBot telegramBot;
 
@@ -49,6 +49,7 @@ public class ConnectService {
      */
     @PostConstruct
     private void init() {
+        logger.info("Вызван метод init");
         List<Volunteer> allVolunteers = volunteerRepository.findAll();
         for (var element : allVolunteers) {
             volunteersList.put(element, 0L);
@@ -60,6 +61,7 @@ public class ConnectService {
      * @return Проверка пользователя, присутствует ли он в активной беседе.
      */
     public boolean containInActiveDialog(Long chatId) {
+        logger.info("containInActiveDialog {}", chatId);
         return dialogs.contains(chatId);
     }
 
@@ -68,6 +70,7 @@ public class ConnectService {
      *                          В этом объекте есть idChat человека и поле с вопросом.
      */
     public void addQueueMessage(PostMessagePerson postMessagePerson) {
+        logger.info("Вызван метод addQueueMessage.");
         if (postMessagePerson != null) {
             queueMessage.add(postMessagePerson);
         }
@@ -91,6 +94,7 @@ public class ConnectService {
      */
     @Scheduled(initialDelay = 2000, fixedRate = 5000)
     public void manageVolunteerAndPerson() {
+        logger.info("Вызван метод manageVolunteerAndPerson.");
         if (!queueMessage.isEmpty() && freeVolunteers()) {
             everyoneWork(volunteersList, queueMessage);
         }
@@ -102,7 +106,7 @@ public class ConnectService {
      *                       Суть метода - занять всех свободных волонтеров из очереди с вопросами от людей
      */
     private void everyoneWork(Map<Volunteer, Long> volunteersList, Queue<PostMessagePerson> queueMessage) {
-
+        logger.info("Вызван метод everyoneWork.");
         for (Map.Entry<Volunteer, Long> entry : volunteersList.entrySet()) {
             // если текущий волонтер свободен и если очередь не пуста, запускаем коннект!
             if (!entry.getKey().isBusy() && queueMessage.peek() != null) {
@@ -110,12 +114,14 @@ public class ConnectService {
                 addToDialogsUser(postMessagePerson.getChatIdPerson());
 
                 try {
+                    logger.info("Попытка послать сообщение в чат.");
                     telegramBot.execute(SendMessage.
                             builder().
                             chatId(entry.getKey().getVolunteerChatId()).
                             text(postMessagePerson.getMessage()).
                             build());
                 } catch (TelegramApiException e) {
+                    logger.warn("Сообщение не послано.");
                     e.printStackTrace();
                 }
                 // если условия эти не выполняются, прекращаем цикл
@@ -132,6 +138,7 @@ public class ConnectService {
      * @return
      */
     public boolean freeVolunteers() {
+        logger.info("Вызван метод freeVolunteers");
         return volunteersList.keySet().stream().anyMatch(volunteer -> !volunteer.isBusy());
     }
 
@@ -142,6 +149,7 @@ public class ConnectService {
      * @param chatId
      */
     public void addToDialogsUser(Long chatId) {
+        logger.info("Вызван метод init addToDialogsUser с параметром {}.", chatId);
         Optional<Volunteer> volunteer = volunteersList.keySet().stream().filter(e -> !e.isBusy()).findFirst();
         if (volunteer.isPresent()) {
             volunteer.get().setBusy(true);
@@ -157,6 +165,7 @@ public class ConnectService {
      * @param chatIdVolunteer - чат волонтера, который инициирует завершение беседы
      */
     public void disconnect(Long chatIdVolunteer) {
+        logger.info("Вызван метод disconnect с параметром {}.", chatIdVolunteer);
         Optional<Volunteer> volunteer = getVolunteerByChatId(chatIdVolunteer);
         if (volunteer.isPresent()) {
             // удаляем из диалогов и волонтера и вопрошающего
@@ -173,6 +182,7 @@ public class ConnectService {
      *                        Его занятость становиться на true
      */
     public void stopWorkVolunteer(Long chatIdVolunteer) {
+        logger.info("Вызван метод stopWorkVolunteer.");
         // делаем проверку нет ли волонтера в активной беседе
         // если есть, то чистим ее
         if (dialogs.contains(chatIdVolunteer)) {
@@ -195,6 +205,7 @@ public class ConnectService {
      * @return
      */
     public Volunteer addNewVolunteer(Volunteer volunteer) {
+        logger.info("Вызван метод addNewVolunteer.");
         if (volunteer != null) {
             // заносим товарища в базу
             volunteerRepository.save(volunteer);
@@ -214,6 +225,7 @@ public class ConnectService {
      * @return
      */
     public Volunteer iAmGonnaWayVolunteer(Long idChatVolunteer) {
+        logger.info("Вызван метод iAmGonnaWayVolunteer");
         Optional<Volunteer> volunteer = volunteerRepository.findByVolunteerChatId(idChatVolunteer);
         if (volunteer.isPresent()) {
             volunteerRepository.delete(volunteer.get());
@@ -236,6 +248,7 @@ public class ConnectService {
      * @return
      */
     public Volunteer iWantWorkVolunteer(Long chatIdVolunteer) {
+        logger.info("Вызван метод iWantWorkVolunteer с параметром {}", chatIdVolunteer);
         Optional<Volunteer> volunteer = volunteersList.keySet().stream().filter(e -> Objects.equals(e.getVolunteerChatId(), chatIdVolunteer)).findFirst();
         if (volunteer.isPresent()) {
             volunteer.get().setBusy(false);
@@ -255,6 +268,7 @@ public class ConnectService {
      * @return Найти волонтера по его чату из оперативной памяти
      */
     private Optional<Volunteer> getVolunteerByChatId(Long chatIdVolunteer) {
+        logger.info("Вызван метод getVolunteerByChatId с параметром {}", chatIdVolunteer);
         return volunteersList.
                 keySet().
                 stream().
@@ -268,6 +282,7 @@ public class ConnectService {
      * Суть: По чату вопрошающего найти id chat волонтера, который сейчас с ним общаеться
      */
     public Long getVolunteerChatIdByPersonChatId(Long chatIdPerson) {
+        logger.info("Вызван метод getVolunteerChatIdByPersonChatId с параметром {}", chatIdPerson);
         return volunteersList.
                 entrySet().
                 stream().
@@ -283,6 +298,7 @@ public class ConnectService {
      * @return
      */
     public Long getPersonChatIdByChatIdVolunteer(Long chatIdVolunteer) {
+        logger.info("Вызван метод getPersonChatIdByChatIdVolunteer с параметром {}", chatIdVolunteer);
         Volunteer volunteer = volunteersList.keySet().stream().filter(e -> Objects.equals(e.getVolunteerChatId(), chatIdVolunteer)).findFirst().get();
         return volunteersList.get(volunteer);
     }

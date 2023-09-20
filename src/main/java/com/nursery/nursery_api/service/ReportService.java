@@ -21,7 +21,7 @@ import static com.nursery.nursery_api.Global.GlobalVariable.volunteersList;
 
 @Service
 public class ReportService {
-    private final Logger log = LoggerFactory.getLogger(ReportService.class);
+    private final Logger logger = LoggerFactory.getLogger(ReportService.class);
 
     private final DataReportRepository dataReportRepository;
     private final ReportRepository reportRepository;
@@ -60,6 +60,7 @@ public class ReportService {
      * @param chatIdPersonReport
      */
     public void addNewPersonForReport(Long chatIdPersonReport){
+        logger.info("Вызван метод addNewPersonForReport {}", chatIdPersonReport);
         reportJournal.add(chatIdPersonReport);
     }
 
@@ -68,10 +69,12 @@ public class ReportService {
      * @param chatIdPersonReport
      */
     public void deletePersonForReport(Long chatIdPersonReport){
+        logger.info("Вызван метод deletePersonForReport с параметром {}.", chatIdPersonReport);
         reportJournal.remove(chatIdPersonReport);
     }
 
     public boolean containPersonForReport(Long chatIdPerson){
+        logger.info("Вызван метод containPersonForReport с параметром {}.", chatIdPerson);
         return reportJournal.contains(chatIdPerson);
     }
 
@@ -86,6 +89,7 @@ public class ReportService {
      * @return
      */
     public boolean isReportVolunteer(Long chatId) {
+        logger.info("Вызван метод isReportVolunteer с параметром {}.", chatId);
         return volunteersList
                 .keySet()
                 .stream()
@@ -100,6 +104,7 @@ public class ReportService {
     //todo закрыть метод, открывал только ради тестов
     @Scheduled(cron = "0 0 21 * * *")
     public void createDataReportList() {
+        logger.info("Вызван метод createDataReportList.");
         List<DataReport> reportForCheck = dataReportRepository.findReportForCheck();
         reportForCheck.removeIf(dataReport->dataReport.getFileSize()==null || dataReport.getMessagePerson()==null) ;
         dataReportQueue.addAll(reportForCheck);
@@ -111,6 +116,7 @@ public class ReportService {
      * todo Тут либо каждому дать право по фразе "Обновить", либо какой-то хитрый cron написать.
      */
     private synchronized void refreshDataReportQueue() {
+        logger.info("Вызван метод refreshDataReportQueue.");
         List<DataReport> reportsForCheck = dataReportRepository.findReportForCheck();
         reportsForCheck.removeIf(dataReport->dataReport.getMessagePerson()==null || dataReport.getFileSize()==null);
         for (var newDataReport : reportsForCheck) {
@@ -138,6 +144,7 @@ public class ReportService {
      * @return
      */
     private boolean compareDataReport(DataReport newVersion, DataReport oldVersion) {
+        logger.info("Вызван метод compareDataReport.");
         return
                 newVersion.getFileSize().equals(oldVersion.getFileSize()) &&
                         newVersion.getMessagePerson().equals(oldVersion.getMessagePerson());
@@ -157,6 +164,7 @@ public class ReportService {
      * @return
      */
     public synchronized DataReport getOneDataReport() {
+        logger.info("Вызван метод getOneDataReport.");
         Optional<Volunteer> reportVolunteer = volunteersList.keySet().stream().filter(e -> volunteersList.get(e) == 1L).findFirst();
         if (!dataReportQueue.isEmpty() && reportVolunteer.isPresent()) {
             return dataReportQueue.poll();
@@ -171,6 +179,7 @@ public class ReportService {
      * @return
      */
     public String statistic(){
+        logger.info("Вызван метод statistic.");
         StringBuilder result=new StringBuilder();
         int amountConsultVolunteer= (int) volunteersList.keySet().stream().filter(e-> !e.isBusy()).count();  // свободные
         int amountRestOrWorkVolunteer= (int) volunteersList.keySet().stream().filter(Volunteer::isBusy).count();     // на отдыхе или работе
@@ -191,6 +200,7 @@ public class ReportService {
      * @param idChatVolunteer
      */
     public void reportModeActive(Long idChatVolunteer) {
+        logger.info("Вызван метод reportModeActive с параметром {}.", idChatVolunteer);
         for (Map.Entry<Volunteer, Long> volunteer : volunteersList.entrySet()) {
             if (Objects.equals(volunteer.getKey().getVolunteerChatId(), idChatVolunteer)) {
                 volunteer.getKey().setBusy(true);
@@ -207,6 +217,7 @@ public class ReportService {
      */
     //todo рефактор, код повторяет reportModeActive
     public void reportModeDisable(Long idChatVolunteer) {
+        logger.info("Вызван метод reportModeDisable с параметром {}.", idChatVolunteer);
         for (Map.Entry<Volunteer, Long> volunteer : volunteersList.entrySet()) {
             if (Objects.equals(volunteer.getKey().getVolunteerChatId(), idChatVolunteer)) {
                 volunteer.getKey().setBusy(true);
@@ -221,16 +232,17 @@ public class ReportService {
      * @return Сохраняем в базу отчет
      */
     public synchronized DataReport reportIsDoneSaveToBd(DataReport dataReport) {
+        logger.info("Вызван метод reportIsDoneSaveToBd.");
         if (!doneReport.contains(dataReport)) {
             doneReport.add(dataReport);
             dataReportRepository.save(dataReport);
             if (badReport.contains(dataReport)) {
                 badReport.remove(dataReport);
             }
-            log.info("Отчет: {} дата: {} успешно обработан", dataReport.getReport().getIdReport(), dataReport.getDateReport());
+            logger.info("Отчет: {} дата: {} успешно обработан", dataReport.getReport().getIdReport(), dataReport.getDateReport());
             return dataReport;
         }
-        log.debug("Отчет: {} дата: {} уже был обработан!", dataReport.getReport().getIdReport(), dataReport.getDateReport());
+        logger.debug("Отчет: {} дата: {} уже был обработан!", dataReport.getReport().getIdReport(), dataReport.getDateReport());
         return dataReport;
     }
 
@@ -245,10 +257,10 @@ public class ReportService {
     public synchronized DataReport reportIsBadNotSaveToBd(DataReport dataReport) {
         if (!badReport.contains(dataReport)) {
             badReport.add(dataReport);
-            log.info("Плохой отчет: {} дата: {} занесен в черный список", dataReport.getReport().getIdReport(), dataReport.getDateReport());
+            logger.info("Плохой отчет: {} дата: {} занесен в черный список", dataReport.getReport().getIdReport(), dataReport.getDateReport());
             return dataReport;
         }
-        log.debug("Отвергнутый отчет: {} дата: {} уже был обработан!", dataReport.getReport().getIdReport(), dataReport.getDateReport());
+        logger.debug("Отвергнутый отчет: {} дата: {} уже был обработан!", dataReport.getReport().getIdReport(), dataReport.getDateReport());
         return dataReport;
     }
 
@@ -259,6 +271,7 @@ public class ReportService {
      * @return Report
      */
     public Report addNewReportForPerson (Report report){
+        logger.info("Вызван метод addNewReportForPerson.");
         return reportRepository.save (report);
     }
     /**
@@ -267,6 +280,7 @@ public class ReportService {
      * @return Report
      */
     public Report findReportInfoForPersonId (Long personId){
+        logger.info("Вызван метод findReportInfoForPersonId с параметром {}.", personId);
         return reportRepository.findReportByPersonId(personId);
     }
 
@@ -276,6 +290,7 @@ public class ReportService {
      * @return Report
      */
     public Report findReportByReportId (Long reportId){
+        logger.info("Вызван метод findReportByReportId с параметром {}.", reportId);
         return reportRepository.findByIdReport(reportId);
     }
 
@@ -284,6 +299,7 @@ public class ReportService {
      * @return List<Report>
      */
     public List<Report> findAll (){
+        logger.info("Вызван метод findAll.");
         return reportRepository.findAll();
     }
     /**
@@ -292,11 +308,13 @@ public class ReportService {
      * @return Report
      */
     public Report editReport (Report report){
+        logger.info("Вызван метод editReport .");
         return reportRepository.save(report);
     }
 
 
     public Report deleteReportByReportId(Long reportId){
+        logger.info("Вызван метод deleteReportByReportId с параметром {}.", reportId);
         Optional<Report> report=reportRepository.findById(reportId);
         if (report.isPresent()) {
             List<DataReport> list=report.get().getDataReports();
@@ -308,10 +326,12 @@ public class ReportService {
     }
 
     public ArrayBlockingQueue<DataReport> getDataReportQueue() {
+        logger.info("Вызван метод getDataReportQueue.");
         return dataReportQueue;
     }
 
     public Set<DataReport> getBadReport() {
+        logger.info("Вызван метод getBadReport.");
         return badReport;
     }
 }
