@@ -1,9 +1,6 @@
 package com.nursery.nursery_api.bot;
 
-import com.nursery.nursery_api.handler.NurseryHandler;
-import com.nursery.nursery_api.handler.ReportHandler;
-import com.nursery.nursery_api.handler.VolunteerCommandHandler;
-import com.nursery.nursery_api.handler.VolunteerHandler;
+import com.nursery.nursery_api.handler.*;
 import com.nursery.nursery_api.model.DataReport;
 import com.nursery.nursery_api.model.Volunteer;
 import com.nursery.nursery_api.repositiry.DataReportRepository;
@@ -32,10 +29,13 @@ public class TelegramBot extends TelegramLongPollingBot {
     private final ReportRepository reportRepository;
     private final PersonRepository personRepository;
     private final NurseryDBService nurseryDBService;
+
     private final List<NurseryHandler> nurseryHandlerList;
     private final List<VolunteerHandler> volunteerHandlers;
     private final List<VolunteerCommandHandler> volunteerCommandHandlers;
     private final List<ReportHandler> reportHandlers;
+    private final  List<DataReportHandler> dataReportHandlers;
+
     private final SendBotMessageService sendBotMessageService = new SendBotMessageServiceImpl(this);
     private final ConnectService connectService;
     private final ReportService reportService;
@@ -52,7 +52,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                        List<NurseryHandler> nurseryHandlerList,
                        List<VolunteerHandler> volunteerHandlers,
                        List<VolunteerCommandHandler> volunteerCommandHandlers,
-                       List<ReportHandler> reportHandlers, ConnectService connectService,
+                       List<ReportHandler> reportHandlers, List<DataReportHandler> dataReportHandlers, ConnectService connectService,
                        ReportService reportService, VolunteerService volunteerService) {
         this.dataReportRepository = dataReportRepository;
         this.reportRepository = reportRepository;
@@ -62,6 +62,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         this.volunteerHandlers = volunteerHandlers;
         this.volunteerCommandHandlers = volunteerCommandHandlers;
         this.reportHandlers = reportHandlers;
+        this.dataReportHandlers = dataReportHandlers;
         this.connectService = connectService;
         this.reportService = reportService;
         this.volunteerService = volunteerService;
@@ -70,6 +71,13 @@ public class TelegramBot extends TelegramLongPollingBot {
     //    @SneakyThrows
     @Override
     public void onUpdateReceived(Update update) {
+
+        if (update.hasMessage() && volunteerService.isVolunteer(update.getMessage().getChatId())) {
+            if (update.getMessage().getText().equals("Меню")) {
+                checkMessage("-mainVolunteer",update.getMessage().getChatId());
+                return;
+            }
+        }
 
         if (update.hasMessage() && update.getMessage().hasPhoto()) {
             Message message = update.getMessage();
@@ -98,6 +106,7 @@ public class TelegramBot extends TelegramLongPollingBot {
             } else if (update.hasCallbackQuery()) {
                 String message = update.getCallbackQuery().getData();
                 Long idChat = update.getCallbackQuery().getMessage().getChatId();
+                checkDataReport(message, idChat,update);
                 checkMessage(message, idChat);
             }
     }
@@ -112,6 +121,11 @@ public class TelegramBot extends TelegramLongPollingBot {
     public String getBotToken() {
         return token;
     }
+
+//    private void checkCommandVolunteer(String message, Long chatId){
+//
+//    }
+
 
     /**
      * @param message - строка берется из CallbackQuery. Это значение, что лежит "под кнопкой"
@@ -134,7 +148,16 @@ public class TelegramBot extends TelegramLongPollingBot {
 
         for (var element : reportHandlers) {
             if (element.supply(message)) {
-                element.handle(chatId, this,reportService, nurseryDBService, sendBotMessageService);
+                element.handle(chatId, this,reportService, nurseryDBService, sendBotMessageService,connectService);
+                break;
+            }
+        }
+    }
+
+    private void checkDataReport(String message, Long chatId, Update update){
+        for (var element : dataReportHandlers) {
+            if (element.supply(message)) {
+                element.handle(chatId, this,update,reportService);
                 break;
             }
         }
@@ -258,20 +281,7 @@ public class TelegramBot extends TelegramLongPollingBot {
 }
 
 
-// Дальше описана логика как мы достаем картинку из базы
-// и отправляем нужному пользователю.
 
-//    SendPhoto sendPhoto = new SendPhoto();
-//
-//    DataReport dataReportReturn = dataReportRepository.findByReportAndDateReport(report, LocalDate.now()).get();
-//    byte[] foto = dataReportReturn.getFoto();
-//                sendPhoto.setChatId(update.getMessage().getChatId());
-//
-//                        InputFile inputFile = new InputFile(new ByteArrayInputStream(foto), "photo.jpg");
-//                        sendPhoto.setPhoto(inputFile); // Установка фотографии в объекте SendPhoto
-//                        try {
-//                        this.execute(sendPhoto);
-//                        } catch (TelegramApiException e) {
-//                        e.printStackTrace();
-//                        }
+
+
 

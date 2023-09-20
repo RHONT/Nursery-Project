@@ -3,6 +3,7 @@ package com.nursery.nursery_api.handler.reportCommand;
 import com.nursery.nursery_api.bot.TelegramBot;
 import com.nursery.nursery_api.handler.NurseryHandler;
 import com.nursery.nursery_api.handler.ReportHandler;
+import com.nursery.nursery_api.service.ConnectService;
 import com.nursery.nursery_api.service.NurseryDBService;
 import com.nursery.nursery_api.service.ReportService;
 import com.nursery.nursery_api.service.SendBotMessageService;
@@ -20,7 +21,7 @@ public class AskReport implements ReportHandler {
      * @param sendBotMessageService
      */
     @Override
-    public void handle(Long idChat, TelegramBot bot, ReportService reportService, NurseryDBService nurseryDBService, SendBotMessageService sendBotMessageService) {
+    public void handle(Long idChat, TelegramBot bot, ReportService reportService, NurseryDBService nurseryDBService, SendBotMessageService sendBotMessageService, ConnectService connectService) {
 
         reportService.addNewPersonForReport(idChat);
 

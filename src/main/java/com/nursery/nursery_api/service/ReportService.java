@@ -98,7 +98,7 @@ public class ReportService {
      * Нужно понять какое выражение прописать, чтобы с 21:00 и потом каждые полчаса обновлять очередь
      */
     //todo закрыть метод, открывал только ради тестов
-    @Scheduled(cron = "0 0 21 * * *")
+    @Scheduled(cron = "5 * * * * *")
     public void createDataReportList() {
         List<DataReport> reportForCheck = dataReportRepository.findReportForCheck();
         reportForCheck.removeIf(dataReport->dataReport.getFileSize()==null || dataReport.getMessagePerson()==null) ;
@@ -177,9 +177,9 @@ public class ReportService {
         int amountReportMode= (int) volunteersList.keySet().stream().filter(e->volunteersList.get(e)==1L).count();
         result.append("Готовые к консультации: ").
                 append(amountConsultVolunteer).
-                append("\n На отдыхе или в активной работе: ").
+                append("\nНа отдыхе или в активной работе: ").
                 append(amountRestOrWorkVolunteer).
-                append("\n Отчеты проверяют: ").
+                append("\nОтчеты проверяют: ").
                 append(amountReportMode);
         return result.toString();
     }

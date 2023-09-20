@@ -11,16 +11,20 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 @Component
-public class StatisticsCommand implements ReportHandler {
+public class StopReportCheckCommand implements ReportHandler {
+
     @Override
     public void handle(Long idChat, TelegramBot bot, ReportService reportService, NurseryDBService nurseryDBService, SendBotMessageService sendBotMessageService, ConnectService connectService) {
+
+        reportService.reportModeDisable(idChat);
+        String response="Режим проверки отключен";
 
         try {
             bot.execute(
                     SendMessage.
                             builder().
                             chatId(idChat).
-                            text(reportService.statistic()).
+                            text(response).
                             build()
             );
         } catch (TelegramApiException e) {
@@ -30,6 +34,6 @@ public class StatisticsCommand implements ReportHandler {
 
     @Override
     public boolean supply(String inputMessage) {
-        return inputMessage.equals("-statistics");
+        return inputMessage.equals("-stopReportCheck");
     }
 }
