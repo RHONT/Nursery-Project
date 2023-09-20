@@ -28,6 +28,7 @@ public class SendBotMessageServiceImpl implements SendBotMessageService {
 
     @Override
     public void sendMessage(String chatId, String message, String[] buttonsName, String[] callData) {
+        logger.info("Вызван метод sendMessage");
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(chatId);
         sendMessage.setText(message);
@@ -36,12 +37,15 @@ public class SendBotMessageServiceImpl implements SendBotMessageService {
 
         try {
             telegramBot.execute(messageWithButtons);
+            logger.info("Сообщение успешно послано.");
         } catch (TelegramApiException e) {
             e.printStackTrace();
+            logger.debug("Послать сообщение не удалось.");
         }
     }
 
     private SendMessage createButtons(SendMessage message, String[] buttonNames, String[] callData) {
+        logger.info("Вызван метод createButtons");
         InlineKeyboardMarkup markupInline = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> rowsInline = new ArrayList<>();
 
