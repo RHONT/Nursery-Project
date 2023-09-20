@@ -72,7 +72,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     @Override
     public void onUpdateReceived(Update update) {
 
-        if (update.hasMessage() && volunteerService.isVolunteer(update.getMessage().getChatId())) {
+        if (update.hasMessage() && !update.getMessage().hasPhoto() && volunteerService.isVolunteer(update.getMessage().getChatId())) {
             if (update.getMessage().getText().equals("Меню")) {
                 checkMessage("-mainVolunteer",update.getMessage().getChatId());
                 return;

@@ -16,8 +16,8 @@ public class StartReportCheckCommand implements ReportHandler {
     @Override
     public void handle(Long idChat, TelegramBot bot, ReportService reportService, NurseryDBService nurseryDBService, SendBotMessageService sendBotMessageService, ConnectService connectService) {
 
-        String[] buttonsName = { "Получить отчет","Перестать проверять отчеты", "Статистика"};
-        String[] callDataMain = {"-getReport","-stopReportCheck","-statistics"};
+        String[] buttonsName = { "Получить отчет","Перестать проверять отчеты", "Обновить отчеты", "Статистика"};
+        String[] callDataMain = {"-getReport","-stopReportCheck","-refresh","-statistics"};
 
         reportService.reportModeActive(idChat);
         String ADOPT_MESSAGE="Проверка отчетов";
