@@ -86,19 +86,20 @@ class ReportControllerTest {
                 .andExpect(jsonPath("$.idReport").value(report.getIdReport()));
     }
 
-//    @Test
-//    void findReportByPersonId() throws Exception {
-//        JSONObject reportObject = new JSONObject();
-//        reportObject.put("id_report", report.getIdReport());
-//
-//        when(reportRepository.findReportByPersonId(anyLong())).thenReturn(report);
-//
-//        mockMvc.perform(MockMvcRequestBuilders
-//                        .get("/nursery_app/admin_functions/reports/find_report?id_report=123")
-//                        .accept(MediaType.APPLICATION_JSON))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$.idReport").value(report.getIdReport()));
-//    }
+    @Test
+    void findReportByPersonId() throws Exception {
+        JSONObject reportObject = new JSONObject();
+        reportObject.put("report_Id", report.getIdReport());
+
+        when(reportRepository.findReportByPersonId(anyLong())).thenReturn(report);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/nursery_app/admin_functions/reports/find_report?personId=123")
+                        .content(reportObject.toString())
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.idReport").value(report.getIdReport()));
+    }
 
     @Test
     void editReport() throws Exception {

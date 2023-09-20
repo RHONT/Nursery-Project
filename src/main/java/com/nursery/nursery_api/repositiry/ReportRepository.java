@@ -14,7 +14,7 @@ public interface ReportRepository extends JpaRepository<Report,Long> {
     @Query(value = "select * from Report where report.id_report = :idReport",nativeQuery = true)
     Report findByIdReport (@Param("idReport")Long idReport);
 
-    @Query(value = "SELECT * FROM Report WHERE report.id_person = :personId",nativeQuery = true)
+    @Query(value = "SELECT Report FROM Report WHERE report.id_person = :personId",nativeQuery = true)
     Report findReportByPersonId (@Param("personId") Long personId);
 
     Report deleteReportByIdReport (Long reportId);

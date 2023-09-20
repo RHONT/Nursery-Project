@@ -272,11 +272,11 @@ public class ReportService {
 
     /**
      * Method search Report (common entity for DataReport) by DataReport
-     * @param dataReport
+     * @param reportId
      * @return Report
      */
-    public Report findReportByDataReport (DataReport dataReport){
-        return dataReport.getReport();
+    public Report findReportByReportId (Long reportId){
+        return reportRepository.findByIdReport(reportId);
     }
 
     /**
