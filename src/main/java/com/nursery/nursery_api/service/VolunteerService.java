@@ -9,6 +9,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+
+import static com.nursery.nursery_api.Global.GlobalVariable.volunteersList;
 
 @Service
 public class VolunteerService {
@@ -44,6 +47,10 @@ public class VolunteerService {
     public Volunteer deleteVolunteerByName (String volunteerName){
         logger.info("Вызван метод deleteVolunteerByName");
         return volunteerRepository.deleteVolunteerByName(volunteerName);
+    }
+
+    public boolean isVolunteer(Long idChat){
+        return volunteersList.keySet().stream().anyMatch(e-> Objects.equals(e.getVolunteerChatId(), idChat));
     }
 
     /**

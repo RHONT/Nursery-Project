@@ -1,7 +1,6 @@
-package com.nursery.nursery_api.handler.reportCommand;
+package com.nursery.nursery_api.handler.reportVolunteerCommand;
 
 import com.nursery.nursery_api.bot.TelegramBot;
-import com.nursery.nursery_api.handler.NurseryHandler;
 import com.nursery.nursery_api.handler.ReportHandler;
 import com.nursery.nursery_api.service.ConnectService;
 import com.nursery.nursery_api.service.NurseryDBService;
@@ -10,40 +9,31 @@ import com.nursery.nursery_api.service.SendBotMessageService;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-@Component
-public class AskReport implements ReportHandler {
 
-    /**
-     * вывод текста при нажатии кнопки "Отослать отчет о животном"
-     * @param idChat
-     * @param bot
-     * @param nurseryDBService
-     * @param sendBotMessageService
-     */
+@Component
+public class StartConsultationCommand implements ReportHandler {
+
     @Override
     public void handle(Long idChat, TelegramBot bot, ReportService reportService, NurseryDBService nurseryDBService, SendBotMessageService sendBotMessageService, ConnectService connectService) {
 
-        reportService.addNewPersonForReport(idChat);
+        connectService.iWantWorkVolunteer(idChat);
+        String response = "Вы вышли на смену. Добро пожаловать. Ожидайте сообщений в этом чате от нуждающихся";
 
         try {
             bot.execute(
                     SendMessage.
                             builder().
                             chatId(idChat).
-                            text("Отошлите фото с прикрепленным отчетом").
+                            text(response).
                             build()
             );
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }
     }
-    /**
-     * сравнивается входящее сообщение от нажатой кнопки с нужным значением кнопки
-     * @param inputMessage
-     * @return
-     */
+
     @Override
     public boolean supply(String inputMessage) {
-        return inputMessage.equals("-report");
+        return inputMessage.equals("-startConsulting");
     }
 }

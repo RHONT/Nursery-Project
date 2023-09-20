@@ -21,7 +21,7 @@ public interface DataReportRepository extends JpaRepository<DataReport,Long> {
      * Ищем запаси в dataReport где data_report.check_message=false, а значит нужно проверить волонтерам ее.
      * @return
      */
-    @Query(value = "select person.id_chat, person.name, person.phone, data_report.foto, data_report.message_person\n" +
+    @Query(value = "select data_report.*\n" +
             "from person\n" +
             "join report on person.id_person = report.id_person\n" +
             "join data_report on report.id_report = data_report.id_report\n" +

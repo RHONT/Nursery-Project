@@ -1,20 +1,21 @@
-package com.nursery.nursery_api.handler.reportCommand;
+package com.nursery.nursery_api.handler.reportVolunteerCommand;
 
 import com.nursery.nursery_api.bot.TelegramBot;
-import com.nursery.nursery_api.handler.NurseryHandler;
 import com.nursery.nursery_api.handler.ReportHandler;
 import com.nursery.nursery_api.service.ConnectService;
 import com.nursery.nursery_api.service.NurseryDBService;
 import com.nursery.nursery_api.service.ReportService;
 import com.nursery.nursery_api.service.SendBotMessageService;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-@Component
-public class AskReport implements ReportHandler {
 
+@Component
+public class MainCommand implements ReportHandler {
+    public final static String MAIN_MESSAGE = "Выберите опцию";
+    // вывод всех вариантов
+    String[] buttonsName = {"Мой статус работы", "Начать проверку отчетов", "Прекратить консультации", "Начать консультировать", "Статистика"};
+    String[] callDataMain = {"-myMode","-startReportCheck","-stopConsultation","-startConsulting","-statistics"};
     /**
-     * вывод текста при нажатии кнопки "Отослать отчет о животном"
+     * Создаются кнопки при вводе любого текста
      * @param idChat
      * @param bot
      * @param nurseryDBService
@@ -22,20 +23,7 @@ public class AskReport implements ReportHandler {
      */
     @Override
     public void handle(Long idChat, TelegramBot bot, ReportService reportService, NurseryDBService nurseryDBService, SendBotMessageService sendBotMessageService, ConnectService connectService) {
-
-        reportService.addNewPersonForReport(idChat);
-
-        try {
-            bot.execute(
-                    SendMessage.
-                            builder().
-                            chatId(idChat).
-                            text("Отошлите фото с прикрепленным отчетом").
-                            build()
-            );
-        } catch (TelegramApiException e) {
-            e.printStackTrace();
-        }
+        sendBotMessageService.sendMessage(idChat.toString(), MAIN_MESSAGE, buttonsName, callDataMain);
     }
     /**
      * сравнивается входящее сообщение от нажатой кнопки с нужным значением кнопки
@@ -44,6 +32,6 @@ public class AskReport implements ReportHandler {
      */
     @Override
     public boolean supply(String inputMessage) {
-        return inputMessage.equals("-report");
+        return inputMessage.equals("-mainVolunteer");
     }
 }
