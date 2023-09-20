@@ -55,13 +55,9 @@ public class ReportController {
             tags = "Report"
     )
     @GetMapping(path = "/find_report")
-    public ResponseEntity<Object> findReport (@RequestParam(required = false)Person person,
-                                              @RequestParam(required = false)DataReport dataReport){
-        if(person != null){
-            return ResponseEntity.ok(reportService.findReportInfoForPerson(person));
-        }
-        if(dataReport != null){
-            return ResponseEntity.ok(reportService.findReportByDataReport(dataReport));
+    public ResponseEntity<Object> findReport (@RequestParam(required = false)Long personId){
+        if(personId != null){
+            return ResponseEntity.ok(reportService.findReportInfoForPersonId(personId));
         }
         return ResponseEntity.ok(reportService.findAll());
     }

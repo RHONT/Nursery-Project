@@ -263,11 +263,11 @@ public class ReportService {
     }
     /**
      * Method search Report that attach to Person.
-     * @param person
+     * @param personId
      * @return Report
      */
-    public Report findReportInfoForPerson (Person person){
-        return reportRepository.findReportByPersonId(person.getIdPerson());
+    public Report findReportInfoForPersonId (Long personId){
+        return reportRepository.findReportByPersonId(personId);
     }
 
     /**
