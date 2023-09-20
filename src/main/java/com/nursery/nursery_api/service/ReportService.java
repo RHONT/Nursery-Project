@@ -98,7 +98,7 @@ public class ReportService {
      * Нужно понять какое выражение прописать, чтобы с 21:00 и потом каждые полчаса обновлять очередь
      */
     //todo закрыть метод, открывал только ради тестов
-    @Scheduled(cron = "5 * * * * *")
+    @Scheduled(cron = "2 * * * * *")
     public void createDataReportList() {
         List<DataReport> reportForCheck = dataReportRepository.findReportForCheck();
         reportForCheck.removeIf(dataReport->dataReport.getFileSize()==null || dataReport.getMessagePerson()==null) ;

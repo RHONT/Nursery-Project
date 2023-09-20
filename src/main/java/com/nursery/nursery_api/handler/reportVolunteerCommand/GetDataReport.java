@@ -36,6 +36,7 @@ public class GetDataReport implements DataReportHandler {
             } catch (TelegramApiException e) {
                 e.printStackTrace();
             }
+
             return;
         }
 
