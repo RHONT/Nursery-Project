@@ -184,12 +184,15 @@ public class ReportService {
         int amountConsultVolunteer= (int) volunteersList.keySet().stream().filter(e-> !e.isBusy()).count();  // свободные
         int amountRestOrWorkVolunteer= (int) volunteersList.keySet().stream().filter(Volunteer::isBusy).count();     // на отдыхе или работе
         int amountReportMode= (int) volunteersList.keySet().stream().filter(e->volunteersList.get(e)==1L).count();
+        int amountAllReportForCheck=dataReportQueue.size();
         result.append("Готовые к консультации: ").
                 append(amountConsultVolunteer).
                 append("\nНа отдыхе или в активной работе: ").
                 append(amountRestOrWorkVolunteer).
                 append("\nОтчеты проверяют: ").
-                append(amountReportMode);
+                append(amountReportMode).
+                append("\nВсего отчетов для проверки: ").
+                append(amountAllReportForCheck);
         return result.toString();
     }
 
@@ -235,6 +238,7 @@ public class ReportService {
         logger.info("Вызван метод reportIsDoneSaveToBd.");
         if (!doneReport.contains(dataReport)) {
             doneReport.add(dataReport);
+            dataReport.setCheckMessage(true);
             dataReportRepository.save(dataReport);
             if (badReport.contains(dataReport)) {
                 badReport.remove(dataReport);
