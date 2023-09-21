@@ -10,6 +10,8 @@ import com.nursery.nursery_api.repositiry.ReportRepository;
 import com.nursery.nursery_api.service.ConnectService;
 import com.nursery.nursery_api.service.ReportService;
 import com.nursery.nursery_api.service.VolunteerService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.task.TaskExecutionProperties;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -33,6 +35,8 @@ public class ScheduledMethod {
     private final ConnectService connectService;
     private final VolunteerService volunteerService;
 
+    Logger logger = LoggerFactory.getLogger(VolunteerService.class);
+
     public ScheduledMethod(DataReportRepository dataReportRepository, ReportRepository reportRepository, PersonRepository personRepository, TaskExecutionProperties taskExecutionProperties, ReportService reportService, TelegramBot telegramBot, ConnectService connectService, VolunteerService volunteerService) {
         this.dataReportRepository = dataReportRepository;
         this.reportRepository = reportRepository;
@@ -48,6 +52,7 @@ public class ScheduledMethod {
      */
     @Scheduled(cron = "0 1 0 * * *")
     private void createEmptyRowReport() {
+        logger.info("Вызван метод createEmptyRowReport");
         List<Report> reportForInsertNewFields = dataReportRepository.findReportForInsertNewFields();
         for (var element : reportForInsertNewFields) {
             DataReport dataReport = new DataReport();
@@ -62,6 +67,7 @@ public class ScheduledMethod {
      */
     @Scheduled(cron = "0 55 23 * * *")
     public void skippedReportsForDay (){
+        logger.info("Вызван метод skippedReportsForDay");
         ArrayBlockingQueue checkArray = reportService.getDataReportQueue();
         List<DataReport> checkList = new ArrayList<>();
         checkArray.drainTo(checkList);
@@ -79,6 +85,7 @@ public class ScheduledMethod {
      */
     @Scheduled(cron = "0 59 23 * * *")
     public void penaltyForBadReportForToday(){
+        logger.info("Вызван метод penaltyForBadReportForToday");
         LocalDate currentDate = LocalDate.now();
         List<DataReport> reportCheck = dataReportRepository.findDataReportsByDateReportAndCheckMessageFalse(currentDate);
         for (var element : reportCheck){
@@ -95,6 +102,7 @@ public class ScheduledMethod {
      */
     @Scheduled(cron = "0 0 10 * * *")
     public void shameListForVolunteers (){
+        logger.info("Вызван метод shameListForVolunteers.");
         SendMessage message = new SendMessage();
         List<Report> checkReport = reportRepository.findAll();
         List<Person> shameList = new ArrayList<>();
@@ -110,8 +118,10 @@ public class ScheduledMethod {
             message.setChatId(chat);
             try {
                 telegramBot.execute(message);
+                logger.info("Сообщение волонтеру послано.");
             } catch (Exception e) {
                 e.printStackTrace();
+                logger.debug("Послать волонтеру сообщение е удалось.");
             }
         }
     }

@@ -27,11 +27,11 @@ public class PetService {
         return petRepository.findAll();
     }
     public Pet findPetByName (String petName){
-        logger.info("Вызван метод findPetByName");
+        logger.info("Вызван метод findPetByName с параметром {}", petName);
         return petRepository.findPetByNickname(petName);
     }
     public List<Pet> findPetsByNurseryName(String nurseryName){
-        logger.info("Вызван метод findPetsByNurseryName(");
+        logger.info("Вызван метод findPetsByNurseryName с параметром {}", nurseryName);
         List<Pet>allNurseryPets;
         Long nurseryId = nurseryService.getNurseryIdByName(nurseryName);
         allNurseryPets = petRepository.findPetsByNurseryId(nurseryId);
@@ -51,7 +51,7 @@ public class PetService {
     }
 
     public Pet deletePetByName(String petName){
-        logger.info("Вызван метод deletePetByName");
+        logger.info("Вызван метод deletePetByName с параметром {}", petName);
         return petRepository.deletePetByNickname(petName);
     }
 

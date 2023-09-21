@@ -107,6 +107,28 @@ CREATE TABLE "volunteers"
     "busy"              boolean default true
 )
 
+-- changeset Alexander:2
+insert into person (id_nursery, id_person, name, phone)
+values ('1','1','Маргарита','111111111'),
+       ('1','2','Евгений','222222222'),
+       ('2','3','Александр','333333333');
+insert into pet (id_nursery, id_pet, nickname, birthday, invalid, person_id)
+values ('1','1','Картошка','2021-11-11','false',null),
+       ('1','2','Батон','2022-12-22','false',null),
+       ('1','3','Вертолет','2020-12-12','true',null),
+       ('2','4','Портос','2021-02-11','false',null),
+       ('2','5','Спартак','2019-02-21','false',null),
+       ('2','6','Тыква','2021-02-11','true',null);
+insert into visitors (chat_id, name_nursery)
+values ('123','Кошки'),
+       ('234','Собаки'),
+       ('345','Собаки'),
+       ('456','Кошки'),
+       ('567','Собаки');
+insert into volunteers (volunteer_id, volunteer_chat_id, volunteer_name, phone, telegram_name)
+values ('111','111','Гриша','444444444',''),
+       ('222','222','Маша','555555555',''),
+       ('333','333','Оля','666666666','');
 
 
 
