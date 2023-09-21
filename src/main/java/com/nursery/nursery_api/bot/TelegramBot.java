@@ -1,6 +1,7 @@
 package com.nursery.nursery_api.bot;
 
 import com.nursery.nursery_api.handler.*;
+import com.nursery.nursery_api.handler.volunteerCommand.EndOfConsulting;
 import com.nursery.nursery_api.model.DataReport;
 import com.nursery.nursery_api.model.Volunteer;
 import com.nursery.nursery_api.repositiry.DataReportRepository;
@@ -21,6 +22,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Component
@@ -83,15 +85,13 @@ public class TelegramBot extends TelegramLongPollingBot {
             Message message = update.getMessage();
             Chat chat = message.getChat();
             // проверяем отчет, если есть фото, значит это отчет
-            if (message.hasPhoto()) {
-
                 if (reportService.containPersonForReport(chat.getId())) {
                     saveToDB(chat, message, update, nurseryDBService.getVisitors().get(chat.getId()));
                     reportService.deletePersonForReport(chat.getId());   // удаляем из списка
                 } else {
                     sendSimpleText(chat.getId(), "Фото можно присылать только если вы выбрали в меню - 'Отправить отчет'");
                 }
-            }
+
         }
 
             if (update.hasMessage() && update.getMessage().hasText()) {
@@ -200,6 +200,12 @@ public class TelegramBot extends TelegramLongPollingBot {
      * @param update
      */
     private void saveToDB(Chat chat, Message message, Update update, String nameNursery) {
+        String negativeReport="Дорогой усыновитель, мы заметили, что ты заполняешь отчет не так " +
+                "подробно, как необходимо. Пожалуйста, подойди ответственнее к " +
+                "этому занятию. В противном случае волонтеры приюта будут обязаны " +
+                "самолично проверять условия содержания животного";
+
+
         Optional<DataReport> dataReport = dataReportRepository.findDataReportByIdChatAndDateNow(chat.getId(), LocalDate.now(),nameNursery);
         if (dataReport.isPresent()) {
             DataReport dataReport1 = dataReport.get();
@@ -208,6 +214,10 @@ public class TelegramBot extends TelegramLongPollingBot {
             PhotoSize photo = photos.get(photos.size() - 1);
 
             String messageCaption = update.getMessage().getCaption();
+            if (messageCaption==null) {
+                sendSimpleText(chat.getId(), negativeReport);
+                return;
+            }
 
             GetFile getFile = new GetFile();
             getFile.setFileId(photo.getFileId());
@@ -247,9 +257,10 @@ public class TelegramBot extends TelegramLongPollingBot {
     private void communicationWithVolunteer(long chatIdUser, Update update, String message){
         if (connectService.containInActiveDialog(chatIdUser)) {   // является ли chat id участником активной беседы?
             if (!connectService.isPerson(chatIdUser)) {           // chat id - это волонтер?
-                String checkedMessage = update.getMessage().getText();
-                checkVolunteerOperation(checkedMessage, chatIdUser);
-                return;
+                if (Objects.equals(update.getMessage().getText(), "Конец")) {
+                    checkVolunteerOperation("Конец",chatIdUser);
+                    return;
+                }
             }
 
             if (connectService.isPerson(chatIdUser)) {    // если chat id вопрошающий, то шлем сообщение волонтеру

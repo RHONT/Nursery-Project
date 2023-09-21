@@ -7,6 +7,7 @@ import com.nursery.nursery_api.repositiry.DataReportRepository;
 import com.nursery.nursery_api.repositiry.PersonRepository;
 import com.nursery.nursery_api.service.ReportService;
 import com.nursery.nursery_api.service.SendBotMessageService;
+import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
@@ -14,6 +15,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Component
 public class UnCheckDataReportCommand implements DataReportHandler {
 
     private final PersonRepository personRepository;
@@ -37,7 +39,7 @@ public class UnCheckDataReportCommand implements DataReportHandler {
                 bot.execute(
                         SendMessage.
                                 builder().
-                                chatId(idChat).
+                                chatId(idChatPerson.get()).
                                 text("Дорогой усыновитель, мы заметили, что ты заполняешь отчет не так " +
                                         "подробно, как необходимо. Пожалуйста, подойди ответственнее к " +
                                         "этому занятию. В противном случае волонтеры приюта будут обязаны " +

@@ -11,26 +11,28 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 @Component
-public class StartReportCheckCommand implements ReportHandler {
-
+public class RefreshDB implements ReportHandler {
     @Override
     public void handle(Long idChat, TelegramBot bot, ReportService reportService, NurseryDBService nurseryDBService, SendBotMessageService sendBotMessageService, ConnectService connectService) {
 
-        String[] buttonsName = { "Получить отчет","Перестать проверять отчеты", "Обновить отчеты", "Статистика"};
-        String[] callDataMain = {"-getReport","-stopReportCheck","-refresh","-statistics"};
+        reportService.refreshDataReportQueue();
+        String response = "Список обновлен";
 
-
-
-        reportService.reportModeActive(idChat);
-        String ADOPT_MESSAGE="Проверка отчетов";
-
-        sendBotMessageService.sendMessage(idChat.toString(), ADOPT_MESSAGE, buttonsName, callDataMain);
+        try {
+            bot.execute(
+                    SendMessage.
+                            builder().
+                            chatId(idChat).
+                            text(response).
+                            build()
+            );
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
     }
-
-
 
     @Override
     public boolean supply(String inputMessage) {
-        return inputMessage.equals("-startReportCheck");
+        return inputMessage.equals("-refresh");
     }
 }

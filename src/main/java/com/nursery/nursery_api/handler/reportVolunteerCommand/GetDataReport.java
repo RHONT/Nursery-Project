@@ -21,7 +21,11 @@ import java.io.ByteArrayInputStream;
 @Component
 public class GetDataReport implements DataReportHandler {
     public final static String DATAREPORT_MESSAGE = "Выберите вариант ответа пользователю.";
-    String[] buttonsName = {"Принять отчет", "Отклонить отчет"};
+    String[] buttonsName = {"Принять отчет", "Отклонить отчет", "Получить отчет", "Обновить отчеты","Статистика","Перестать проверять отчеты"};
+
+    String[] callDataMain = {"-getReport","-stopReportCheck","-refresh","-statistics"};
+
+
 
     @Override
     public void handle(Long idChat, TelegramBot bot, Update update, ReportService reportService, SendBotMessageService sendBotMessageService) {

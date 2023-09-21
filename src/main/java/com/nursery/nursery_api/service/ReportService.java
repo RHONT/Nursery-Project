@@ -110,7 +110,7 @@ public class ReportService {
      * Если есть совпадения по ключам, то нужно проверить значения. Если они разнятся, старое удаляем, новое привносим
      * todo Тут либо каждому дать право по фразе "Обновить", либо какой-то хитрый cron написать.
      */
-    private synchronized void refreshDataReportQueue() {
+    public synchronized void refreshDataReportQueue() {
         List<DataReport> reportsForCheck = dataReportRepository.findReportForCheck();
         reportsForCheck.removeIf(dataReport->dataReport.getMessagePerson()==null || dataReport.getFileSize()==null);
         for (var newDataReport : reportsForCheck) {
@@ -175,12 +175,15 @@ public class ReportService {
         int amountConsultVolunteer= (int) volunteersList.keySet().stream().filter(e-> !e.isBusy()).count();  // свободные
         int amountRestOrWorkVolunteer= (int) volunteersList.keySet().stream().filter(Volunteer::isBusy).count();     // на отдыхе или работе
         int amountReportMode= (int) volunteersList.keySet().stream().filter(e->volunteersList.get(e)==1L).count();
+        int amountAllReportForCheck=dataReportQueue.size();
         result.append("Готовые к консультации: ").
                 append(amountConsultVolunteer).
                 append("\nНа отдыхе или в активной работе: ").
                 append(amountRestOrWorkVolunteer).
                 append("\nОтчеты проверяют: ").
-                append(amountReportMode);
+                append(amountReportMode).
+                append("\nВсего отчетов для проверки: ").
+                append(amountAllReportForCheck);
         return result.toString();
     }
 
