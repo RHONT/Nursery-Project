@@ -223,6 +223,7 @@ public class ReportService {
     public synchronized DataReport reportIsDoneSaveToBd(DataReport dataReport) {
         if (!doneReport.contains(dataReport)) {
             doneReport.add(dataReport);
+            dataReport.setCheckMessage(true);
             dataReportRepository.save(dataReport);
             if (badReport.contains(dataReport)) {
                 badReport.remove(dataReport);
