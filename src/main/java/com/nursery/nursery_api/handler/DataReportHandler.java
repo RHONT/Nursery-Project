@@ -8,6 +8,6 @@ import com.nursery.nursery_api.service.SendBotMessageService;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 public interface DataReportHandler {
-    void handle(Long idChat, TelegramBot bot, Update update, ReportService reportService);
+    void handle(Long idChat, TelegramBot bot, Update update, ReportService reportService, SendBotMessageService sendBotMessageService);
     boolean supply(String inputMessage);
 }

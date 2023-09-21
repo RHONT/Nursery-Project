@@ -157,7 +157,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     private void checkDataReport(String message, Long chatId, Update update){
         for (var element : dataReportHandlers) {
             if (element.supply(message)) {
-                element.handle(chatId, this,update,reportService);
+                element.handle(chatId, this,update,reportService, sendBotMessageService);
                 break;
             }
         }
@@ -234,7 +234,7 @@ public class TelegramBot extends TelegramLongPollingBot {
             dataReportRepository.save(dataReport1);
             sendSimpleText(chat.getId(), "Ваш отчет отправлен!");
         } else {
-            sendSimpleText(chat.getId(), "Вы на надены в базе " + nameNursery + "Выберите в меню другой питомник. Или свяжитесь с волонтером");
+            sendSimpleText(chat.getId(), "Вы не надены в базе " + nameNursery + ". Выберите в меню другой питомник. Или свяжитесь с волонтером");
         }
     }
 

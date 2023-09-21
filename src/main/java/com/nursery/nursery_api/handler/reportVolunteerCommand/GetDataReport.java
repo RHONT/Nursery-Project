@@ -20,8 +20,11 @@ import java.io.ByteArrayInputStream;
 
 @Component
 public class GetDataReport implements DataReportHandler {
+    public final static String DATAREPORT_MESSAGE = "Выберите вариант ответа пользователю.";
+    String[] buttonsName = {"Принять отчет", "Отклонить отчет"};
+
     @Override
-    public void handle(Long idChat, TelegramBot bot, Update update, ReportService reportService) {
+    public void handle(Long idChat, TelegramBot bot, Update update, ReportService reportService, SendBotMessageService sendBotMessageService) {
 
         DataReport dataReport = reportService.getOneDataReport();
         if (dataReport.getFoto()==null || dataReport.getMessagePerson()==null) {
@@ -54,6 +57,14 @@ public class GetDataReport implements DataReportHandler {
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }
+
+        Long dataReportId = dataReport.getIdDataReport();
+
+        String checkCallData = "-check|" + dataReportId;
+        String unCheckCallData = "-unCheck|" + dataReportId;
+
+        String[] callDataDataReport = {checkCallData, unCheckCallData};
+        sendBotMessageService.sendMessage(idChat.toString(), DATAREPORT_MESSAGE, buttonsName, callDataDataReport);
 
     }
 
