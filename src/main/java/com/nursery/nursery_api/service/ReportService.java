@@ -115,7 +115,7 @@ public class ReportService {
      * Если есть совпадения по ключам, то нужно проверить значения. Если они разнятся, старое удаляем, новое привносим
      * todo Тут либо каждому дать право по фразе "Обновить", либо какой-то хитрый cron написать.
      */
-    private synchronized void refreshDataReportQueue() {
+    public synchronized void refreshDataReportQueue() {
         logger.info("Вызван метод refreshDataReportQueue.");
         List<DataReport> reportsForCheck = dataReportRepository.findReportForCheck();
         reportsForCheck.removeIf(dataReport->dataReport.getMessagePerson()==null || dataReport.getFileSize()==null);
