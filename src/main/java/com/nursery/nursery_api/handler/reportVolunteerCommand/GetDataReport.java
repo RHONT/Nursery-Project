@@ -23,10 +23,6 @@ public class GetDataReport implements DataReportHandler {
     public final static String DATAREPORT_MESSAGE = "Выберите вариант ответа пользователю.";
     String[] buttonsName = {"Принять отчет", "Отклонить отчет", "Получить отчет", "Обновить отчеты","Статистика","Перестать проверять отчеты"};
 
-    String[] callDataMain = {"-getReport","-stopReportCheck","-refresh","-statistics"};
-
-
-
     @Override
     public void handle(Long idChat, TelegramBot bot, Update update, ReportService reportService, SendBotMessageService sendBotMessageService) {
 
@@ -67,7 +63,7 @@ public class GetDataReport implements DataReportHandler {
         String checkCallData = "-check|" + dataReportId;
         String unCheckCallData = "-unCheck|" + dataReportId;
 
-        String[] callDataDataReport = {checkCallData, unCheckCallData};
+        String[] callDataDataReport = {checkCallData, unCheckCallData, "-getReport","-refresh", "-statistics", "-stopReportCheck"};
         sendBotMessageService.sendMessage(idChat.toString(), DATAREPORT_MESSAGE, buttonsName, callDataDataReport);
 
     }
