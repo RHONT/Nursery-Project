@@ -94,7 +94,7 @@ public class ConnectService {
      */
     @Scheduled(initialDelay = 2000, fixedRate = 5000)
     public void manageVolunteerAndPerson() {
-        logger.info("Вызван метод manageVolunteerAndPerson.");
+        //logger.info("Вызван метод manageVolunteerAndPerson.");
         if (!queueMessage.isEmpty() && freeVolunteers()) {
             everyoneWork(volunteersList, queueMessage);
         }
