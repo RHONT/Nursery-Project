@@ -98,7 +98,7 @@ class ReportServiceTest {
         volunteersList.put(volunteer2, 1L);
         List<DataReport> dataReportList = new ArrayList<>(List.of(data1, data2));
         when(dataReportRepository.findReportForCheck()).thenReturn(dataReportList);
-        reportService.createDataReportList();
+        reportService.refreshDataReportQueue();
         int actual = reportService.getDataReportQueue().size();
         int expected = 2;
         assertEquals(expected, actual);
@@ -119,7 +119,7 @@ class ReportServiceTest {
 
         when(dataReportRepository.findReportForCheck()).thenReturn(dataReportList);
 
-        reportService.createDataReportList();
+        reportService.refreshDataReportQueue();
 
         int actual = reportService.getDataReportQueue().size();
         int expected = 1;
@@ -137,7 +137,7 @@ class ReportServiceTest {
 
         when(dataReportRepository.findReportForCheck()).thenReturn(dataReportList);
 
-        reportService.createDataReportList();
+        reportService.refreshDataReportQueue();
 
         DataReport oneDataReport1 = reportService.getOneDataReport();
 
@@ -153,7 +153,7 @@ class ReportServiceTest {
 
         when(dataReportRepository.findReportForCheck()).thenReturn(dataReportList);
 
-        reportService.createDataReportList();
+        reportService.refreshDataReportQueue();
 
         DataReport oneDataReport1 = reportService.getOneDataReport();
 

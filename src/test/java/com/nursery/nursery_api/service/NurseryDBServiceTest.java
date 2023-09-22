@@ -50,7 +50,7 @@ public class NurseryDBServiceTest {
     @Test
     void getMeAboutNursery() {
         nurseryDBService.contain(111L);
-        when(nurseryRepository.findNurseryByNameNursery("Кошки")).thenReturn(nurseryTest);
+        when(nurseryRepository.findByNameNursery("Кошки")).thenReturn(nurseryTest);
         nurseryDBService.setNurseryIntoVisitors(111L, "Кошки");
 
         String actual = nurseryDBService.getMeAboutNursery(111L);
@@ -61,7 +61,7 @@ public class NurseryDBServiceTest {
     @Test
     void getInfrastructure() {
         nurseryDBService.contain(111L);
-        when(nurseryRepository.findNurseryByNameNursery("Кошки")).thenReturn(nurseryTest);
+        when(nurseryRepository.findByNameNursery("Кошки")).thenReturn(nurseryTest);
         nurseryDBService.setNurseryIntoVisitors(111L, "Кошки");
 
         String actual = nurseryDBService.getInfrastructure(111L);
@@ -72,7 +72,7 @@ public class NurseryDBServiceTest {
     @Test
     void getDocument() {
         nurseryDBService.contain(111L);
-        when(nurseryRepository.findNurseryByNameNursery("Кошки")).thenReturn(nurseryTest);
+        when(nurseryRepository.findByNameNursery("Кошки")).thenReturn(nurseryTest);
         nurseryDBService.setNurseryIntoVisitors(111L, "Кошки");
 
         String actual = nurseryDBService.getDocument(111L);

@@ -77,7 +77,7 @@ public class NurseryControllerTest {
         JSONObject nurseryObject = new JSONObject();
         nurseryObject.put("name_nursery", bestNursery.getNameNursery());
 
-        when(nurseryRepository.findNurseryByNameNursery(anyString())).thenReturn(bestNursery);
+        when(nurseryRepository.findByNameNursery(anyString())).thenReturn(bestNursery);
 
         mockMvc.perform(MockMvcRequestBuilders
                         .get("/nursery_app/admin_functions/nurseries/find_nursery?nurseryName=Кошки")
@@ -106,7 +106,7 @@ public class NurseryControllerTest {
 
     @Test
     void deleteNurseryByName() throws Exception {
-        when(nurseryRepository.findNurseryByNameNursery(any(String.class))).thenReturn(bestNursery);
+        when(nurseryRepository.findByNameNursery(any(String.class))).thenReturn(bestNursery);
         mockMvc.perform(MockMvcRequestBuilders
                         .delete("/nursery_app/admin_functions/nurseries/delete_nursery?nurseryName=Кошки")
                         .accept(MediaType.APPLICATION_JSON))

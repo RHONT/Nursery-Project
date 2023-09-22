@@ -48,7 +48,7 @@ public class NurseryService {
      */
     public Nursery findNurseryByName(String nurseryName){
         logger.info("Вызван метод findNurseryByName с параметром {}", nurseryName);
-        return nurseryRepository.findNurseryByNameNursery(nurseryName);
+        return nurseryRepository.findByNameNursery(nurseryName);
     }
 
     /** Method that find nursery's id by there name

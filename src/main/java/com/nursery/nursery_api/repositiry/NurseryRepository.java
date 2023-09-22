@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface NurseryRepository extends JpaRepository<Nursery,Long> {
-    Nursery findNurseryByNameNursery (String nurseryName);
+    Nursery findByNameNursery (String nurseryName);
     Nursery deleteNurseryByNameNursery (String nurseryName);
     @Query(value = "SELECT id_nursery FROM Nursary WHERE name_nursery =: nurseryName", nativeQuery = true)
     Long nurseryIdByName (@Param("nurseryName")String nurseryName);

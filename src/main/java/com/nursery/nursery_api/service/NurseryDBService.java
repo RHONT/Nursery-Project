@@ -68,7 +68,7 @@ public class NurseryDBService {
     public void setNurseryIntoVisitors(Long chatId, String nameNursery){
         logger.info("Вызван метод setNurseryIntoVisitors с параметрами {} и {}.", chatId,nameNursery);
         if (!nurseryMap.containsKey(nameNursery)) {
-            Nursery nursery =nurseryRepository.findNurseryByNameNursery(nameNursery);
+            Nursery nursery =nurseryRepository.findByNameNursery(nameNursery);
             if (nursery !=null) {
                 nurseryMap.put(nameNursery, nursery);
             }

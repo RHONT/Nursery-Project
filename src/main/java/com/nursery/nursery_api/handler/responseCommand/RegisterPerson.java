@@ -3,6 +3,7 @@ package com.nursery.nursery_api.handler.responseCommand;
 import com.nursery.nursery_api.bot.TelegramBot;
 import com.nursery.nursery_api.handler.NurseryHandler;
 import com.nursery.nursery_api.handler.RegisterHandler;
+import com.nursery.nursery_api.model.Nursery;
 import com.nursery.nursery_api.model.Person;
 import com.nursery.nursery_api.repositiry.NurseryRepository;
 import com.nursery.nursery_api.repositiry.PersonRepository;
@@ -28,19 +29,26 @@ public class RegisterPerson implements RegisterHandler {
     @Override
     public void handle(Long idChat, TelegramBot bot, NurseryDBService nurseryDBService) {
         String response = "Вы завершили регистрацию";
+        String negativeResponse="Вы не были найдены в базе. Перед регистрацией выберите в основном меню ваш питомник и затем " +
+                "повторите попытку. Проверьте правильность написания запроса. Пример:-regPerson|Анастасия Забродина  " +
+                "Если не удаеться пройти регистрацию обратитесь к волонтеру ";
+
+
         String namePerson = inputMessage.substring(inputMessage.lastIndexOf("|") + 1);
 
-        Long idNursery = nurseryRepository.findNurseryByNameNursery(nurseryDBService.getVisitors().get(idChat)).getIdNursery();
+        String nameNurseryFromVisitors = nurseryDBService.getVisitors().get(idChat);
 
-        Optional<Person> person = personRepository.findPersonByNamePersonAndByIdNursery(namePerson, idNursery);
+        if (nameNurseryFromVisitors != null) {
+            Long idNursery = nurseryRepository.findByNameNursery(nameNurseryFromVisitors).getIdNursery();
+            Optional<Person> person = personRepository.findPersonByNamePersonAndByIdNursery(namePerson, idNursery);
+            if (person.isPresent()) {
+                person.get().setIdChat(idChat);
+                personRepository.save(person.get());
+            } else
+                response = negativeResponse;
 
-        if (person.isPresent()) {
-            person.get().setIdChat(idChat);
-            personRepository.save(person.get());
-        } else
-            response = "Вы не были найдены в базе. Перед регистрацией выберите в основном меню ваш питомник и затем " +
-                    "повторите попытку. Проверьте правильность написания запроса. Пример:-regPerson|Анастасия Забродина  " +
-                    "Если не удаеться пройти регистрацию обратитесь к волонтеру ";
+        } else response=negativeResponse;
+
 
         try {
             bot.execute(
@@ -53,6 +61,9 @@ public class RegisterPerson implements RegisterHandler {
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }
+
+
+
     }
 
     /**
