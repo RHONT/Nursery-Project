@@ -13,6 +13,10 @@ public interface PersonRepository extends JpaRepository<Person, Long> {
 
     Person findPersonByName(String personName);
     //todo написать запрос в базу
+    @Query(value = "select person.*\n" +
+            "from person\n" +
+            "join nursery n on n.id_nursery = person.id_nursery\n" +
+            "where person.name=?  and n.id_nursery=?",nativeQuery = true)
     Optional<Person> findPersonByNamePersonAndByIdNursery(String namePerson, Long idNursery);
 
     Person findPersonByPhone(String phone);
