@@ -97,43 +97,29 @@ public class ReportService {
     }
 
     /**
-     * в 21:00 собирается мапа из непроверенных отчетов
-     * Если есть то запускаем метод EveryoneWork, который занимает всех свободных волонтеров работой
-     * Нужно понять какое выражение прописать, чтобы с 21:00 и потом каждые полчаса обновлять очередь
-     */
-    //todo закрыть метод, открывал только ради тестов
-    @Scheduled(cron = "2 * * * * *")
-    public void createDataReportList() {
-        logger.info("Вызван метод createDataReportList.");
-        List<DataReport> reportForCheck = dataReportRepository.findReportForCheck();
-        reportForCheck.removeIf(dataReport->dataReport.getFileSize()==null || dataReport.getMessagePerson()==null) ;
-        dataReportQueue.addAll(reportForCheck);
-    }
-
-    /**
      * Проверяем обновленный список отчета с черным списком и с текущей очередью
      * Если есть совпадения по ключам, то нужно проверить значения. Если они разнятся, старое удаляем, новое привносим
      * todo Тут либо каждому дать право по фразе "Обновить", либо какой-то хитрый cron написать.
      */
     public synchronized void refreshDataReportQueue() {
+
         logger.info("Вызван метод refreshDataReportQueue.");
+
         List<DataReport> reportsForCheck = dataReportRepository.findReportForCheck();
+
         reportsForCheck.removeIf(dataReport->dataReport.getMessagePerson()==null || dataReport.getFileSize()==null);
+
         for (var newDataReport : reportsForCheck) {
             if (badReport.contains(newDataReport)) {
                 DataReport oldVersion = badReport.stream().filter(e -> e.equals(newDataReport)).findFirst().get();
                 if (!compareDataReport(newDataReport, oldVersion)) {
                     badReport.remove(oldVersion);
+                    dataReportQueue.add(newDataReport);
                 } else continue;
 
             }
-
-            if (dataReportQueue.contains(newDataReport)) {
-                dataReportQueue.remove(newDataReport);
-                dataReportQueue.add(newDataReport);
-            } else {
-                dataReportQueue.add(newDataReport);
-            }
+            dataReportQueue.removeIf(reportsForCheck::contains);
+            dataReportQueue.add(newDataReport);
         }
     }
 
@@ -182,13 +168,14 @@ public class ReportService {
         logger.info("Вызван метод statistic.");
         StringBuilder result=new StringBuilder();
         int amountConsultVolunteer= (int) volunteersList.keySet().stream().filter(e-> !e.isBusy()).count();  // свободные
-        int amountRestOrWorkVolunteer= (int) volunteersList.keySet().stream().filter(Volunteer::isBusy).count();     // на отдыхе или работе
+        int amountConsultNowVolunteer= (int) volunteersList.keySet().stream().filter(e-> e.isBusy() && volunteersList.get(e)>1L).count();
         int amountReportMode= (int) volunteersList.keySet().stream().filter(e->volunteersList.get(e)==1L).count();
         int amountAllReportForCheck=dataReportQueue.size();
+
         result.append("Готовые к консультации: ").
                 append(amountConsultVolunteer).
-                append("\nНа отдыхе или в активной работе: ").
-                append(amountRestOrWorkVolunteer).
+                append("\nЗаняты консультациями: ").
+                append(amountConsultNowVolunteer).
                 append("\nОтчеты проверяют: ").
                 append(amountReportMode).
                 append("\nВсего отчетов для проверки: ").
@@ -240,9 +227,7 @@ public class ReportService {
             doneReport.add(dataReport);
             dataReport.setCheckMessage(true);
             dataReportRepository.save(dataReport);
-            if (badReport.contains(dataReport)) {
-                badReport.remove(dataReport);
-            }
+            badReport.remove(dataReport);
             logger.info("Отчет: {} дата: {} успешно обработан", dataReport.getReport().getIdReport(), dataReport.getDateReport());
             return dataReport;
         }
