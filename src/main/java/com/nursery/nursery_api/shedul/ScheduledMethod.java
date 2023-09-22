@@ -17,11 +17,11 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
+import java.util.stream.Collectors;
 
 
 @Component
@@ -53,7 +53,7 @@ public class ScheduledMethod {
     @Scheduled(cron = "0 1 0 * * *")
     private void createEmptyRowReport() {
         logger.info("Вызван метод createEmptyRowReport");
-        List<Report> reportForInsertNewFields = dataReportRepository.findReportForInsertNewFields();
+        List<Report> reportForInsertNewFields = reportRepository.findReportForInsertNewFields();
         for (var element : reportForInsertNewFields) {
             DataReport dataReport = new DataReport();
             dataReport.setReport(element);
@@ -65,17 +65,15 @@ public class ScheduledMethod {
     /**
      * В 23:55 метод очищает список непроверенных отчетов, отмечая их как проверенные, на случай перегруженности волонтеров.
      */
-    @Scheduled(cron = "0 55 23 * * *")
-    public void skippedReportsForDay (){
+    @Scheduled(cron = "0 45 23 * * *")
+    public void skippedReportsForDay() {
         logger.info("Вызван метод skippedReportsForDay");
-        ArrayBlockingQueue checkArray = reportService.getDataReportQueue();
+        ArrayBlockingQueue<DataReport> checkArray = reportService.getDataReportQueue();
         List<DataReport> checkList = new ArrayList<>();
         checkArray.drainTo(checkList);
-        if (!checkList.isEmpty()){
-            for (var element : checkList){
-                element.setCheckMessage(true);
-                dataReportRepository.save(element);
-            }
+        if (!checkList.isEmpty()) {
+            checkList = checkList.stream().peek(e -> e.setCheckMessage(true)).collect(Collectors.toList());
+            dataReportRepository.saveAll(checkList);
         }
     }
 
@@ -83,16 +81,13 @@ public class ScheduledMethod {
      * Каждую ночь в 23:59 достает из базы данных непроверенные отчеты за день и начисляет штраф тем,
      * кто их отослал.
      */
-    @Scheduled(cron = "0 59 23 * * *")
-    public void penaltyForBadReportForToday(){
+    @Scheduled(cron = "0 55 23 * * *")
+    public void penaltyForBadReportForToday() {
         logger.info("Вызван метод penaltyForBadReportForToday");
-        LocalDate currentDate = LocalDate.now();
-        List<DataReport> reportCheck = dataReportRepository.findDataReportsByDateReportAndCheckMessageFalse(currentDate);
-        for (var element : reportCheck){
+        List<DataReport> reportCheck = dataReportRepository.findDataReportsByDateReportAndCheckMessageFalse(LocalDate.now());
+        for (var element : reportCheck) {
             Report report = element.getReport();
-            Long forfeit = report.getForteit();
-            forfeit++;
-            report.setForteit(forfeit);
+            report.setForteit(report.getForteit() + 1);
             reportRepository.save(report);
         }
     }
@@ -101,27 +96,40 @@ public class ScheduledMethod {
      * В 10:00 ежедневно создает список тех, кто имеет более одного начисленного штрафа и посылает всем работающим волонтерам.
      */
     @Scheduled(cron = "0 0 10 * * *")
-    public void shameListForVolunteers (){
+    public void shameListForVolunteers() {
         logger.info("Вызван метод shameListForVolunteers.");
         SendMessage message = new SendMessage();
         List<Report> checkReport = reportRepository.findAll();
         List<Person> shameList = new ArrayList<>();
         List<Long> freeVolunteersChats = volunteerService.freeVolunteersChatId();
-        for (var element : checkReport){
-            if(element.getForteit() >= 2){
+        for (var element : checkReport) {
+            if (element.getForteit() >= 2) {
                 shameList.add(element.getPerson());
             }
         }
-        String messageText = shameList.toString();
-        message.setText(messageText);
-        for (var chat : freeVolunteersChats){
-            message.setChatId(chat);
-            try {
-                telegramBot.execute(message);
-                logger.info("Сообщение волонтеру послано.");
-            } catch (Exception e) {
-                e.printStackTrace();
-                logger.debug("Послать волонтеру сообщение е удалось.");
+
+
+        StringBuilder sb = new StringBuilder();
+
+        if (shameList.size() > 0) {
+            for (var element : shameList) {
+                sb.append("Животное в опасности. Недобросовестный человек: \nИмя: ").
+                        append(element.getName()).
+                        append("\nТелефон:  ").append(element.getPhone()).
+                        append("\n\n");
+            }
+
+            message.setText(sb.toString());
+
+            for (var chat : freeVolunteersChats) {
+                message.setChatId(chat);
+                try {
+                    telegramBot.execute(message);
+                    logger.info("Сообщение волонтеру послано.");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    logger.debug("Послать волонтеру сообщение е удалось.");
+                }
             }
         }
     }

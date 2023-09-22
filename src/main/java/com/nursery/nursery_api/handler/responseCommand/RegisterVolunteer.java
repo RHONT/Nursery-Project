@@ -57,7 +57,7 @@ public class RegisterVolunteer implements RegisterHandler {
      */
     @Override
     public boolean supply(String inputMessage) {
-        if (inputMessage.startsWith("-regVal|")) {
+        if (inputMessage.startsWith("-regVol|")) {
             this.inputMessage = inputMessage;
             return true;
         }
