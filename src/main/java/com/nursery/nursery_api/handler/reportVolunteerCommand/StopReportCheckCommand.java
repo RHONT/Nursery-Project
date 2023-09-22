@@ -13,6 +13,10 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 @Component
 public class StopReportCheckCommand implements ReportHandler {
 
+    public final static String MAIN_MESSAGE = "Выберите опцию";
+    // вывод всех вариантов
+    String[] buttonsName = {"Мой статус работы", "Начать проверку отчетов", "Прекратить консультации", "Начать консультировать", "Статистика"};
+    String[] callDataMain = {"-myMode","-startReportCheck","-stopConsultation","-startConsulting","-statistics"};
     @Override
     public void handle(Long idChat, TelegramBot bot, ReportService reportService, NurseryDBService nurseryDBService, SendBotMessageService sendBotMessageService, ConnectService connectService) {
 
@@ -30,6 +34,8 @@ public class StopReportCheckCommand implements ReportHandler {
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }
+
+        sendBotMessageService.sendMessage(idChat.toString(), MAIN_MESSAGE, buttonsName, callDataMain);
     }
 
     @Override
