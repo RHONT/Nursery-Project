@@ -50,6 +50,18 @@ public class UnCheckDataReportCommand implements DataReportHandler {
                 e.printStackTrace();
             }
         }
+
+        try {
+            bot.execute(
+                    SendMessage.
+                            builder().
+                            chatId(idChat).
+                            text("Вы отклонили отчет.").
+                            build()
+            );
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
     }
     public boolean supply(String inputMessage){
         return inputMessage.startsWith("-unCheck|");

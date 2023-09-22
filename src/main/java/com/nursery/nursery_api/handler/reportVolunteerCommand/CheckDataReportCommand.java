@@ -48,6 +48,18 @@ public class CheckDataReportCommand implements DataReportHandler {
             }
         }
 
+        try {
+            bot.execute(
+                    SendMessage.
+                            builder().
+                            chatId(idChat).
+                            text("Вы приняли отчет.").
+                            build()
+            );
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
+
     }
 
     public boolean supply(String inputMessage){
