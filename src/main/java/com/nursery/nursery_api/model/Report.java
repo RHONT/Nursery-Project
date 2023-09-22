@@ -37,24 +37,24 @@ public class Report {
     private Long dayReport;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "report")
+    @OneToMany(mappedBy = "report",fetch = FetchType.EAGER)
     @ToString.Exclude
     private List<DataReport> dataReports;
 
-    public List<DataReport> getDataReports() {
-        if (dataReports==null) {
-            dataReports=new ArrayList<>();
-        }
-        return dataReports;
-    }
-
-//    public void AddDataReports(DataReport dataReport) {
+//    public List<DataReport> getDataReports() {
 //        if (dataReports==null) {
 //            dataReports=new ArrayList<>();
 //        }
-//        dataReports.add(dataReport);
-//        dataReport.setReport(this);
+//        return dataReports;
 //    }
+
+    public void addDataReports(DataReport dataReport) {
+        if (dataReports==null) {
+            dataReports=new ArrayList<>();
+        }
+        dataReports.add(dataReport);
+        dataReport.setReport(this);
+    }
 
     @Override
     public boolean equals(Object o) {

@@ -28,10 +28,7 @@ public interface DataReportRepository extends JpaRepository<DataReport,Long> {
             "where data_report.check_message=false and report.day_report>0", nativeQuery = true)
     List<DataReport> findReportForCheck();
 
-    @Query(value = "select report.*\n" +
-            "from report\n" +
-            "where report.day_report>0",nativeQuery = true)
-    List<Report> findReportForInsertNewFields();
+
 
     @Query(value = "select data_report.*\n" +
             "from person\n" +

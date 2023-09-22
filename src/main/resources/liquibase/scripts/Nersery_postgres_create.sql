@@ -65,7 +65,7 @@ CREATE TABLE "pet"
 
 CREATE TABLE "data_report"
 (
-    "id_data_report" serial,
+    "id_data_report" serial NOT NULL,
     "id_report"      bigint NOT NULL,
     "date_report"    DATE   NOT NULL,
     "foto"           oid,
