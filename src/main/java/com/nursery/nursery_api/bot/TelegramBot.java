@@ -1,7 +1,6 @@
 package com.nursery.nursery_api.bot;
 
 import com.nursery.nursery_api.handler.*;
-import com.nursery.nursery_api.handler.volunteerCommand.EndOfConsulting;
 import com.nursery.nursery_api.model.DataReport;
 import com.nursery.nursery_api.model.Volunteer;
 import com.nursery.nursery_api.repositiry.DataReportRepository;
@@ -37,6 +36,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     private final List<VolunteerCommandHandler> volunteerCommandHandlers;
     private final List<ReportHandler> reportHandlers;
     private final  List<DataReportHandler> dataReportHandlers;
+    private final List<RegisterHandler> registerHandlers;
 
     private final SendBotMessageService sendBotMessageService = new SendBotMessageServiceImpl(this);
     private final ConnectService connectService;
@@ -54,7 +54,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                        List<NurseryHandler> nurseryHandlerList,
                        List<VolunteerHandler> volunteerHandlers,
                        List<VolunteerCommandHandler> volunteerCommandHandlers,
-                       List<ReportHandler> reportHandlers, List<DataReportHandler> dataReportHandlers, ConnectService connectService,
+                       List<ReportHandler> reportHandlers, List<DataReportHandler> dataReportHandlers, List<RegisterHandler> registerHandlers, ConnectService connectService,
                        ReportService reportService, VolunteerService volunteerService) {
         this.dataReportRepository = dataReportRepository;
         this.reportRepository = reportRepository;
@@ -65,6 +65,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         this.volunteerCommandHandlers = volunteerCommandHandlers;
         this.reportHandlers = reportHandlers;
         this.dataReportHandlers = dataReportHandlers;
+        this.registerHandlers = registerHandlers;
         this.connectService = connectService;
         this.reportService = reportService;
         this.volunteerService = volunteerService;
@@ -96,6 +97,9 @@ public class TelegramBot extends TelegramLongPollingBot {
 
             if (update.hasMessage() && update.getMessage().hasText()) {
                 if (!update.getMessage().getText().isEmpty()) {
+                    if (checkRegistration(update.getMessage().getChatId(), update.getMessage().getText())) {
+                        return;
+                    }
                     String message = "-main";
                     Long chatIdUser = update.getMessage().getChatId();
 
@@ -109,6 +113,16 @@ public class TelegramBot extends TelegramLongPollingBot {
                 checkDataReport(message, idChat,update);
                 checkMessage(message, idChat);
             }
+    }
+
+    private boolean checkRegistration(Long chatId, String message) {
+        for (var element : registerHandlers) {
+            if (element.supply(message)) {
+                element.handle(chatId, this, nurseryDBService);
+               return true;
+            }
+        }
+        return false;
     }
 
 

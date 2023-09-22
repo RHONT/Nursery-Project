@@ -9,7 +9,11 @@ import java.util.Optional;
 
 @Repository
 public interface PersonRepository extends JpaRepository<Person, Long> {
+
+
     Person findPersonByName(String personName);
+    //todo написать запрос в базу
+    Optional<Person> findPersonByNamePersonAndByIdNursery(String namePerson, Long idNursery);
 
     Person findPersonByPhone(String phone);
 
