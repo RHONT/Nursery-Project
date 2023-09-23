@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.GetFile;
 import org.telegram.telegrambots.meta.api.methods.commands.SetMyCommands;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.*;
 import org.telegram.telegrambots.meta.api.objects.commands.BotCommand;
 import org.telegram.telegrambots.meta.api.objects.commands.scope.BotCommandScopeDefault;
@@ -28,6 +27,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+
+import static com.nursery.nursery_api.bot.StandartBotCommand.sendOnlyText;
 
 @Component
 public class TelegramBot extends TelegramLongPollingBot {
@@ -93,14 +94,6 @@ public class TelegramBot extends TelegramLongPollingBot {
     @Override
     public void onUpdateReceived(Update update) {
 
-        if (update.hasMessage() && !update.getMessage().hasPhoto() && volunteerService.isVolunteer(update.getMessage().getChatId())) {
-            if (update.getMessage().getText().equals("/main_volunteer")) {
-
-                checkReportMessage("-mainVolunteer", update.getMessage());
-                return;
-            }
-        }
-
         if (update.hasMessage() && update.getMessage().hasPhoto()) {
             Message message = update.getMessage();
             Chat chat = message.getChat();
@@ -109,7 +102,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                 saveToDB(chat, message, update, nurseryDBService.getVisitors().get(chat.getId()));
                 reportService.deletePersonForReport(chat.getId());   // удаляем из списка
             } else {
-                sendSimpleText(chat.getId(), "Фото можно присылать только если вы выбрали в меню - 'Отправить отчет'");
+                sendOnlyText(chat.getId(), "Фото можно присылать только если вы выбрали в меню - 'Отправить отчет'");
             }
 
         }
@@ -129,9 +122,9 @@ public class TelegramBot extends TelegramLongPollingBot {
         } else if (update.hasCallbackQuery()) {
             String message = update.getCallbackQuery().getData();
             Long idChat = update.getCallbackQuery().getMessage().getChatId();
-            checkDataReport(message, idChat, update);
+            runDataReportHandlers(message, idChat, update);
             checkMessage(message, idChat);
-            checkReportMessage(message, update.getCallbackQuery().getMessage());
+            runReportHandlers(message, update.getCallbackQuery().getMessage());
         }
     }
 
@@ -181,7 +174,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
 
-    private void checkReportMessage(String callBackString, Message message) {
+    private void runReportHandlers(String callBackString, Message message) {
         for (var element : reportHandlers) {
             if (element.supply(callBackString)) {
                 element.handle(message, this, reportService, nurseryDBService, sendBotMessageService, connectService);
@@ -190,7 +183,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
 
-    private void checkDataReport(String message, Long chatId, Update update) {
+    private void runDataReportHandlers(String message, Long chatId, Update update) {
         for (var element : dataReportHandlers) {
             if (element.supply(message)) {
                 element.handle(chatId, this, update, reportService, sendBotMessageService);
@@ -203,30 +196,13 @@ public class TelegramBot extends TelegramLongPollingBot {
      * @param message         - строк приходит от волонтера
      * @param chatIdVolunteer Проверяем является ли эта строка командой.
      */
-    private void checkVolunteerOperation(String message, Long chatIdVolunteer) {
+    private void runVolunteerHandlers(String message, Long chatIdVolunteer) {
         for (var element : volunteerCommandHandlers) {
             if (element.supply(message)) {
                 element.handle(chatIdVolunteer, this, connectService);
                 break;
             }
         }
-    }
-
-    /**
-     * @param chatId
-     * @param message Отправляем стандартное сообщение через бот пользователю
-     */
-    private void sendSimpleText(Long chatId, String message) {
-        try {
-            this.execute(SendMessage.
-                    builder().
-                    chatId(chatId).
-                    text(message).
-                    build());
-        } catch (TelegramApiException e) {
-            e.printStackTrace();
-        }
-
     }
 
     /**
@@ -252,7 +228,7 @@ public class TelegramBot extends TelegramLongPollingBot {
 
             String messageCaption = update.getMessage().getCaption();
             if (messageCaption == null) {
-                sendSimpleText(chat.getId(), negativeReport);
+                sendOnlyText(chat.getId(), negativeReport);
                 return;
             }
 
@@ -279,9 +255,9 @@ public class TelegramBot extends TelegramLongPollingBot {
             }
 
             dataReportRepository.save(dataReport1);
-            sendSimpleText(chat.getId(), "Ваш отчет отправлен!");
+            sendOnlyText(chat.getId(), "Ваш отчет отправлен!");
         } else {
-            sendSimpleText(chat.getId(), "Вы не надены в базе " + nameNursery + ". Выберите в меню другой питомник. Или свяжитесь с волонтером");
+            sendOnlyText(chat.getId(), "Вы не надены в базе " + nameNursery + ". Выберите в меню другой питомник. Или свяжитесь с волонтером");
         }
     }
 
@@ -293,24 +269,41 @@ public class TelegramBot extends TelegramLongPollingBot {
      * @param message
      */
     private void communicationWithVolunteer(long chatIdUser, Update update, String message) {
-        if (checkConnection(chatIdUser,update)) {
+        if (checkConnection(chatIdUser, update)) {
             return;
         }
 
-        if (checkEnterMainMenu(chatIdUser,update)) {
+        if (checkEnterMainMenu(chatIdUser, update)) {
             return;
         }
 
-        if (checkFastOperationVolunteer(chatIdUser,update)) {
+        if (checkFastOperationVolunteer(chatIdUser, update)) {
             return;
         }
 
-        sendSimpleText(update.getMessage().getChatId(), message);
+        if (checkIsVolunteer(chatIdUser, update)) {
+            return;
+        }
+
+
+        sendOnlyText(update.getMessage().getChatId(), message);
+
 
     }
 
-    private boolean checkFastOperationVolunteer(long chatIdUser, Update update){
-        String message=update.getMessage().getText();
+    private boolean checkIsVolunteer(long chatIdUser, Update update) {
+        String message = update.getMessage().getText();
+        if (message.equals("/main_volunteer")) {
+            if (volunteerService.isVolunteer(chatIdUser)) {
+                runReportHandlers(message, update.getMessage());
+            } else
+                sendOnlyText(chatIdUser, "Вы не являетесь волонтером. Если есть желание помочь, свяжитесь с нашими консультантами");
+            return true;
+        } else return false;
+    }
+
+    private boolean checkFastOperationVolunteer(long chatIdUser, Update update) {
+        String message = update.getMessage().getText();
 
         // Регистрация волонтера. Тут же id_chat попадает в базу
         if (message.startsWith("Хочу стать волонтером")) {
@@ -327,12 +320,12 @@ public class TelegramBot extends TelegramLongPollingBot {
         return false;
     }
 
-    private boolean checkEnterMainMenu(long chatIdUser, Update update){
-        String maybeMain=update.getMessage().getText();
+    private boolean checkEnterMainMenu(long chatIdUser, Update update) {
+        String maybeMain = update.getMessage().getText();
         // если пользователь впервые
         if (maybeMain.equals("/main")) {
-            if (!nurseryDBService.contain(chatIdUser) ) {
-                sendSimpleText(update.getMessage().getChatId(), "Здравствуйте, это питомник домашних животных!");
+            if (!nurseryDBService.contain(chatIdUser)) {
+                sendOnlyText(update.getMessage().getChatId(), "Здравствуйте, это питомник домашних животных!");
             }
             checkMessage(update.getMessage().getText(), chatIdUser);
             return true;
@@ -340,25 +333,22 @@ public class TelegramBot extends TelegramLongPollingBot {
         return false;
     }
 
-
-
     private boolean checkConnection(long chatIdUser, Update update) {
         if (connectService.containInActiveDialog(chatIdUser)) {   // является ли chat id участником активной беседы?
             if (!connectService.isPerson(chatIdUser)) {           // chat id - это волонтер?
                 if (Objects.equals(update.getMessage().getText(), "Конец")) {
-                    checkVolunteerOperation("Конец", chatIdUser);
+                    runVolunteerHandlers("Конец", chatIdUser);
                     return true;
                 }
             }
 
             if (connectService.isPerson(chatIdUser)) {    // если chat id вопрошающий, то шлем сообщение волонтеру
-                sendSimpleText(connectService.getVolunteerChatIdByPersonChatId(chatIdUser), update.getMessage().getText());
-                return true;
+                sendOnlyText(connectService.getVolunteerChatIdByPersonChatId(chatIdUser), update.getMessage().getText());
 
             } else {                                        // если нет, то наоборот
-                sendSimpleText(connectService.getPersonChatIdByChatIdVolunteer(chatIdUser), update.getMessage().getText());
-                return true;
+                sendOnlyText(connectService.getPersonChatIdByChatIdVolunteer(chatIdUser), update.getMessage().getText());
             }
+            return true;
 
         }
         return false;
