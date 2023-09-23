@@ -104,18 +104,16 @@ public class TelegramBot extends TelegramLongPollingBot {
             } else {
                 sendOnlyText(chat.getId(), "Фото можно присылать только если вы выбрали в меню - 'Отправить отчет'");
             }
-
         }
 
-        if (update.hasMessage() && update.getMessage().hasText()) {
+        if (update.hasMessage() && update.getMessage().hasText() && !update.getMessage().hasPhoto()) {
             if (!update.getMessage().getText().isEmpty()) {
                 if (checkRegistration(update.getMessage().getChatId(), update.getMessage().getText())) {
                     return;
                 }
-                String message = "Команда не распознана. \nВыберете в меню - выбор питомника\nесли вы являетесь волонтером - меню волонтеров";
+                String badCommand = "Команда не распознана. \nВыберете в меню - выбор питомника\nесли вы являетесь волонтером - меню волонтеров";
                 Long chatIdUser = update.getMessage().getChatId();
-
-                communicationWithVolunteer(chatIdUser, update, message);
+                сommandProcessing(chatIdUser, update, badCommand);
 
             }
             // проверяем ответы от кнопок
@@ -268,7 +266,7 @@ public class TelegramBot extends TelegramLongPollingBot {
      * @param update
      * @param message
      */
-    private void communicationWithVolunteer(long chatIdUser, Update update, String message) {
+    private void сommandProcessing(long chatIdUser, Update update, String message) {
         if (checkConnection(chatIdUser, update)) {
             return;
         }

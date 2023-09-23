@@ -1,4 +1,4 @@
-package com.nursery.nursery_api.Global;
+package com.nursery.nursery_api.global;
 
 import com.nursery.nursery_api.model.Volunteer;
 

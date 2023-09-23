@@ -1,22 +1,19 @@
 package com.nursery.nursery_api.service;
 
 import com.nursery.nursery_api.model.DataReport;
-import com.nursery.nursery_api.model.Person;
 import com.nursery.nursery_api.model.Report;
 import com.nursery.nursery_api.model.Volunteer;
 import com.nursery.nursery_api.repositiry.DataReportRepository;
 import com.nursery.nursery_api.repositiry.ReportRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ConcurrentSkipListSet;
 
-import static com.nursery.nursery_api.Global.GlobalVariable.volunteersList;
+import static com.nursery.nursery_api.global.GlobalVariable.volunteersList;
 
 
 @Service
