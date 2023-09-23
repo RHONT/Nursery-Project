@@ -90,6 +90,13 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
 
+    /**
+     * Три проверки
+     * 1. На наличие фотографии
+     * 2. На простой текст
+     * 3. На ответ от кнопки
+     * @param update
+     */
     @Override
     public void onUpdateReceived(Update update) {
         if (update.hasMessage() && update.getMessage().hasPhoto()) {
@@ -199,7 +206,8 @@ public class TelegramBot extends TelegramLongPollingBot {
     }
 
     /**
-     * @param message - строка берется из CallbackQuery. Это значение, что лежит "под кнопкой"
+     * Вывод сообщений из таблицы nursery
+     * @param message
      * @param chatId
      */
     private boolean runNurseryHandlers(String message, Long chatId) {
@@ -212,6 +220,12 @@ public class TelegramBot extends TelegramLongPollingBot {
         return false;
     }
 
+    /**
+     * Только один метод - позвать волонтера
+     * @param message
+     * @param chatId
+     * @return
+     */
     private boolean runVolunteerHandlers(String message, Long chatId) {
         for (var element : volunteerHandlers) {
             if (element.supply(message)) {
@@ -222,6 +236,12 @@ public class TelegramBot extends TelegramLongPollingBot {
         return false;
     }
 
+    /**
+     * Все что связанно с отчетами
+     * @param callBackString
+     * @param message
+     * @return
+     */
     private boolean runReportHandlers(String callBackString, Message message) {
         for (var element : reportHandlers) {
             if (element.supply(callBackString)) {
@@ -232,6 +252,13 @@ public class TelegramBot extends TelegramLongPollingBot {
         return false;
     }
 
+    /**
+     * Все что связано с содержимыми отчетов
+     * @param message
+     * @param chatId
+     * @param update
+     * @return
+     */
     private boolean runDataReportHandlers(String message, Long chatId, Update update) {
         for (var element : dataReportHandlers) {
             if (element.supply(message)) {
@@ -243,6 +270,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     }
 
     /**
+     *
      * @param message         - строк приходит от волонтера
      * @param chatIdVolunteer Проверяем является ли эта строка командой.
      */
@@ -312,6 +340,12 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
 
+    /**
+     * Показываем меню волонтеров, только волонтерам
+     * @param chatIdUser
+     * @param update
+     * @return
+     */
     private boolean checkIsVolunteer(long chatIdUser, Update update) {
         String message = update.getMessage().getText();
         if (message.equals("/main_volunteer")) {
@@ -323,6 +357,12 @@ public class TelegramBot extends TelegramLongPollingBot {
         } else return false;
     }
 
+    /**
+     * Быстро стать волонтером или выпилится из базы
+     * @param chatIdUser
+     * @param update
+     * @return
+     */
     private boolean checkFastOperationVolunteer(long chatIdUser, Update update) {
         String message = update.getMessage().getText();
 
@@ -341,6 +381,13 @@ public class TelegramBot extends TelegramLongPollingBot {
         return false;
     }
 
+    /**
+     * Если пользователь впервые в чате, приветствуем его перед тем как показать меню. Если уже был, просто показываем меню
+     * Проверяем человека в журнале посетителей методом {@link NurseryDBService#contain(Long)}
+     * @param chatIdUser
+     * @param update
+     * @return
+     */
     private boolean checkEnterMainMenu(long chatIdUser, Update update) {
         String maybeMain = update.getMessage().getText();
         // если пользователь впервые
@@ -354,6 +401,14 @@ public class TelegramBot extends TelegramLongPollingBot {
         return false;
     }
 
+    /**
+     * Если человек запрашивает консультацию, он попадает в журнал активных бесед. Для него естественно находиться 
+     * свободный волонтер, который тоже туда попадает. <br><br>
+     * Проверка chatIdUser на вхождение в этот журнал {@link ConnectService#containInActiveDialog(Long)}<br>
+     * @param chatIdUser
+     * @param update
+     * @return
+     */
     private boolean checkConnection(long chatIdUser, Update update) {
         if (connectService.containInActiveDialog(chatIdUser)) {   // является ли chat id участником активной беседы?
             if (!connectService.isPerson(chatIdUser)) {           // chat id - это волонтер?
@@ -362,15 +417,12 @@ public class TelegramBot extends TelegramLongPollingBot {
                     return true;
                 }
             }
-
             if (connectService.isPerson(chatIdUser)) {    // если chat id вопрошающий, то шлем сообщение волонтеру
                 sendOnlyText(connectService.getVolunteerChatIdByPersonChatId(chatIdUser), update.getMessage().getText());
-
             } else {                                        // если нет, то наоборот
                 sendOnlyText(connectService.getPersonChatIdByChatIdVolunteer(chatIdUser), update.getMessage().getText());
             }
             return true;
-
         }
         return false;
     }
