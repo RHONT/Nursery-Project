@@ -107,6 +107,17 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
 
+    /**
+     * Приходит ответ от кнопки, пробегаемся по хэндлерам, которые могу перехватить этот ответ
+     *
+     * @param update - входящее объект сообщения бота
+     *               Методы, что пробегаеються foreach по хэндлерам:
+     *               {@link TelegramBot#runDataReportHandlers(String, Long, Update)} <br>
+     *               {@link TelegramBot#runNurseryHandlers(String, Long)} (String, Long, Update)} <br>
+     *               {@link TelegramBot#runReportHandlers(String, Message)} (String, Long, Update)} <br>
+     *               {@link TelegramBot#runVolunteerCommandHandlers(String, Long)} (String, Long, Update)} <br>
+     *               {@link TelegramBot#runVolunteerHandlers(String, Long)} (String, Long, Update)} <br>
+     */
     private void callBackQueryProcessing(Update update) {
         String message = update.getCallbackQuery().getData();
         Long idChat = update.getCallbackQuery().getMessage().getChatId();
@@ -130,6 +141,12 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
 
+    /**
+     * @param update - входящее объект сообщения бота<br>
+     *               Если человек находиться в журнале тех, кто сдает отчеты - {@link ReportService#containPersonForReport(Long)} <br>
+     *               мы его сохраняем в БД - {@link TelegramBot#saveToDB(Chat, Message, Update, String)}, <br>
+     *               если нет шлем отрицательный ответ
+     */
     private void PhotoProcessing(Update update) {
         Message message = update.getMessage();
         Chat chat = message.getChat();
@@ -142,6 +159,19 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
 
+    /**
+     * Пробегаемся по всем возможным командам, которые могут быть введены человеком. Проверяем их на валидность допустимых условий
+     * Если нет, шлем отрицательный текстовый ответ<br>
+     * Методы для проверки:<br>
+     * {@link TelegramBot#checkConnection(long, Update)} - Если пользователь находиться в связке с волонтером, то они будут отвечать друг другу<br>
+     * {@link TelegramBot#checkEnterMainMenu(long, Update)} - Входная команда /main из меню<br>
+     * {@link TelegramBot#checkIsVolunteer(long, Update)}   - Входная команда /main_volunteer из меню<br>
+     * {@link TelegramBot#checkFastOperationVolunteer(long, Update)} - Тестовые команды для быстрого добавления и удаления себя как волонтера<br>
+     * {@link TelegramBot#checkRegistration(Long, String)} - регистрация человека или волонтера<br>
+     *
+     * @param chatIdUser
+     * @param update     входящее объект сообщения бота
+     */
     private void сommandProcessing(long chatIdUser, Update update) {
         String badCommand = "Команда не распознана. \nВыберете в меню - выбор питомника\nесли вы являетесь волонтером - меню волонтеров";
 
@@ -220,7 +250,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         for (var element : volunteerCommandHandlers) {
             if (element.supply(message)) {
                 element.handle(chatIdVolunteer, this, connectService);
-              return true;
+                return true;
             }
         }
         return false;
@@ -345,9 +375,18 @@ public class TelegramBot extends TelegramLongPollingBot {
         return false;
     }
 
-    private boolean checkRegistration(Long chatId, String message) {
+    /**
+     * Добавляем chatId в базу данных, только в том случае, если человека занесли в базу волонтеры<br>
+     * Тоже самое и для новых волонтеров. <br><br>
+     * Для берущего животного формат: -regPerson|Name<br>
+     * Для волонтера формат: -regVal|Name<br>
+     * @param chatId
+     * @param namePersonOrVolunteer - проверяем есть ли в базе человек с таким именем
+     * @return
+     */
+    private boolean checkRegistration(Long chatId, String namePersonOrVolunteer) {
         for (var element : registerHandlers) {
-            if (element.supply(message)) {
+            if (element.supply(namePersonOrVolunteer)) {
                 element.handle(chatId, this, nurseryDBService);
                 return true;
             }
