@@ -90,117 +90,140 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
 
-    //    @SneakyThrows
     @Override
     public void onUpdateReceived(Update update) {
-
         if (update.hasMessage() && update.getMessage().hasPhoto()) {
-            Message message = update.getMessage();
-            Chat chat = message.getChat();
-            // проверяем отчет, если есть фото, значит это отчет
-            if (reportService.containPersonForReport(chat.getId())) {
-                saveToDB(chat, message, update, nurseryDBService.getVisitors().get(chat.getId()));
-                reportService.deletePersonForReport(chat.getId());   // удаляем из списка
-            } else {
-                sendOnlyText(chat.getId(), "Фото можно присылать только если вы выбрали в меню - 'Отправить отчет'");
-            }
-        }
 
-        if (update.hasMessage() && update.getMessage().hasText() && !update.getMessage().hasPhoto()) {
-            if (!update.getMessage().getText().isEmpty()) {
-                if (checkRegistration(update.getMessage().getChatId(), update.getMessage().getText())) {
-                    return;
-                }
-                String badCommand = "Команда не распознана. \nВыберете в меню - выбор питомника\nесли вы являетесь волонтером - меню волонтеров";
-                Long chatIdUser = update.getMessage().getChatId();
-                сommandProcessing(chatIdUser, update, badCommand);
+            PhotoProcessing(update);
 
-            }
-            // проверяем ответы от кнопок
+        } else if (update.hasMessage() && update.getMessage().hasText() &&
+                !update.getMessage().hasPhoto() && !update.getMessage().getText().isEmpty()) {
+
+            сommandProcessing(update.getMessage().getChatId(), update);
+
         } else if (update.hasCallbackQuery()) {
-            String message = update.getCallbackQuery().getData();
-            Long idChat = update.getCallbackQuery().getMessage().getChatId();
-            runDataReportHandlers(message, idChat, update);
-            checkMessage(message, idChat);
-            runReportHandlers(message, update.getCallbackQuery().getMessage());
+
+            callBackQueryProcessing(update);
         }
     }
 
-    private boolean checkRegistration(Long chatId, String message) {
-        for (var element : registerHandlers) {
+    private void callBackQueryProcessing(Update update) {
+        String message = update.getCallbackQuery().getData();
+        Long idChat = update.getCallbackQuery().getMessage().getChatId();
+
+        if (runDataReportHandlers(message, idChat, update)) {
+            return;
+        }
+        if (runReportHandlers(message, update.getCallbackQuery().getMessage())) {
+            return;
+        }
+        if (runVolunteerHandlers(message, idChat)) {
+            return;
+        }
+
+        if (runNurseryHandlers(message, idChat)) {
+            return;
+        }
+
+        if (runVolunteerCommandHandlers(message, idChat)) {
+            return;
+        }
+    }
+
+    private void PhotoProcessing(Update update) {
+        Message message = update.getMessage();
+        Chat chat = message.getChat();
+        // проверяем отчет, если есть фото, значит это отчет
+        if (reportService.containPersonForReport(chat.getId())) {
+            saveToDB(chat, message, update, nurseryDBService.getVisitors().get(chat.getId()));
+            reportService.deletePersonForReport(chat.getId());   // удаляем из списка
+        } else {
+            sendOnlyText(chat.getId(), "Фото можно присылать только если вы выбрали в меню - 'Отправить отчет'");
+        }
+    }
+
+    private void сommandProcessing(long chatIdUser, Update update) {
+        String badCommand = "Команда не распознана. \nВыберете в меню - выбор питомника\nесли вы являетесь волонтером - меню волонтеров";
+
+        if (checkConnection(chatIdUser, update)) {
+            return;
+        }
+
+        if (checkEnterMainMenu(chatIdUser, update)) {
+            return;
+        }
+
+        if (checkFastOperationVolunteer(chatIdUser, update)) {
+            return;
+        }
+
+        if (checkIsVolunteer(chatIdUser, update)) {
+            return;
+        }
+
+        if (checkRegistration(update.getMessage().getChatId(), update.getMessage().getText())) {
+            return;
+        }
+
+        sendOnlyText(update.getMessage().getChatId(), badCommand);
+    }
+
+    /**
+     * @param message - строка берется из CallbackQuery. Это значение, что лежит "под кнопкой"
+     * @param chatId
+     */
+    private boolean runNurseryHandlers(String message, Long chatId) {
+        for (var element : nurseryHandlerList) {
             if (element.supply(message)) {
-                element.handle(chatId, this, nurseryDBService);
+                element.handle(chatId, this, nurseryDBService, sendBotMessageService);
                 return true;
             }
         }
         return false;
     }
 
-
-    @Override
-    public String getBotUsername() {
-        return "animal-shelter-test";
-    }
-
-    @Override
-    public String getBotToken() {
-        return token;
-    }
-
-//    private void checkCommandVolunteer(String message, Long chatId){
-//
-//    }
-
-
-    /**
-     * @param message - строка берется из CallbackQuery. Это значение, что лежит "под кнопкой"
-     * @param chatId
-     */
-    private void checkMessage(String message, Long chatId) {
-        for (var element : nurseryHandlerList) {
-            if (element.supply(message)) {
-                element.handle(chatId, this, nurseryDBService, sendBotMessageService);
-                break;
-            }
-        }
-
+    private boolean runVolunteerHandlers(String message, Long chatId) {
         for (var element : volunteerHandlers) {
             if (element.supply(message)) {
                 element.handle(chatId, this, connectService);
-                break;
+                return true;
             }
         }
+        return false;
     }
 
-    private void runReportHandlers(String callBackString, Message message) {
+    private boolean runReportHandlers(String callBackString, Message message) {
         for (var element : reportHandlers) {
             if (element.supply(callBackString)) {
                 element.handle(message, this, reportService, nurseryDBService, sendBotMessageService, connectService);
-                break;
+                return true;
             }
         }
+        return false;
     }
 
-    private void runDataReportHandlers(String message, Long chatId, Update update) {
+    private boolean runDataReportHandlers(String message, Long chatId, Update update) {
         for (var element : dataReportHandlers) {
             if (element.supply(message)) {
                 element.handle(chatId, this, update, reportService, sendBotMessageService);
-                break;
+                return true;
             }
         }
+        return false;
     }
 
     /**
      * @param message         - строк приходит от волонтера
      * @param chatIdVolunteer Проверяем является ли эта строка командой.
      */
-    private void runVolunteerHandlers(String message, Long chatIdVolunteer) {
+    private boolean runVolunteerCommandHandlers(String message, Long chatIdVolunteer) {
         for (var element : volunteerCommandHandlers) {
             if (element.supply(message)) {
                 element.handle(chatIdVolunteer, this, connectService);
-                break;
+              return true;
             }
         }
+        return false;
     }
 
     /**
@@ -259,36 +282,6 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
 
-    /**
-     * общение с волонтером
-     *
-     * @param chatIdUser
-     * @param update
-     * @param message
-     */
-    private void сommandProcessing(long chatIdUser, Update update, String message) {
-        if (checkConnection(chatIdUser, update)) {
-            return;
-        }
-
-        if (checkEnterMainMenu(chatIdUser, update)) {
-            return;
-        }
-
-        if (checkFastOperationVolunteer(chatIdUser, update)) {
-            return;
-        }
-
-        if (checkIsVolunteer(chatIdUser, update)) {
-            return;
-        }
-
-
-        sendOnlyText(update.getMessage().getChatId(), message);
-
-
-    }
-
     private boolean checkIsVolunteer(long chatIdUser, Update update) {
         String message = update.getMessage().getText();
         if (message.equals("/main_volunteer")) {
@@ -325,7 +318,7 @@ public class TelegramBot extends TelegramLongPollingBot {
             if (!nurseryDBService.contain(chatIdUser)) {
                 sendOnlyText(update.getMessage().getChatId(), "Здравствуйте, это питомник домашних животных!");
             }
-            checkMessage(update.getMessage().getText(), chatIdUser);
+            runNurseryHandlers(update.getMessage().getText(), chatIdUser);
             return true;
         }
         return false;
@@ -335,7 +328,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         if (connectService.containInActiveDialog(chatIdUser)) {   // является ли chat id участником активной беседы?
             if (!connectService.isPerson(chatIdUser)) {           // chat id - это волонтер?
                 if (Objects.equals(update.getMessage().getText(), "Конец")) {
-                    runVolunteerHandlers("Конец", chatIdUser);
+                    runVolunteerCommandHandlers("Конец", chatIdUser);
                     return true;
                 }
             }
@@ -350,6 +343,26 @@ public class TelegramBot extends TelegramLongPollingBot {
 
         }
         return false;
+    }
+
+    private boolean checkRegistration(Long chatId, String message) {
+        for (var element : registerHandlers) {
+            if (element.supply(message)) {
+                element.handle(chatId, this, nurseryDBService);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public String getBotUsername() {
+        return "animal-shelter-test";
+    }
+
+    @Override
+    public String getBotToken() {
+        return token;
     }
 }
 
