@@ -40,7 +40,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     private final List<VolunteerHandler> volunteerHandlers;
     private final List<VolunteerCommandHandler> volunteerCommandHandlers;
     private final List<ReportHandler> reportHandlers;
-    private final  List<DataReportHandler> dataReportHandlers;
+    private final List<DataReportHandler> dataReportHandlers;
     private final List<RegisterHandler> registerHandlers;
 
     private final SendBotMessageService sendBotMessageService = new SendBotMessageServiceImpl(this);
@@ -49,9 +49,9 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     private final VolunteerService volunteerService;
 
-    List<BotCommand> botCommands =new ArrayList<>(List.of(
-            new BotCommand("/main","Выбор питомника"),
-            new BotCommand("/main_volunteer","Операции волонтера")));
+    List<BotCommand> botCommands = new ArrayList<>(List.of(
+            new BotCommand("/main", "Выбор питомника"),
+            new BotCommand("/main_volunteer", "Операции волонтера")));
 
     @Value("${telegram.bot.token}")
     private String token;
@@ -79,10 +79,11 @@ public class TelegramBot extends TelegramLongPollingBot {
         this.reportService = reportService;
         this.volunteerService = volunteerService;
     }
+
     @PostConstruct
-    private void init(){
+    private void init() {
         try {
-            this.execute(new SetMyCommands(botCommands,new BotCommandScopeDefault(),null));
+            this.execute(new SetMyCommands(botCommands, new BotCommandScopeDefault(), null));
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }
@@ -95,7 +96,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         if (update.hasMessage() && !update.getMessage().hasPhoto() && volunteerService.isVolunteer(update.getMessage().getChatId())) {
             if (update.getMessage().getText().equals("/main_volunteer")) {
 
-                checkReportMessage("-mainVolunteer",update.getMessage());
+                checkReportMessage("-mainVolunteer", update.getMessage());
                 return;
             }
         }
@@ -104,41 +105,41 @@ public class TelegramBot extends TelegramLongPollingBot {
             Message message = update.getMessage();
             Chat chat = message.getChat();
             // проверяем отчет, если есть фото, значит это отчет
-                if (reportService.containPersonForReport(chat.getId())) {
-                    saveToDB(chat, message, update, nurseryDBService.getVisitors().get(chat.getId()));
-                    reportService.deletePersonForReport(chat.getId());   // удаляем из списка
-                } else {
-                    sendSimpleText(chat.getId(), "Фото можно присылать только если вы выбрали в меню - 'Отправить отчет'");
-                }
+            if (reportService.containPersonForReport(chat.getId())) {
+                saveToDB(chat, message, update, nurseryDBService.getVisitors().get(chat.getId()));
+                reportService.deletePersonForReport(chat.getId());   // удаляем из списка
+            } else {
+                sendSimpleText(chat.getId(), "Фото можно присылать только если вы выбрали в меню - 'Отправить отчет'");
+            }
 
         }
 
-            if (update.hasMessage() && update.getMessage().hasText()) {
-                if (!update.getMessage().getText().isEmpty()) {
-                    if (checkRegistration(update.getMessage().getChatId(), update.getMessage().getText())) {
-                        return;
-                    }
-                    String message = "/main";
-                    Long chatIdUser = update.getMessage().getChatId();
-
-                    communicationWithVolunteer(chatIdUser, update, message);
-
+        if (update.hasMessage() && update.getMessage().hasText()) {
+            if (!update.getMessage().getText().isEmpty()) {
+                if (checkRegistration(update.getMessage().getChatId(), update.getMessage().getText())) {
+                    return;
                 }
-                // проверяем ответы от кнопок
-            } else if (update.hasCallbackQuery()) {
-                String message = update.getCallbackQuery().getData();
-                Long idChat = update.getCallbackQuery().getMessage().getChatId();
-                checkDataReport(message, idChat,update);
-                checkMessage(message, idChat);
-                checkReportMessage(message,update.getCallbackQuery().getMessage());
+                String message = "Команда не распознана. \nВыберете в меню - выбор питомника\nесли вы являетесь волонтером - меню волонтеров";
+                Long chatIdUser = update.getMessage().getChatId();
+
+                communicationWithVolunteer(chatIdUser, update, message);
+
             }
+            // проверяем ответы от кнопок
+        } else if (update.hasCallbackQuery()) {
+            String message = update.getCallbackQuery().getData();
+            Long idChat = update.getCallbackQuery().getMessage().getChatId();
+            checkDataReport(message, idChat, update);
+            checkMessage(message, idChat);
+            checkReportMessage(message, update.getCallbackQuery().getMessage());
+        }
     }
 
     private boolean checkRegistration(Long chatId, String message) {
         for (var element : registerHandlers) {
             if (element.supply(message)) {
                 element.handle(chatId, this, nurseryDBService);
-               return true;
+                return true;
             }
         }
         return false;
@@ -180,19 +181,19 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
 
-    private void checkReportMessage(String callBackString,Message message) {
+    private void checkReportMessage(String callBackString, Message message) {
         for (var element : reportHandlers) {
             if (element.supply(callBackString)) {
-                element.handle(message, this,reportService, nurseryDBService, sendBotMessageService,connectService);
+                element.handle(message, this, reportService, nurseryDBService, sendBotMessageService, connectService);
                 break;
             }
         }
     }
 
-    private void checkDataReport(String message, Long chatId, Update update){
+    private void checkDataReport(String message, Long chatId, Update update) {
         for (var element : dataReportHandlers) {
             if (element.supply(message)) {
-                element.handle(chatId, this,update,reportService, sendBotMessageService);
+                element.handle(chatId, this, update, reportService, sendBotMessageService);
                 break;
             }
         }
@@ -230,18 +231,19 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     /**
      * сохраняем фото и сообщение из caption отдельно в БД
+     *
      * @param chat
      * @param message
      * @param update
      */
     private void saveToDB(Chat chat, Message message, Update update, String nameNursery) {
-        String negativeReport="Дорогой усыновитель, мы заметили, что ты заполняешь отчет не так " +
+        String negativeReport = "Дорогой усыновитель, мы заметили, что ты заполняешь отчет не так " +
                 "подробно, как необходимо. Пожалуйста, подойди ответственнее к " +
                 "этому занятию. В противном случае волонтеры приюта будут обязаны " +
                 "самолично проверять условия содержания животного";
 
 
-        Optional<DataReport> dataReport = dataReportRepository.findDataReportByIdChatAndDateNow(chat.getId(), LocalDate.now(),nameNursery);
+        Optional<DataReport> dataReport = dataReportRepository.findDataReportByIdChatAndDateNow(chat.getId(), LocalDate.now(), nameNursery);
         if (dataReport.isPresent()) {
             DataReport dataReport1 = dataReport.get();
 
@@ -249,7 +251,7 @@ public class TelegramBot extends TelegramLongPollingBot {
             PhotoSize photo = photos.get(photos.size() - 1);
 
             String messageCaption = update.getMessage().getCaption();
-            if (messageCaption==null) {
+            if (messageCaption == null) {
                 sendSimpleText(chat.getId(), negativeReport);
                 return;
             }
@@ -285,44 +287,81 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     /**
      * общение с волонтером
+     *
      * @param chatIdUser
      * @param update
      * @param message
      */
-    private void communicationWithVolunteer(long chatIdUser, Update update, String message){
+    private void communicationWithVolunteer(long chatIdUser, Update update, String message) {
+        if (checkConnection(chatIdUser,update)) {
+            return;
+        }
+
+        if (checkEnterMainMenu(chatIdUser,update)) {
+            return;
+        }
+
+        if (checkFastOperationVolunteer(chatIdUser,update)) {
+            return;
+        }
+
+        sendSimpleText(update.getMessage().getChatId(), message);
+
+    }
+
+    private boolean checkFastOperationVolunteer(long chatIdUser, Update update){
+        String message=update.getMessage().getText();
+
+        // Регистрация волонтера. Тут же id_chat попадает в базу
+        if (message.startsWith("Хочу стать волонтером")) {
+            Volunteer volunteer = new Volunteer();
+            volunteer.setBusy(false);
+            volunteer.setVolunteerChatId(chatIdUser);
+            connectService.addNewVolunteer(volunteer);
+            return true;
+        }
+        if (message.startsWith("Я ухожу")) {
+            connectService.iAmGonnaWayVolunteer(chatIdUser);
+            return true;
+        }
+        return false;
+    }
+
+    private boolean checkEnterMainMenu(long chatIdUser, Update update){
+        String maybeMain=update.getMessage().getText();
+        // если пользователь впервые
+        if (maybeMain.equals("/main")) {
+            if (!nurseryDBService.contain(chatIdUser) ) {
+                sendSimpleText(update.getMessage().getChatId(), "Здравствуйте, это питомник домашних животных!");
+            }
+            checkMessage(update.getMessage().getText(), chatIdUser);
+            return true;
+        }
+        return false;
+    }
+
+
+
+    private boolean checkConnection(long chatIdUser, Update update) {
         if (connectService.containInActiveDialog(chatIdUser)) {   // является ли chat id участником активной беседы?
             if (!connectService.isPerson(chatIdUser)) {           // chat id - это волонтер?
                 if (Objects.equals(update.getMessage().getText(), "Конец")) {
-                    checkVolunteerOperation("Конец",chatIdUser);
-                    return;
+                    checkVolunteerOperation("Конец", chatIdUser);
+                    return true;
                 }
             }
 
             if (connectService.isPerson(chatIdUser)) {    // если chat id вопрошающий, то шлем сообщение волонтеру
                 sendSimpleText(connectService.getVolunteerChatIdByPersonChatId(chatIdUser), update.getMessage().getText());
+                return true;
 
             } else {                                        // если нет, то наоборот
                 sendSimpleText(connectService.getPersonChatIdByChatIdVolunteer(chatIdUser), update.getMessage().getText());
+                return true;
             }
 
-        } else {
-
-            // если пользователь впервые
-            if (!nurseryDBService.contain(chatIdUser)) {
-                sendSimpleText(update.getMessage().getChatId(), "Здравствуйте, это питомник домашних животных!");
-            }
-            checkMessage(message, chatIdUser);       // При любой непонятной команде выводим главное меню чата
         }
-        // Регистрация волонтера. Тут же id_chat попадает в базу
-        if (update.getMessage().getText().startsWith("Хочу стать волонтером")) {
-            Volunteer volunteer = new Volunteer();
-            volunteer.setBusy(false);
-            volunteer.setVolunteerChatId(chatIdUser);
-            connectService.addNewVolunteer(volunteer);
-        }
-        if (update.getMessage().getText().startsWith("Я ухожу")) {
-            connectService.iAmGonnaWayVolunteer(chatIdUser);
-        }
+        return false;
     }
 }
 

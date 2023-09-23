@@ -16,7 +16,7 @@ public class InfoButton implements NurseryHandler {
             "Схема проезда", "Получить пропуск на машину", "Общие рекомендации по безопасности",
             "Оставить свои контактные данные", "Отослать сообщение волонтеру.", "К главному меню"};
 
-    String[] callDataInfo = {"-about", "-address", "-pass", "-safety", "-contact", "-volunteer", "-main"};
+    String[] callDataInfo = {"-about", "-address", "-pass", "-safety", "-contact", "-volunteer", "/main"};
 
     /**
      * Создаются кнопки при нажатии на кнопку "Информация о приюте"
