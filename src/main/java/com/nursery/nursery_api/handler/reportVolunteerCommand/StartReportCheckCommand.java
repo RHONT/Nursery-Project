@@ -8,14 +8,17 @@ import com.nursery.nursery_api.service.ReportService;
 import com.nursery.nursery_api.service.SendBotMessageService;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+
+import static com.nursery.nursery_api.bot.StandartBotCommand.deleteButtons;
 
 @Component
 public class StartReportCheckCommand implements ReportHandler {
 
     @Override
-    public void handle(Long idChat, TelegramBot bot, ReportService reportService, NurseryDBService nurseryDBService, SendBotMessageService sendBotMessageService, ConnectService connectService) {
-
+    public void handle(Message message, TelegramBot bot, ReportService reportService, NurseryDBService nurseryDBService, SendBotMessageService sendBotMessageService, ConnectService connectService) {
+        Long idChat= message.getChatId();
         String[] buttonsName = { "Получить отчет","Перестать проверять отчеты", "Обновить отчеты", "Статистика"};
         String[] callDataMain = {"-getReport","-stopReportCheck","-refresh","-statistics"};
 
@@ -25,6 +28,7 @@ public class StartReportCheckCommand implements ReportHandler {
         String ADOPT_MESSAGE="Проверка отчетов";
 
         sendBotMessageService.sendMessage(idChat.toString(), ADOPT_MESSAGE, buttonsName, callDataMain);
+        deleteButtons(message);
     }
 
 

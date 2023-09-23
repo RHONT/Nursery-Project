@@ -9,6 +9,8 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import static com.nursery.nursery_api.bot.StandartBotCommand.sendSimpleTextTest;
+
 @Component
 @RequiredArgsConstructor
 public class About implements NurseryHandler {
@@ -21,17 +23,8 @@ public class About implements NurseryHandler {
      */
     @Override
     public void handle(Long idChat, TelegramBot bot, NurseryDBService nurseryDBService, SendBotMessageService sendBotMessageService) {
-        try {
-            bot.execute(
-                    SendMessage.
-                            builder().
-                            chatId(idChat).
-                            text(nurseryDBService.getMeAboutNursery(idChat)).
-                            build()
-            );
-        } catch (TelegramApiException e) {
-            e.printStackTrace();
-        }
+
+        sendSimpleTextTest(idChat,nurseryDBService.getMeAboutNursery(idChat));
     }
     /**
      * сравнивается входящее сообщение от нажатой кнопки с нужным значением кнопки

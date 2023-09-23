@@ -10,6 +10,7 @@ import com.nursery.nursery_api.service.ReportService;
 import com.nursery.nursery_api.service.SendBotMessageService;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.Objects;
@@ -25,7 +26,9 @@ public class MyModeCommand implements ReportHandler {
     }
 
     @Override
-    public void handle(Long idChat, TelegramBot bot, ReportService reportService, NurseryDBService nurseryDBService, SendBotMessageService sendBotMessageService, ConnectService connectService) {
+    public void handle(Message message, TelegramBot bot, ReportService reportService, NurseryDBService nurseryDBService, SendBotMessageService sendBotMessageService, ConnectService connectService) {
+
+        Long idChat= message.getChatId();
 
         Volunteer volunteer=volunteersList.keySet().stream().filter(e-> Objects.equals(e.getVolunteerChatId(), idChat)).findFirst().get();
 

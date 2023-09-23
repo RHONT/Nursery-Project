@@ -76,8 +76,9 @@ public class TelegramBot extends TelegramLongPollingBot {
     public void onUpdateReceived(Update update) {
 
         if (update.hasMessage() && !update.getMessage().hasPhoto() && volunteerService.isVolunteer(update.getMessage().getChatId())) {
-            if (update.getMessage().getText().equals("Меню")) {
-                checkMessage("-mainVolunteer",update.getMessage().getChatId());
+            if (update.getMessage().getText().equals("меню")) {
+
+                checkReportMessage("-mainVolunteer",update.getMessage());
                 return;
             }
         }
@@ -112,6 +113,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                 Long idChat = update.getCallbackQuery().getMessage().getChatId();
                 checkDataReport(message, idChat,update);
                 checkMessage(message, idChat);
+                checkReportMessage(message,update.getCallbackQuery().getMessage());
             }
     }
 
@@ -159,10 +161,12 @@ public class TelegramBot extends TelegramLongPollingBot {
                 break;
             }
         }
+    }
 
+    private void checkReportMessage(String callBackString,Message message) {
         for (var element : reportHandlers) {
-            if (element.supply(message)) {
-                element.handle(chatId, this,reportService, nurseryDBService, sendBotMessageService,connectService);
+            if (element.supply(callBackString)) {
+                element.handle(message, this,reportService, nurseryDBService, sendBotMessageService,connectService);
                 break;
             }
         }

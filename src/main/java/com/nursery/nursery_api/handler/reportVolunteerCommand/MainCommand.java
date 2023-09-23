@@ -7,6 +7,7 @@ import com.nursery.nursery_api.service.NurseryDBService;
 import com.nursery.nursery_api.service.ReportService;
 import com.nursery.nursery_api.service.SendBotMessageService;
 import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.objects.Message;
 
 @Component
 public class MainCommand implements ReportHandler {
@@ -16,14 +17,15 @@ public class MainCommand implements ReportHandler {
     String[] callDataMain = {"-myMode","-startReportCheck","-stopConsultation","-startConsulting","-statistics"};
     /**
      * Создаются кнопки при вводе любого текста
-     * @param idChat
+
      * @param bot
      * @param nurseryDBService
      * @param sendBotMessageService
      */
     @Override
-    public void handle(Long idChat, TelegramBot bot, ReportService reportService, NurseryDBService nurseryDBService, SendBotMessageService sendBotMessageService, ConnectService connectService) {
-        sendBotMessageService.sendMessage(idChat.toString(), MAIN_MESSAGE, buttonsName, callDataMain);
+    public void handle(Message message, TelegramBot bot, ReportService reportService, NurseryDBService nurseryDBService, SendBotMessageService sendBotMessageService, ConnectService connectService) {
+
+        sendBotMessageService.sendMessage(message.getChatId().toString(), MAIN_MESSAGE, buttonsName, callDataMain);
     }
     /**
      * сравнивается входящее сообщение от нажатой кнопки с нужным значением кнопки
