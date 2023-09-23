@@ -30,6 +30,6 @@ public class MainNurseryButton implements NurseryHandler {
      */
     @Override
     public boolean supply(String inputMessage) {
-        return inputMessage.equals("-main");
+        return inputMessage.equals("/main");
     }
 }

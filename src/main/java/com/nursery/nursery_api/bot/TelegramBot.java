@@ -49,9 +49,9 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     private final VolunteerService volunteerService;
 
-    List<BotCommand> t=new ArrayList<>(List.of(
-            new BotCommand("/main","asdfasdf"),
-            new BotCommand("/end","asdfasdf")));
+    List<BotCommand> botCommands =new ArrayList<>(List.of(
+            new BotCommand("/main","Выбор питомника"),
+            new BotCommand("/main_volunteer","Операции волонтера")));
 
     @Value("${telegram.bot.token}")
     private String token;
@@ -82,7 +82,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     @PostConstruct
     private void init(){
         try {
-            this.execute(new SetMyCommands(t,new BotCommandScopeDefault(),null));
+            this.execute(new SetMyCommands(botCommands,new BotCommandScopeDefault(),null));
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }
@@ -93,7 +93,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     public void onUpdateReceived(Update update) {
 
         if (update.hasMessage() && !update.getMessage().hasPhoto() && volunteerService.isVolunteer(update.getMessage().getChatId())) {
-            if (update.getMessage().getText().equals("меню")) {
+            if (update.getMessage().getText().equals("/main_volunteer")) {
 
                 checkReportMessage("-mainVolunteer",update.getMessage());
                 return;
