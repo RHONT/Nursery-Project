@@ -12,14 +12,19 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.GetFile;
+import org.telegram.telegrambots.meta.api.methods.commands.SetMyCommands;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.*;
+import org.telegram.telegrambots.meta.api.objects.commands.BotCommand;
+import org.telegram.telegrambots.meta.api.objects.commands.scope.BotCommandScopeDefault;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -43,6 +48,10 @@ public class TelegramBot extends TelegramLongPollingBot {
     private final ReportService reportService;
 
     private final VolunteerService volunteerService;
+
+    List<BotCommand> t=new ArrayList<>(List.of(
+            new BotCommand("/main","asdfasdf"),
+            new BotCommand("/end","asdfasdf")));
 
     @Value("${telegram.bot.token}")
     private String token;
@@ -69,6 +78,14 @@ public class TelegramBot extends TelegramLongPollingBot {
         this.connectService = connectService;
         this.reportService = reportService;
         this.volunteerService = volunteerService;
+    }
+    @PostConstruct
+    private void init(){
+        try {
+            this.execute(new SetMyCommands(t,new BotCommandScopeDefault(),null));
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
     }
 
     //    @SneakyThrows
@@ -101,7 +118,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                     if (checkRegistration(update.getMessage().getChatId(), update.getMessage().getText())) {
                         return;
                     }
-                    String message = "-main";
+                    String message = "/main";
                     Long chatIdUser = update.getMessage().getChatId();
 
                     communicationWithVolunteer(chatIdUser, update, message);
