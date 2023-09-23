@@ -25,5 +25,10 @@ public interface ReportRepository extends JpaRepository<Report,Long> {
             "where report.day_report>0",nativeQuery = true)
     List<Report> findReportForInsertNewFields();
 
+    @Query(value = "SELECT Report FROM Report WHERE report.day_report > 0", nativeQuery = true)
+    List<Report> findReportsByDayReportIsGreaterThanOrPerson();
+
+
+
 
 }
