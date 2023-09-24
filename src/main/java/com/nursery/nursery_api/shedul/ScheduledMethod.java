@@ -78,7 +78,7 @@ public class ScheduledMethod {
     }
 
     /**
-     * Каждую ночь в 23:59 достает из базы данных непроверенные отчеты за день и начисляет штраф тем,
+     * Каждую ночь в 23:55 достает из базы данных непроверенные отчеты за день и начисляет штраф тем,
      * кто их отослал.
      */
     @Scheduled(cron = "0 55 23 * * *")
@@ -133,4 +133,17 @@ public class ScheduledMethod {
             }
         }
     }
+    @Scheduled(cron = "0 59 23 * * *")
+    public void dayGone (){
+        List<Report> onCheck = reportRepository.findReportsByDayReportIsGreaterThanOrPerson();
+        logger.info("Вызван метод dayGone.");
+        if (!onCheck.isEmpty()) {
+            for (var element : onCheck) {
+                element.setDayReport(element.getDayReport() - 1);
+            }
+        }
+    }
+
+
+
 }
