@@ -117,11 +117,16 @@ public class ReportService {
                 if (!compareDataReport(newDataReport, oldVersion)) {
                     badReport.remove(oldVersion);
                     dataReportQueue.add(newDataReport);
-                } else continue;
+                }
 
+            } else {
+                if (dataReportQueue.contains(newDataReport)) {
+                    dataReportQueue.remove(newDataReport);
+                } else dataReportQueue.add(newDataReport);
             }
-            dataReportQueue.removeIf(reportsForCheck::contains);
-            dataReportQueue.add(newDataReport);
+
+//            dataReportQueue.removeIf(dataReportQueue::contains);
+//            dataReportQueue.add(newDataReport);
         }
     }
 

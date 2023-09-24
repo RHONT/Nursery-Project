@@ -12,6 +12,8 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.Optional;
 
+import static com.nursery.nursery_api.global.GlobalVariable.volunteersList;
+
 @Component
 public class RegisterVolunteer implements RegisterHandler {
 
@@ -34,6 +36,7 @@ public class RegisterVolunteer implements RegisterHandler {
         if (volunteer!=null) {
             volunteer.setVolunteerChatId(idChat);
             volunteerRepository.save(volunteer);
+            volunteersList.put(volunteer,0L);
         } else response="Ошибка. Ваше имя не смогли найти в базе данных. Проверьте правильность написания. Пример: -regVal|Анастасия Забродина";
 
         try {

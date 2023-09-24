@@ -1,6 +1,7 @@
 package com.nursery.nursery_api.repositiry;
 
 
+import com.nursery.nursery_api.model.Person;
 import com.nursery.nursery_api.model.Report;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -17,6 +18,8 @@ public interface ReportRepository extends JpaRepository<Report,Long> {
 
     @Query(value = "SELECT Report FROM Report WHERE report.id_person = :personId",nativeQuery = true)
     Report findReportByPersonId (@Param("personId") Long personId);
+
+    Report findByPerson(Person person);
 
     Report deleteReportByIdReport (Long reportId);
 

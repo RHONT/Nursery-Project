@@ -2,6 +2,8 @@ package com.nursery.nursery_api.bot;
 
 import com.nursery.nursery_api.handler.*;
 import com.nursery.nursery_api.model.DataReport;
+import com.nursery.nursery_api.model.Person;
+import com.nursery.nursery_api.model.Report;
 import com.nursery.nursery_api.model.Volunteer;
 import com.nursery.nursery_api.repositiry.DataReportRepository;
 import com.nursery.nursery_api.repositiry.PersonRepository;
@@ -298,7 +300,21 @@ public class TelegramBot extends TelegramLongPollingBot {
                 "самолично проверять условия содержания животного";
 
 
+        Optional<DataReport> dataReportCheck = dataReportRepository.findDataReportByIdChatAndDateNow(chat.getId(), LocalDate.now(), nameNursery);
+
+        if (dataReportCheck.isEmpty()) {
+            Optional<Person> person=personRepository.findByIdChat(chat.getId());
+            if (person.isPresent()) {
+                Report report=reportRepository.findByPerson(person.get());
+                DataReport dataReport1= DataReport.builder().dateReport(LocalDate.now()).build();
+                dataReport1.setReport(report);
+                dataReportRepository.save(dataReport1);
+
+            }
+        }
+
         Optional<DataReport> dataReport = dataReportRepository.findDataReportByIdChatAndDateNow(chat.getId(), LocalDate.now(), nameNursery);
+
         if (dataReport.isPresent()) {
             DataReport dataReport1 = dataReport.get();
 

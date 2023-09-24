@@ -33,7 +33,7 @@ public class DogAdoptButton implements NurseryHandler {
             "-refusal",
             "-contactDog",
             "-volunteer",
-            "-main"};
+            "/main"};
 
     /**
      * создаются кнопки при выборе кнопки у меню Собачьего приюта "Как забрать животное"

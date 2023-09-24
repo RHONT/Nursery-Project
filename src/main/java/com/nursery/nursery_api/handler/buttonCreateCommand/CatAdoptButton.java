@@ -30,7 +30,7 @@ public class CatAdoptButton implements NurseryHandler {
             "-refusal",
             "-contactCat",
             "-volunteer",
-            "-main"};
+            "/main"};
 
     /**
      * создаются кнопки при выборе кнопки у меню Кошачьего приюта "Как забрать животное"

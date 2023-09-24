@@ -13,7 +13,7 @@ public class DogMainButton implements NurseryHandler {
 
     String[] buttonsName = {"Информация о приюте", "Как забрать животное", "Отослать отчет о животном",
             "Связаться с волонтером", "К главному меню"};
-    String[] callDataForDog = {"-info", "-dogAdopt", "-report", "-volunteer", "-main"};
+    String[] callDataForDog = {"-info", "-dogAdopt", "-report", "-volunteer", "/main"};
 
     /**
      * пользователь делает выбор Собачьего приюта и его выбор прописывается в мапе Visitors "Собаки" value

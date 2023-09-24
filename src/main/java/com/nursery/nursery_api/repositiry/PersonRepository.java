@@ -30,4 +30,6 @@ public interface PersonRepository extends JpaRepository<Person, Long> {
             "where dr.id_data_report=?", nativeQuery = true)
     Optional<Long> findChatIdPersonByIdDataReport(Long idDataReport);
 
+    Optional<Person> findByIdChat(Long idChat);
+
 }
