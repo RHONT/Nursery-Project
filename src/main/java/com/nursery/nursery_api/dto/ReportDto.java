@@ -5,6 +5,7 @@ import lombok.Data;
 
 @Data
 public class ReportDto {
+    private Long idPet;
     private Long idPerson;
 
 }

@@ -1,12 +1,10 @@
 package com.nursery.nursery_api.service;
 
 import com.nursery.nursery_api.dto.ReportDto;
-import com.nursery.nursery_api.model.DataReport;
-import com.nursery.nursery_api.model.Person;
-import com.nursery.nursery_api.model.Report;
-import com.nursery.nursery_api.model.Volunteer;
+import com.nursery.nursery_api.model.*;
 import com.nursery.nursery_api.repositiry.DataReportRepository;
 import com.nursery.nursery_api.repositiry.PersonRepository;
+import com.nursery.nursery_api.repositiry.PetRepository;
 import com.nursery.nursery_api.repositiry.ReportRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,11 +24,13 @@ public class ReportService {
     private final DataReportRepository dataReportRepository;
     private final ReportRepository reportRepository;
     private final PersonRepository personRepository;
+    private final PetRepository petRepository;
 
-    public ReportService(DataReportRepository dataReportRepository, ReportRepository reportRepository, PersonRepository personRepository) {
+    public ReportService(DataReportRepository dataReportRepository, ReportRepository reportRepository, PersonRepository personRepository, PetRepository petRepository) {
         this.dataReportRepository = dataReportRepository;
         this.reportRepository = reportRepository;
         this.personRepository = personRepository;
+        this.petRepository = petRepository;
     }
 
 
@@ -263,11 +263,17 @@ public class ReportService {
     public Report addNewReportForPerson (ReportDto reportDto){
         logger.info("Вызван метод addNewReportForPerson.");
        Optional<Person>  person=personRepository.findById(reportDto.getIdPerson());
-        if (person.isPresent()) {
+       Optional<Pet> pet=petRepository.findById(reportDto.getIdPet());
+        if (person.isPresent() && pet.isPresent()) {
+
+            pet.get().setPerson(person.get());
+            petRepository.save(pet.get());
+
             Report report = new Report();
             report.setPerson(person.get());
             report.setForteit(0L);
             report.setDayReport(30L);
+
             return reportRepository.save (report);
         } else throw new IllegalArgumentException("Пользователь не найден");
 
