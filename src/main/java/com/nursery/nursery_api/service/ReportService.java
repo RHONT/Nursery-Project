@@ -1,9 +1,12 @@
 package com.nursery.nursery_api.service;
 
+import com.nursery.nursery_api.dto.ReportDto;
 import com.nursery.nursery_api.model.DataReport;
+import com.nursery.nursery_api.model.Person;
 import com.nursery.nursery_api.model.Report;
 import com.nursery.nursery_api.model.Volunteer;
 import com.nursery.nursery_api.repositiry.DataReportRepository;
+import com.nursery.nursery_api.repositiry.PersonRepository;
 import com.nursery.nursery_api.repositiry.ReportRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,10 +25,12 @@ public class ReportService {
 
     private final DataReportRepository dataReportRepository;
     private final ReportRepository reportRepository;
+    private final PersonRepository personRepository;
 
-    public ReportService(DataReportRepository dataReportRepository, ReportRepository reportRepository) {
+    public ReportService(DataReportRepository dataReportRepository, ReportRepository reportRepository, PersonRepository personRepository) {
         this.dataReportRepository = dataReportRepository;
         this.reportRepository = reportRepository;
+        this.personRepository = personRepository;
     }
 
 
@@ -253,12 +258,20 @@ public class ReportService {
 
     /**
      * Method create new object Report attached to Person
-     * @param report
      * @return Report
      */
-    public Report addNewReportForPerson (Report report){
+    public Report addNewReportForPerson (ReportDto reportDto){
         logger.info("Вызван метод addNewReportForPerson.");
-        return reportRepository.save (report);
+       Optional<Person>  person=personRepository.findById(reportDto.getIdPerson());
+        if (person.isPresent()) {
+            Report report = new Report();
+            report.setPerson(person.get());
+            report.setForteit(0L);
+            report.setDayReport(30L);
+            return reportRepository.save (report);
+        } else throw new IllegalArgumentException("Пользователь не найден");
+
+
     }
     /**
      * Method search Report that attach to Person.
