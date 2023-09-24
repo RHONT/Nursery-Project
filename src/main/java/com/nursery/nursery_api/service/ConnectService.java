@@ -18,7 +18,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentSkipListSet;
 
 
-import static com.nursery.nursery_api.Global.GlobalVariable.volunteersList;
+import static com.nursery.nursery_api.global.GlobalVariable.volunteersList;
 
 @Service
 public class ConnectService {

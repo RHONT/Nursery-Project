@@ -34,6 +34,6 @@ public class MainCommand implements ReportHandler {
      */
     @Override
     public boolean supply(String inputMessage) {
-        return inputMessage.equals("-mainVolunteer");
+        return inputMessage.equals("/main_volunteer");
     }
 }

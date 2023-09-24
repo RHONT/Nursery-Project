@@ -6,10 +6,8 @@ import com.nursery.nursery_api.service.NurseryDBService;
 import com.nursery.nursery_api.service.SendBotMessageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-import static com.nursery.nursery_api.bot.StandartBotCommand.sendSimpleTextTest;
+import static com.nursery.nursery_api.bot.StandartBotCommand.sendOnlyText;
 
 @Component
 @RequiredArgsConstructor
@@ -24,7 +22,7 @@ public class About implements NurseryHandler {
     @Override
     public void handle(Long idChat, TelegramBot bot, NurseryDBService nurseryDBService, SendBotMessageService sendBotMessageService) {
 
-        sendSimpleTextTest(idChat,nurseryDBService.getMeAboutNursery(idChat));
+        sendOnlyText(idChat,nurseryDBService.getMeAboutNursery(idChat));
     }
     /**
      * сравнивается входящее сообщение от нажатой кнопки с нужным значением кнопки

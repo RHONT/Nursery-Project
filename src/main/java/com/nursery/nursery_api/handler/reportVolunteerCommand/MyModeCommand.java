@@ -15,7 +15,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.Objects;
 
-import static com.nursery.nursery_api.Global.GlobalVariable.volunteersList;
+import static com.nursery.nursery_api.global.GlobalVariable.volunteersList;
 
 @Component
 public class MyModeCommand implements ReportHandler {

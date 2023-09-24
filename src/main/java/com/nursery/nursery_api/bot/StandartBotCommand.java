@@ -17,7 +17,7 @@ public class StandartBotCommand {
     }
 
 
-    public static void sendSimpleTextTest(Long chatId, String message) {
+    public static void sendOnlyText(Long chatId, String message) {
         try {
             bot.execute(SendMessage.
                     builder().
