@@ -133,6 +133,10 @@ public class ScheduledMethod {
             }
         }
     }
+
+    /**
+     * Уменьшает кол-во дней отчета на 1, каждую ночь
+     */
     @Scheduled(cron = "0 59 23 * * *")
     public void dayGone (){
         List<Report> onCheck = reportRepository.findReportsByDayReportIsGreaterThanOrPerson();
