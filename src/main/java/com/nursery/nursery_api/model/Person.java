@@ -24,11 +24,11 @@ public class Person {
     @Column(name = "id_person")
     private Long idPerson;
 
-//    @OneToOne
-//    private Nursery nursery;
-    @OneToMany
+
+    @OneToOne
+    @JsonIgnore
     @JoinColumn(name = "id_nursery")
-    private List<Nursery> nurseryList;
+    private Nursery nursery;
 
     @Column(name = "id_chat")
     private Long idChat;

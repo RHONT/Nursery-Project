@@ -1,23 +1,34 @@
 package com.nursery.nursery_api.service;
 
+import com.nursery.nursery_api.dto.PersonDto;
+import com.nursery.nursery_api.model.Nursery;
 import com.nursery.nursery_api.model.Person;
+import com.nursery.nursery_api.repositiry.NurseryRepository;
 import com.nursery.nursery_api.repositiry.PersonRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class PersonService {
-    PersonRepository personRepository;
+    Logger logger = LoggerFactory.getLogger(PersonService.class);
 
-    public PersonService(PersonRepository personRepository) {
+    private final PersonRepository personRepository;
+    private final NurseryRepository nurseryRepository;
+
+    public PersonService(PersonRepository personRepository, NurseryRepository nurseryRepository) {
         this.personRepository = personRepository;
+        this.nurseryRepository = nurseryRepository;
     }
-    Logger logger = LoggerFactory.getLogger(NurseryService.class);
 
-    public Person addPerson (Person person){
+
+    public Person addPerson (PersonDto personDto){
+        Nursery nursery=nurseryRepository.findByNameNursery(personDto.getNameNursery());
+        Person person=Person.builder().name(personDto.getName()).phone(personDto.getPhone()).build();
+        person.setNursery(nursery);
         logger.info("Вызван метод addPerson");
         return personRepository.save(person);
     }

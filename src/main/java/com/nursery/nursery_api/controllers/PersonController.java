@@ -1,6 +1,7 @@
 package com.nursery.nursery_api.controllers;
 
 
+import com.nursery.nursery_api.dto.PersonDto;
 import com.nursery.nursery_api.model.Person;
 import com.nursery.nursery_api.service.PersonService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -37,14 +38,14 @@ public class PersonController {
                     description = "Создаваемый объект класс Person.",
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = Person.class)
+                            schema = @Schema(implementation = PersonDto.class)
                     )
             ),
             tags = "Person"
     )
     @PostMapping(path="/add_person")
-    public ResponseEntity<Person> addPerson (@RequestBody Person person){
-        return ResponseEntity.ok(personService.addPerson(person));
+    public ResponseEntity<Person> addPerson (@RequestBody PersonDto personDto){
+        return ResponseEntity.ok(personService.addPerson(personDto));
     }
 
     @Operation(summary = "Поиск посетителя в базе по имени или телефону.",
