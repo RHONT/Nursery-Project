@@ -101,7 +101,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     public void onUpdateReceived(Update update) {
         if (update.hasMessage() && update.getMessage().hasPhoto()) {
 
-            PhotoProcessing(update);
+            photoProcessing(update);
 
         } else if (update.hasMessage() && update.getMessage().hasText() &&
                 !update.getMessage().hasPhoto() && !update.getMessage().getText().isEmpty()) {
@@ -154,7 +154,7 @@ public class TelegramBot extends TelegramLongPollingBot {
      *               мы его сохраняем в БД - {@link TelegramBot#saveToDB(Chat, Message, Update, String)}, <br>
      *               если нет шлем отрицательный ответ
      */
-    private void PhotoProcessing(Update update) {
+    private void photoProcessing(Update update) {
         Message message = update.getMessage();
         Chat chat = message.getChat();
         // проверяем отчет, если есть фото, значит это отчет
