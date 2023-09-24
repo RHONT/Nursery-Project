@@ -16,6 +16,11 @@ public interface PetRepository extends JpaRepository<Pet,Long> {
     @Query(value = "SELECT * FROM Pet WHERE pet.id_nursary = :nurseryId", nativeQuery = true)
     List<Pet> findPetsByNurseryId (@Param("nurseryId") Long nurseryId);
 
+    @Query(value = " select pet.*\n" +
+            "    from pet\n" +
+            "    where pet.invalid='true'", nativeQuery = true)
     List<Pet> findPetsByInvalidTrue ();
     List<Pet> findPetsByInvalidFalse ();
+
+
 }

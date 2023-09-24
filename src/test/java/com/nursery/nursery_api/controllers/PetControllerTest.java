@@ -52,7 +52,6 @@ public class PetControllerTest {
             .idPet(123L)
             .nursery(null)
             .age(age)
-            .foto(null)
             .invalid(false)
             .person(null)
             .build();

@@ -1,6 +1,7 @@
 package com.nursery.nursery_api.controllers;
 
 
+import com.nursery.nursery_api.dto.ReportDto;
 import com.nursery.nursery_api.model.DataReport;
 import com.nursery.nursery_api.model.Person;
 import com.nursery.nursery_api.model.Report;
@@ -36,8 +37,8 @@ public class ReportController {
             tags = "Report"
     )
     @PostMapping(path = "/start_nursing_for_pet")
-    public ResponseEntity<Report> addReport (@RequestBody Report report){
-        return ResponseEntity.ok(reportService.addNewReportForPerson(report));
+    public ResponseEntity<Report> addReport (@RequestBody ReportDto reportDto){
+        return ResponseEntity.ok(reportService.addNewReportForPerson(reportDto));
     }
 
     @Operation(summary = "Поиск системы отчетов по посетителю или по одному из ежедневных расчетов. Или вывод всех " +

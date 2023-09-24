@@ -13,6 +13,8 @@ import java.util.Objects;
 @ToString
 @Builder
 @Entity
+@Setter
+@Getter
 @Table(name = "pet")
 public class Pet {
     @JsonIgnore
@@ -30,12 +32,6 @@ public class Pet {
 
     @Column(name = "birthday")
     private LocalDate age;
-
-    @Column(name = "foto")
-    @Lob
-    private byte[] foto;
-
-
 
     @Column(name = "invalid")
     private Boolean invalid;
@@ -58,59 +54,4 @@ public class Pet {
         return getClass().hashCode();
     }
 
-    public Nursery getNursery() {
-        return nursery;
-    }
-
-    public void setNursery(Nursery nursery) {
-        this.nursery = nursery;
-    }
-
-    public Long getIdPet() {
-        return idPet;
-    }
-
-    public void setIdPet(Long idPet) {
-        this.idPet = idPet;
-    }
-
-    public String getNickname() {
-        return nickname;
-    }
-
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
-    }
-
-    public LocalDate getAge() {
-        return age;
-    }
-
-    public void setAge(LocalDate age) {
-        this.age = age;
-    }
-
-    public byte[] getFoto() {
-        return foto;
-    }
-
-    public void setFoto(byte[] foto) {
-        this.foto = foto;
-    }
-
-    public Boolean getInvalid() {
-        return invalid;
-    }
-
-    public void setInvalid(Boolean invalid) {
-        this.invalid = invalid;
-    }
-
-    public Person getPerson() {
-        return person;
-    }
-
-    public void setPerson(Person person) {
-        this.person = person;
-    }
 }
