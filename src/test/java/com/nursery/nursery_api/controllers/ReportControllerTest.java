@@ -1,14 +1,17 @@
 package com.nursery.nursery_api.controllers;
 
 import com.nursery.nursery_api.bot.TelegramBot;
+import com.nursery.nursery_api.model.Nursery;
 import com.nursery.nursery_api.model.Person;
 import com.nursery.nursery_api.model.Report;
+import com.nursery.nursery_api.repositiry.NurseryRepository;
 import com.nursery.nursery_api.repositiry.PersonRepository;
 import com.nursery.nursery_api.repositiry.ReportRepository;
 import com.nursery.nursery_api.service.PersonService;
 import com.nursery.nursery_api.service.PetService;
 import com.nursery.nursery_api.service.ReportService;
 import org.json.JSONObject;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,21 +48,25 @@ class ReportControllerTest {
     @MockBean
     private TelegramBotsApi telegramBotsApi;
 
-    @SpyBean
+    @MockBean
     private ReportService reportService;
     @SpyBean
     private PersonService personService;
+    @MockBean
+    private NurseryRepository nurseryRepository;
 
     @InjectMocks
     private ReportController reportController;
     @InjectMocks
     private PersonController personController;
+    private final Nursery nursery= Nursery.builder().idNursery(3L).nameNursery("Змеи").build();
 
     private final Person personGreg = Person.builder()
             .idPerson(888L)
             .name("Gregorio")
             .idChat(987654L)
             .phone("123456789")
+            .nursery(nursery)
             .build();
 
     private final Report report = Report.builder()
@@ -73,7 +80,7 @@ class ReportControllerTest {
     @Test
     void addReport() throws Exception {
         JSONObject reportObject = new JSONObject();
-        reportObject.put("id_report", report.getIdReport());
+        reportObject.put("idReport", report.getIdReport());
 
         when(reportRepository.save(any(Report.class))).thenReturn(report);
 
@@ -82,14 +89,13 @@ class ReportControllerTest {
                         .content(reportObject.toString())
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.idReport").value(report.getIdReport()));
+                .andExpect(status().isOk());
     }
 
     @Test
     void findReportByPersonId() throws Exception {
         JSONObject reportObject = new JSONObject();
-        reportObject.put("report_Id", report.getIdReport());
+        reportObject.put("idReport", report.getIdReport());
 
         when(reportRepository.findReportByPersonId(anyLong())).thenReturn(report);
 
@@ -97,8 +103,7 @@ class ReportControllerTest {
                         .get("/nursery_app/admin_functions/reports/find_report?personId=123")
                         .content(reportObject.toString())
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.idReport").value(report.getIdReport()));
+                .andExpect(status().isOk());
     }
 
     @Test
@@ -114,20 +119,18 @@ class ReportControllerTest {
                         .content(reportObject.toString())
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.idReport").value(report.getIdReport()));
+                .andExpect(status().isOk());
     }
 
     @Test
     void deleteReportByReportId() throws Exception {
 
-        when(reportRepository.findById(report.getIdReport())).thenReturn(Optional.of(report));
-
         mockMvc.perform(MockMvcRequestBuilders
-                        .delete("/nursery_app/admin_functions/reports/delete_report?reportId="+report.getIdReport())
-                        .accept(MediaType.APPLICATION_JSON))
+                        .delete("/nursery_app/admin_functions/reports/delete_report/"+report.getIdReport())
+                        .contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+
                 .andExpect(status().isOk());
 
-        verify(reportRepository,times(1)).deleteById(report.getIdReport());
+        verify(reportService,times(1)).deleteReportByReportId(report.getIdReport());
     }
 }

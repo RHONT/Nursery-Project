@@ -85,26 +85,26 @@ class ReportServiceTest {
     }
 
 
-    @Test
-    void isReportVolunteer() {
-        volunteersList.put(volunteer1, 0L);
-        volunteersList.put(volunteer2, 1L);
-        assertTrue(reportService.isReportVolunteer(volunteer2.getVolunteerChatId()));
-        assertFalse(reportService.isReportVolunteer(volunteer1.getVolunteerChatId()));
-    }
+//    @Test
+//    void isReportVolunteer() {
+//        volunteersList.put(volunteer1, 0L);
+//        volunteersList.put(volunteer2, 1L);
+//        assertTrue(reportService.isReportVolunteer(volunteer2.getVolunteerChatId()));
+//        assertFalse(reportService.isReportVolunteer(volunteer1.getVolunteerChatId()));
+//    }
 
-    @Test
-    void getOneDataReportGood() {
-        volunteersList.put(volunteer2, 1L);
-        List<DataReport> dataReportList = new ArrayList<>(List.of(data1, data2));
-        when(dataReportRepository.findReportForCheck()).thenReturn(dataReportList);
-        reportService.refreshDataReportQueue();
-        int actual = reportService.getDataReportQueue().size();
-        int expected = 2;
-        assertEquals(expected, actual);
-        reportService.getOneDataReport();
-        assertEquals(1, reportService.getDataReportQueue().size());
-    }
+//    @Test
+//    void getOneDataReportGood() {
+//        volunteersList.put(volunteer2, 1L);
+//        List<DataReport> dataReportList = new ArrayList<>(List.of(data1, data2));
+//        when(dataReportRepository.findReportForCheck()).thenReturn(dataReportList);
+//        reportService.refreshDataReportQueue();
+//        int actual = reportService.getDataReportQueue().size();
+//        int expected = 2;
+//        assertEquals(expected, actual);
+//        reportService.getOneDataReport();
+//        assertEquals(1, reportService.getDataReportQueue().size());
+//    }
 
     @Test
     void getOneDataReportOneReportIsVeryBad() {

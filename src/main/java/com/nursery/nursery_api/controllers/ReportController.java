@@ -15,6 +15,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.ws.rs.Path;
+
 @RestController
 @RequestMapping(path = "/nursery_app/admin_functions/reports")
 public class ReportController {
@@ -98,30 +100,13 @@ public class ReportController {
                                     array = @ArraySchema(schema = @Schema(implementation = Report.class))
                             )
                     )
-            },
-            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "Удаляемый объект класса Report.",
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = Report.class)
-                    )
-            ),
-            tags = "Report"
+            }
     )
-    @DeleteMapping(path = "/delete_report")
-    public ResponseEntity<?> deleteReportByIdOrReport (@RequestParam(required = false) Long reportId,
-                                                    @RequestBody(required = false) Report report){
+    @DeleteMapping(path = "/delete_report/{reportId}")
+    public ResponseEntity<?> deleteReportByIdOrReport (@PathVariable(required = false) Long reportId){
         if (reportId != null) {
             try {
                 return ResponseEntity.ok(reportService.deleteReportByReportId(reportId));
-            } catch (Exception e) {
-                e.printStackTrace();
-                return ResponseEntity.badRequest().build();
-            }
-        }
-        if (report != null){
-            try {
-                return ResponseEntity.ok(reportService.deleteReportByReportId(report.getIdReport()));
             } catch (Exception e) {
                 e.printStackTrace();
                 return ResponseEntity.badRequest().build();
