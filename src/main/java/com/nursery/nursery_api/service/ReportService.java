@@ -277,7 +277,7 @@ public class ReportService {
             Report report = new Report();
             report.setPerson(person.get());
             report.setForteit(0L);
-            report.setDayReport(30L);
+            report.setDayReport(30);
 
             return reportRepository.save (report);
         } else throw new IllegalArgumentException("Пользователь не найден");

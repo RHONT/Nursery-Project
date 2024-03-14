@@ -34,7 +34,7 @@ public class Report {
     private Long forteit;
 
     @Column(name = "day_report")
-    private Long dayReport;
+    private Integer dayReport;
 
     @JsonIgnore
     @OneToMany(mappedBy = "report",fetch = FetchType.EAGER)

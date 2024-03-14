@@ -66,7 +66,7 @@ class ReportControllerTest {
             .idReport(123L)
             .person(personGreg)
             .forteit(1L)
-            .dayReport(30L)
+            .dayReport(30)
             .build();
 
 
